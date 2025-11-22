@@ -1,346 +1,295 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Fast · Safe · Reliable EV Logistics · Liumgo</title>
-      <meta name="description" content="Liumgo is an EV-first, tech-enabled logistics network powering fast, safe and reliable last-mile deliveries across the city.">
-      <link rel="stylesheet" href="liumgo-style.css" />
-    </head>
-    <body>
-      <div class="page-shell">
-        <header class="nav">
-          <div class="nav-inner">
-            <a href="index.html" class="brand">
-              <img src="logo-liumgo.png" class="brand-logo" alt="Liumgo logo" />
-              <div>
-                <div class="brand-text-title">LIUMGO</div>
-                <div class="brand-text-sub">Electric-first logistics network</div>
-              </div>
-            </a>
-            <nav class="nav-links">
-              <a href="index.html" class="is-active">Home</a>
-        <a href="about.html" class="">About Us</a>
-        <a href="services.html" class="">Services</a>
-        <a href="blog.html" class="">Blog</a>
-        <a href="contact.html" class="">Contact</a>
-              <a href="contact.html" class="nav-cta">
-                <span class="dot"></span>
-                <span>Book a discovery run</span>
-              </a>
-            </nav>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lium Go – EV-First B2B Logistics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fonts: Gotham in stack, Open Sans actually loaded -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Top bar -->
+  <div class="top-bar">
+    <div class="container top-bar__content">
+      <span>3/27 Mandawali Block, A2 Saket Block, Delhi - 110092</span>
+      <span>Make a call : +91 8882 540 885</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header__content">
+      <div class="logo">
+        <a href="index.html">
+          <img src="images/liumgo-logo.png" alt="Lium Go logo" />
+        </a>
+      </div>
+
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="quote.html">Get a Quote</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="login.html" class="btn btn-outline btn-login">Login</a>
+        <a href="quote.html" class="btn btn-primary btn-header-cta">Get a Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero with video -->
+    <section class="hero hero--with-video">
+      <div class="container hero__content">
+        <div class="hero__text">
+          <p class="eyebrow">EV-first B2B logistics network</p>
+          <h1>Reliable city-scale deliveries with a zero-emission fleet</h1>
+          <p class="hero__subtitle">
+            Lium Go orchestrates electric 2W, 3W and 4W fleets across warehouses,
+            dark stores and micro hubs to give enterprises predictable SLAs, real-time
+            visibility and lower cost per drop.
+          </p>
+          <div class="hero__actions">
+            <a href="quote.html" class="btn btn-primary">Get a custom quote</a>
+            <a href="services.html" class="btn btn-outline">Explore services</a>
           </div>
+
+          <ul class="hero__bullets">
+            <li>EV-only fleet with operations playbooks for each category</li>
+            <li>Control tower monitoring with live route & exception alerts</li>
+            <li>Designed for retail, grocery, pharma, food, e-commerce & D2C</li>
+          </ul>
+        </div>
+
+        <div class="hero__media">
+          <!-- Replace src with your actual long video file -->
+          <video class="hero-video" controls poster="images/hero-image.jpg">
+            <source src="videos/liumgo-long.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <p class="hero-video__caption">
+            Lium Go in action: integrated EV operations from warehouse to doorstep.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats band -->
+    <section class="stats">
+      <div class="container stats__grid">
+        <div class="stat">
+          <div class="stat__value">30k+</div>
+          <div class="stat__label">Monthly deliveries supported</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">99.2%</div>
+          <div class="stat__label">On-time delivery performance</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">35%</div>
+          <div class="stat__label">Average CO₂ reduction vs. ICE fleets</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">20+</div>
+          <div class="stat__label">Cities under active expansion</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What we deliver -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header">
+          <h2>What Lium Go delivers</h2>
+          <p class="section-subtitle">
+            A single EV-first operations layer that plugs into your existing order, warehouse and transport systems.
+          </p>
         </header>
-        <main class="main">
-          <section class="section hero">
-  <div class="hero-left">
-    <div class="badge">
-      <span class="badge-pill">EV-first</span>
-      <span>Fast · Safe · Reliable last-mile at city scale</span>
-    </div>
-    <h1 class="hero-title">
-      Logistics tuned for <span class="highlight">dense Indian cities</span> —
-      without the carbon hangover.
-    </h1>
-    <p class="hero-body">
-      Liumgo blends an electric vehicle fleet, trained rider network and live control tower
-      so your orders land on time, every time — with auditable CO₂ savings baked in.
-    </p>
-    <div class="hero-metrics">
-      <div class="metric">
-        <div class="metric-label">Monthly deliveries</div>
-        <div class="metric-value">30k+</div>
-        <div class="metric-chip">Across food, pharma &amp; e‑commerce</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Carbon‑free km</div>
-        <div class="metric-value">200k+</div>
-        <div class="metric-chip">EV-first city network</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">On‑time performance</div>
-        <div class="metric-value">95%</div>
-        <div class="metric-chip">Tracked with live SLAs</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Coverage</div>
-        <div class="metric-value">24/7</div>
-        <div class="metric-chip">Ops &amp; support</div>
-      </div>
-    </div>
-    <div class="hero-ctas">
-      <a href="contact.html" class="btn btn-primary">
-        Book a pilot lane
-        <span class="btn-icon">→</span>
-      </a>
-      <a href="services.html" class="btn btn-ghost">
-        See EV logistics stack
-      </a>
-    </div>
-  </div>
-  <div class="hero-right">
-    <div class="hero-card">
-      <div class="hero-orbit"></div>
-      <div class="hero-card-inner">
-        <div class="hero-map">
-          <div class="hero-map-title">
-            <span>Live EV network — sample view</span>
-            <span class="hero-pill">City SLA: &lt; 45 mins</span>
-          </div>
-          <div class="map-grid">
-            <div class="map-route"></div>
-            <div class="node node-delhi">
-              <div class="node-label">Delhi Hub</div>
-            </div>
-            <div class="node node-mumbai">
-              <div class="node-label">Mumbai</div>
-            </div>
-            <div class="node node-bangalore">
-              <div class="node-label">Bengaluru</div>
-            </div>
-            <div class="node node-hyderabad">
-              <div class="node-label">Hyderabad</div>
-            </div>
-            <div class="node node-kolkata">
-              <div class="node-label">Kolkata</div>
-            </div>
-            <div class="truck t1"></div>
-            <div class="truck t2"></div>
-            <div class="truck t3"></div>
-          </div>
-          <div class="hero-map-footer">
-            <div class="hero-map-kpi">
-              <span><strong>42</strong> active routes</span>
-              <span><strong>8</strong> delayed</span>
-            </div>
-            <div class="hero-map-kpi">
-              <span><strong>−28%</strong> CO₂ vs ICE</span>
-            </div>
-          </div>
-        </div>
-        <div class="hero-side-panel">
-          <div class="side-tag">Control tower snapshot</div>
-          <div class="side-card">
-            <div class="side-row">
-              <strong>Urban SLA board</strong>
-              <span class="pill pill-success">Green</span>
-            </div>
-            <div class="side-row">
-              <span>City orders in‑flight</span>
-              <span>1,382</span>
-            </div>
-            <div class="side-row">
-              <span>&lt; 30 min drops</span>
-              <span>71%</span>
-            </div>
-            <div class="side-row">
-              <span>Escalations</span>
-              <span class="pill pill-warning">Low</span>
-            </div>
-            <div class="chips">
-              <span class="chip">Geo‑fenced delivery zones</span>
-              <span class="chip">Live rider app</span>
-              <span class="chip">Exception workflows</span>
-            </div>
-          </div>
-          <div class="side-card">
-            <div class="side-row">
-              <strong>ESG impact feed</strong>
-              <span class="pill pill-danger">Beta</span>
-            </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>Urban last-mile delivery</h3>
             <p>
-              Automatic monthly reports on carbon avoided, energy mix and on‑ground safety metrics — ready to plug into your ESG dashboards.
+              Structured EV routes for same-day and next-day deliveries from warehouses,
+              micro-fulfilment centres and dark stores into dense city clusters.
             </p>
-          </div>
-          <div class="side-footnote">
-            Designed as a drop‑in last‑mile layer — keep your WMS/TMS, we integrate at the edge.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+            <ul>
+              <li>Slot-based and wave-based dispatch models</li>
+              <li>Optimised routing for traffic, distance and battery levels</li>
+              <li>Configurable SLAs per lane and store</li>
+            </ul>
+          </article>
 
-<section class="section partner-band">
-  <div class="section-header">
-    <div class="kicker">Trusted ecosystem</div>
-    <h2 class="section-title">Vehicle &amp; brand partners that already run with us</h2>
-    <p class="section-subtitle">
-      We plug into high‑velocity categories — food, pharma, grocery, quick commerce and D2C — using tuned EV configurations for each lane.
-    </p>
-  </div>
-  <div class="partner-card">
-    <div class="partner-grid">
-      <div class="partner-pill">
-        <div>
-          <div class="partner-name">Tata Ace EV</div>
-          <div class="partner-tag">Mini‑truck linehaul</div>
-        </div>
-        <span class="pulse-dot"></span>
-      </div>
-      <div class="partner-pill">
-        <div>
-          <div class="partner-name">Bajaj / Piaggio</div>
-          <div class="partner-tag">3‑w intra‑city</div>
-        </div>
-        <span class="pulse-dot"></span>
-      </div>
-      <div class="partner-pill">
-        <div>
-          <div class="partner-name">Euler / Alti</div>
-          <div class="partner-tag">Cargo EV fleets</div>
-        </div>
-        <span class="pulse-dot"></span>
-      </div>
-      <div class="partner-pill">
-        <div>
-          <div class="partner-name">Quick‑commerce brands</div>
-          <div class="partner-tag">Sub‑30 min delivery</div>
-        </div>
-      </div>
-      <div class="partner-pill">
-        <div>
-          <div class="partner-name">Healthcare &amp; pharma</div>
-          <div class="partner-tag">Sensitive payloads</div>
-        </div>
-      </div>
-      <div class="partner-pill">
-        <div>
-          <div class="partner-name">Enterprise &amp; SME</div>
-          <div class="partner-tag">B2B city moves</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+          <article class="feature-card">
+            <h3>Dedicated fleets for enterprises</h3>
+            <p>
+              Dedicated EV fleets with co-branded riders and vehicles, managed under
+              a single governance framework for your geography or brand.
+            </p>
+            <ul>
+              <li>Shared control tower metrics and daily scorecards</li>
+              <li>Uniform SOPs across partners and hubs</li>
+              <li>Capacity aligned to campaign and seasonality peaks</li>
+            </ul>
+          </article>
 
-<section class="section">
-  <div class="section-header">
-    <div class="kicker">What we ship</div>
-    <h2 class="section-title">The Liumgo EV logistics stack</h2>
-    <p class="section-subtitle">
-      A modular set of services — last‑mile, EV fleet ops, three‑wheeler cargo and route optimisation — that can run standalone or plug into your existing stack.
-    </p>
-  </div>
-  <div class="service-grid">
-    <div class="service-card">
-      <div class="service-tag">Core</div>
-      <div class="service-title">Last‑mile delivery</div>
-      <p class="service-body">
-        Fast, predictable doorstep delivery with live tracking, OTP and photo‑proof — tuned separately for food, grocery, D2C and healthcare.
-      </p>
-      <div class="service-meta">
-        <span>Citywide coverage</span>
-        <span>Learn more →</span>
-      </div>
-    </div>
-    <div class="service-card">
-      <div class="service-tag">Fleet</div>
-      <div class="service-title">EV fleet operations</div>
-      <p class="service-body">
-        End‑to‑end EV management — sourcing, charging, uptime, rider training — so you get the ESG benefit without the operational drag.
-      </p>
-      <div class="service-meta">
-        <span>Light &amp; heavy EVs</span>
-        <span>Learn more →</span>
-      </div>
-    </div>
-    <div class="service-card">
-      <div class="service-tag">Capacity</div>
-      <div class="service-title">Three‑wheeler cargo</div>
-      <p class="service-body">
-        Efficient intra‑city movement for mid‑size loads — hub‑to‑store, dark‑store replenishment, marketplace pickups and more.
-      </p>
-      <div class="service-meta">
-        <span>Optimised routing</span>
-        <span>Learn more →</span>
-      </div>
-    </div>
-    <div class="service-card">
-      <div class="service-tag">Intelligence</div>
-      <div class="service-title">Route optimisation</div>
-      <p class="service-body">
-        Smart routing that respects city realities — traffic, no‑entry windows, building access rules and rider safety constraints.
-      </p>
-      <div class="service-meta">
-        <span>Cost per drop ↓</span>
-        <span>Learn more →</span>
-      </div>
-    </div>
-    <div class="service-card">
-      <div class="service-tag">People</div>
-      <div class="service-title">Manpower &amp; rider ops</div>
-      <p class="service-body">
-        Trained delivery associates with process discipline: safety checks, digital KYC, customer etiquette and closure hygiene.
-      </p>
-      <div class="service-meta">
-        <span>Background‑verified</span>
-        <span>Learn more →</span>
-      </div>
-    </div>
-    <div class="service-card">
-      <div class="service-tag">Reporting</div>
-      <div class="service-title">SLA &amp; ESG dashboards</div>
-      <p class="service-body">
-        Weekly scorecards on SLAs, exceptions and sustainability gains — ready to share with ops, finance and leadership teams.
-      </p>
-      <div class="service-meta">
-        <span>APIs &amp; exports</span>
-        <span>Learn more →</span>
-      </div>
-    </div>
-  </div>
-  <div class="stats-strip">
-    <div class="stats-strip-item">
-      <strong>Designed as a template</strong> for modern EV logistics networks — ready to be tailored to your geography and client mix.
-    </div>
-    <div class="stats-strip-item">
-      <strong>Outcome‑first copy</strong> and a visual system built to make prospective clients say “this team is on another level.”
-    </div>
-  </div>
-</section>
+          <article class="feature-card">
+            <h3>Temperature-controlled & critical flows</h3>
+            <p>
+              EV-led deliveries for pharma, healthcare and high-value B2B flows with
+              continuous telemetry and exception handling.
+            </p>
+            <ul>
+              <li>Device and shipment level tracking hooks</li>
+              <li>Escalation trees for time-sensitive shipments</li>
+              <li>Audit-ready logs for compliance teams</li>
+            </ul>
+          </article>
 
-        </main>
-        <footer class="footer">
-          <div class="footer-inner">
-            <div class="footer-logo-text">
-              <div class="brand">
-                <img src="logo-liumgo.png" class="brand-logo" alt="Liumgo logo" />
-                <div>
-                  <div class="brand-text-title">LIUMGO</div>
-                  <div class="brand-text-sub">EV-first last-mile logistics</div>
-                </div>
-              </div>
-              <p style="margin-top:0.75rem">
-                We help brands move faster with an electric-first logistics stack designed for dense Indian cities — measurable carbon savings, predictable SLAs.
-              </p>
-            </div>
-            <div class="footer-columns">
-              <h4>Company</h4>
-              <ul>
-                <li><a href="about.html">About</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="blog.html">Inside Stories</a></li>
-                <li><a href="contact.html">Contact</a></li>
-              </ul>
-            </div>
-            <div class="footer-columns">
-              <h4>Reach us</h4>
-              <ul>
-                <li>3/27 Mandawali Block, A2 Saket Block, Delhi 110092</li>
-                <li>+91 8882 540 885</li>
-                <li><a href="mailto:connect@liumgo.com">connect@liumgo.com</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="footer-bottom">
-            <div>© 2025 Liumgo. All rights reserved.</div>
-            <div class="footer-bottom-links">
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Use</a>
-            </div>
-          </div>
-        </footer>
+          <article class="feature-card">
+            <h3>Network design & EV advisory</h3>
+            <p>
+              Joint design of hub locations, service areas and charging strategy to
+              ensure EV economics work at scale.
+            </p>
+            <ul>
+              <li>Lane-by-lane cost and service modelling</li>
+              <li>Charging and swapping strategy design</li>
+              <li>Pilot-to-scale playbooks for each vertical</li>
+            </ul>
+          </article>
+        </div>
       </div>
-    </body>
-    </html>
+    </section>
+
+    <!-- Sustainability & EV network -->
+    <section class="sustainability">
+      <div class="container sustainability__content">
+        <div class="sustainability__text">
+          <h2>EV network engineered for uptime, not experiments</h2>
+          <p>
+            Lium Go treats EV logistics as infrastructure, not just a fleet. Charging,
+            maintenance, routing and rider utilisation are coordinated centrally so
+            you don't carry technology or operations risk.
+          </p>
+          <p>
+            Every new city is onboarded through a structured readiness checklist:
+            lanes, partners, riders, SLAs, charging partners and data integrations.
+          </p>
+          <ul class="sustainability__list">
+            <li>Battery-aware routing and shift planning</li>
+            <li>Charging time tracked as a first-class constraint</li>
+            <li>Emission baselines and savings reports for sustainability teams</li>
+          </ul>
+        </div>
+        <div class="sustainability__image">
+          <img src="images/ev-network.jpg" alt="Electric vehicle charging and logistics network illustration" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Industries -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header">
+          <h2>Built for high-volume, high-trust industries</h2>
+          <p class="section-subtitle">
+            Lium Go’s operating model is tuned for sectors where customer experience and compliance matter.
+          </p>
+        </header>
+        <div class="industries-grid">
+          <div class="industry-card">
+            <h3>Retail & E-commerce</h3>
+            <p>Ship from central warehouses, dark stores or stores-as-hubs with predictable cut-off and delivery slots.</p>
+          </div>
+          <div class="industry-card">
+            <h3>Food, grocery & Q-commerce</h3>
+            <p>Configurable time windows, rider batching rules and rider safety controls with EV fleets.</p>
+          </div>
+          <div class="industry-card">
+            <h3>Pharma & healthcare</h3>
+            <p>Controlled chain-of-custody, temperature constraints and audit visibility.</p>
+          </div>
+          <div class="industry-card">
+            <h3>D2C & subscriptions</h3>
+            <p>Recurring delivery logic for subscriptions, trials and reverse logistics.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Clients (logos replaced with neutral cards) -->
+    <section class="clients">
+      <div class="container">
+        <h2>Sample client archetypes</h2>
+        <p class="section-subtitle">
+          We typically engage with national and regional brands running multi-city operations.
+        </p>
+        <div class="clients__grid">
+          <div class="client-card">
+            <span class="client-tag">Retail & e-commerce</span>
+            <div class="client-name">Marketplace & brand warehouses</div>
+          </div>
+          <div class="client-card">
+            <span class="client-tag">Food & grocery</span>
+            <div class="client-name">Dark stores & cloud kitchens</div>
+          </div>
+          <div class="client-card">
+            <span class="client-tag">Healthcare</span>
+            <div class="client-name">Pharmacies & diagnostic chains</div>
+          </div>
+          <div class="client-card">
+            <span class="client-tag">B2B distribution</span>
+            <div class="client-name">Regional distributors & stockists</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-final">
+      <div class="container cta-final__content">
+        <h2>Ready to design your EV logistics blueprint?</h2>
+        <p>
+          Share your lanes, volumes and service expectations. We’ll respond with a
+          configuration, indicative commercials and a pilot plan.
+        </p>
+        <div class="cta-final__actions">
+          <a href="quote.html" class="btn btn-primary">Request a quote</a>
+          <a href="contact.html" class="btn btn-outline">Talk to our team</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer__content">
+      <div class="footer__left">
+        <p><strong>Lium Go</strong> – EV-first logistics network for enterprises.</p>
+        <p>3/27 Mandawali Block, A2 Saket Block, Delhi - 110092</p>
+      </div>
+      <div class="footer__right">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="quote.html">Get a Quote</a>
+        <a href="login.html">Login</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
