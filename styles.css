@@ -412,12 +412,16 @@ a:hover {
   justify-content: center;
 }
 
-.sustainability__image img {
+/* Apply same styling to both image and video */
+.sustainability__image img,
+.sustainability__image video {
   max-width: 100%;
   border-radius: 18px;
   box-shadow: 0 20px 55px rgba(15, 23, 42, 0.18);
   object-fit: cover;
+  display: block;
 }
+
 
 /* --------------------
    Industries
