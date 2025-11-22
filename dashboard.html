@@ -55,48 +55,112 @@
 
     <!-- Map + side panels -->
     <section class="page-section page-section--alt">
-      <div class="container dashboard-layout">
-        <!-- Map + vehicles -->
-        <div class="dashboard-main">
-          <h2>Delhi network view</h2>
-          <p class="dashboard-subtitle">
-            2W & 3W EVs operating across priority lanes, with indicative positions for a live control-tower view.
-          </p>
+  <div class="container dashboard-layout">
+    <!-- Map + vehicles -->
+    <div class="dashboard-main">
+      <h2>Delhi network view</h2>
+      <p class="dashboard-subtitle">
+        2W &amp; 3W EVs operating across priority lanes, with indicative positions for a live control-tower view.
+      </p>
 
-          <div class="dashboard-map">
-            <!-- 2W vehicles -->
-            <div class="vehicle vehicle--2w vehicle--path-a"></div>
-            <div class="vehicle vehicle--2w vehicle--path-b"></div>
+      <div class="dashboard-map">
+        <!-- 2W vehicles -->
+        <div class="vehicle vehicle--2w vehicle--path-a"></div>
+        <div class="vehicle vehicle--2w vehicle--path-b"></div>
 
-            <!-- 3W vehicles -->
-            <div class="vehicle vehicle--3w vehicle--path-c"></div>
-            <div class="vehicle vehicle--3w vehicle--path-d"></div>
+        <!-- 3W vehicles -->
+        <div class="vehicle vehicle--3w vehicle--path-c"></div>
+        <div class="vehicle vehicle--3w vehicle--path-d"></div>
+      </div>
+    </div>
+
+    <!-- Side KPIs / alerts -->
+    <aside class="dashboard-side">
+      <!-- Snapshot as table + mini chart -->
+      <div class="page-highlight-card dashboard-card">
+        <h3>Current shift snapshot</h3>
+
+        <table class="dashboard-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Value</th>
+              <th>Target</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Active vehicles</td>
+              <td>42 (28 × 2W, 14 × 3W)</td>
+              <td>40–45</td>
+              <td>
+                <span class="dashboard-status dashboard-status--good">Stable</span>
+              </td>
+            </tr>
+            <tr>
+              <td>On-time deliveries (60 min)</td>
+              <td>96.8%</td>
+              <td>&gt; 95%</td>
+              <td>
+                <span class="dashboard-status dashboard-status--good">On track</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Avg. drops per vehicle</td>
+              <td>18.4</td>
+              <td>17–19</td>
+              <td>
+                <span class="dashboard-status dashboard-status--good">Healthy</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Energy exceptions</td>
+              <td>3 open</td>
+              <td>&lt; 5</td>
+              <td>
+                <span class="dashboard-status dashboard-status--warn">Watch</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="dashboard-chart">
+          <div class="dashboard-chart__item">
+            <div class="dashboard-chart__bar dashboard-chart__bar--primary" style="--bar-height: 97;"></div>
+            <span class="dashboard-chart__value">96.8%</span>
+            <span class="dashboard-chart__label">On-time</span>
+          </div>
+          <div class="dashboard-chart__item">
+            <div class="dashboard-chart__bar dashboard-chart__bar--accent" style="--bar-height: 88;"></div>
+            <span class="dashboard-chart__value">18.4</span>
+            <span class="dashboard-chart__label">Drops / veh</span>
+          </div>
+          <div class="dashboard-chart__item">
+            <div class="dashboard-chart__bar dashboard-chart__bar--primary-soft" style="--bar-height: 92;"></div>
+            <span class="dashboard-chart__value">92%</span>
+            <span class="dashboard-chart__label">Fleet avail.</span>
+          </div>
+          <div class="dashboard-chart__item">
+            <div class="dashboard-chart__bar dashboard-chart__bar--warn" style="--bar-height: 40;"></div>
+            <span class="dashboard-chart__value">3</span>
+            <span class="dashboard-chart__label">Energy exc.</span>
           </div>
         </div>
-
-        <!-- Side KPIs / alerts -->
-        <aside class="dashboard-side">
-          <div class="page-highlight-card">
-            <h3>Current shift snapshot</h3>
-            <ul>
-              <li>Active vehicles: 42 (28 × 2W, 14 × 3W)</li>
-              <li>On-time deliveries (last 60 min): 96.8%</li>
-              <li>Average drops per vehicle: 18.4</li>
-              <li>Energy exceptions (charging / swap): 3 open</li>
-            </ul>
-          </div>
-
-          <div class="page-highlight-card">
-            <h3>Live alerts</h3>
-            <ul>
-              <li>❗ Lane DL-02 &gt; temporary congestion, ETA +8–10 mins</li>
-              <li>⚠ EV-3W-014 &gt; low SOC, auto-rerouted via swap station</li>
-              <li>ℹ Hub Saket &gt; drop density spike, wave rebalancing scheduled</li>
-            </ul>
-          </div>
-        </aside>
       </div>
-    </section>
+
+      <!-- Live alerts stay as a clean list -->
+      <div class="page-highlight-card dashboard-card">
+        <h3>Live alerts</h3>
+        <ul>
+          <li>❗ Lane DL-02 &gt; temporary congestion, ETA +8–10 mins</li>
+          <li>⚠ EV-3W-014 &gt; low SOC, auto-rerouted via swap station</li>
+          <li>ℹ Hub Saket &gt; drop density spike, wave rebalancing scheduled</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
   </main>
 
   <footer class="site-footer">
