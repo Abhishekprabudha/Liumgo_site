@@ -644,6 +644,30 @@ a:hover {
   color: #4b5563;
   font-size: 0.96rem;
 }
+.page-hero__layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.page-hero__text {
+  flex: 1.1;
+}
+
+.page-hero__image {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.page-hero__image img {
+  max-width: 100%;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+  object-fit: cover;
+  display: block;
+}
 
 .page-section {
   padding: 42px 0;
@@ -1024,6 +1048,16 @@ a:hover {
     flex-direction: column;
   }
 
+  /* About page hero: stack text + image on smaller screens */
+  .page-hero__layout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-hero__image {
+    justify-content: flex-start;
+  }
+
   .stats__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1041,7 +1075,7 @@ a:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 
-   .industries-grid,
+  .industries-grid,
   .clients__grid,
   .vehicle-partners__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
