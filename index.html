@@ -71,16 +71,22 @@
         </div>
 
         <div class="hero__media">
-          <!-- Replace src with your actual long video file -->
-          <video class="hero-video" controls poster="images/hero-image.jpg">
-            <source src="videos/liumgo-long.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <p class="hero-video__caption">
-            Lium Go in action: integrated EV operations from warehouse to doorstep.
-          </p>
-        </div>
-      </div>
+  <!-- Long hero video: now auto-plays on load -->
+  <video
+    class="hero-video"
+    controls
+    autoplay
+    muted
+    playsinline
+    poster="images/hero-image.jpg"
+  >
+    <source src="videos/liumgo-long.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  <p class="hero-video__caption">
+    Lium Go in action: integrated EV operations from warehouse to doorstep.
+  </p>
+</div>
     </section>
 
     <!-- Stats band -->
