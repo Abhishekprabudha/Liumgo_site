@@ -502,6 +502,41 @@ a:hover {
   margin-top: 6px;
   font-weight: 600;
 }
+/* Logo roller */
+.clients__logos {
+  margin-top: 22px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+  padding: 8px 0;
+}
+
+.clients__logos-track {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  animation: clients-scroll 24s linear infinite;
+  will-change: transform;
+}
+
+.clients__logos img {
+  height: 30px;
+  width: auto;
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+/* Smooth horizontal scroll for logos */
+@keyframes clients-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
 
 /* --------------------
    Page hero & sections
