@@ -412,14 +412,27 @@ a:hover {
   justify-content: center;
 }
 
-/* Apply same styling to both image and video */
-.sustainability__image img,
-.sustainability__image video {
-  max-width: 100%;
+/* Image styling */
+.sustainability__image img {
+  width: 100%;
+  max-width: 420px;
   border-radius: 18px;
   box-shadow: 0 20px 55px rgba(15, 23, 42, 0.18);
   object-fit: cover;
   display: block;
+}
+
+/* Video styling – fixed aspect ratio so height is controlled */
+.sustainability__image video {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.18);
+  display: block;
+
+  /* 🔑 these two lines control height */
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
 
