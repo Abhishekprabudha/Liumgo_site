@@ -584,10 +584,20 @@ a:hover {
 
 .vehicle-partners__logos {
   margin-top: 22px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+  padding: 8px 0;
+}
+
+.vehicle-partners__logos-track {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 18px 26px;
+  gap: 32px;
+  animation: vehicle-partners-scroll 26s linear infinite;
+  will-change: transform;
 }
 
 .vehicle-partners__logos img {
@@ -595,6 +605,17 @@ a:hover {
   width: auto;
   display: block;
   flex-shrink: 0;
+  opacity: 0.95;
+}
+
+/* Separate animation so you can tune speed independently if needed */
+@keyframes vehicle-partners-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 
