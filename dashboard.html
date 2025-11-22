@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Control Tower – Lium Go Operations Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container top-bar__content">
+      <span>3/27 Mandawali Block, A2 Saket Block, Delhi - 110092</span>
+      <span>Make a call : +91 8882 540 885</span>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header__content">
+      <div class="logo">
+        <a href="index.html">
+          <img src="images/liumgo-logo.png" alt="Lium Go logo" />
+        </a>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="quote.html">Get a Quote</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn btn-outline btn-login">Login</a>
+        <a href="quote.html" class="btn btn-primary btn-header-cta">Get a Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="page-hero page-hero--small">
+      <div class="container">
+        <h1>Operations control tower</h1>
+        <p>
+          Live view of EV fleets, lanes and service levels for Lium Go’s Delhi network.
+          This prototype dashboard surfaces vehicle movement, basic KPIs and alerts.
+        </p>
+      </div>
+    </section>
+
+    <!-- Map + side panels -->
+    <section class="page-section page-section--alt">
+      <div class="container dashboard-layout">
+        <!-- Map + vehicles -->
+        <div class="dashboard-main">
+          <h2>Delhi network view</h2>
+          <p class="dashboard-subtitle">
+            2W & 3W EVs operating across priority lanes, with indicative positions for a live control-tower view.
+          </p>
+
+          <div class="dashboard-map">
+            <!-- 2W vehicles -->
+            <div class="vehicle vehicle--2w vehicle--path-a"></div>
+            <div class="vehicle vehicle--2w vehicle--path-b"></div>
+
+            <!-- 3W vehicles -->
+            <div class="vehicle vehicle--3w vehicle--path-c"></div>
+            <div class="vehicle vehicle--3w vehicle--path-d"></div>
+          </div>
+        </div>
+
+        <!-- Side KPIs / alerts -->
+        <aside class="dashboard-side">
+          <div class="page-highlight-card">
+            <h3>Current shift snapshot</h3>
+            <ul>
+              <li>Active vehicles: 42 (28 × 2W, 14 × 3W)</li>
+              <li>On-time deliveries (last 60 min): 96.8%</li>
+              <li>Average drops per vehicle: 18.4</li>
+              <li>Energy exceptions (charging / swap): 3 open</li>
+            </ul>
+          </div>
+
+          <div class="page-highlight-card">
+            <h3>Live alerts</h3>
+            <ul>
+              <li>❗ Lane DL-02 &gt; temporary congestion, ETA +8–10 mins</li>
+              <li>⚠ EV-3W-014 &gt; low SOC, auto-rerouted via swap station</li>
+              <li>ℹ Hub Saket &gt; drop density spike, wave rebalancing scheduled</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer__content">
+      <div class="footer__left">
+        <p><strong>Lium Go</strong> – EV-first logistics network for enterprises.</p>
+        <p>3/27 Mandawali Block, A2 Saket Block, Delhi - 110092</p>
+      </div>
+      <div class="footer__right">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="quote.html">Get a Quote</a>
+        <a href="login.html">Login</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
