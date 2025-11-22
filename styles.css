@@ -987,7 +987,7 @@ a:hover {
 }
 
 .dashboard-main {
-  flex: 1.5;
+  flex: 2;
 }
 
 .dashboard-side {
@@ -1105,7 +1105,7 @@ a:hover {
 }
 
 .dashboard-snapshot {
-  margin-top: 18px;
+  margin-top: 24px;
 }
 
 .dashboard-snapshot__header {
