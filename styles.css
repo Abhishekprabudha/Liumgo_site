@@ -1097,6 +1097,115 @@ a:hover {
   100% { transform: translate(-58%, 0); }
 }
 
+/* Dashboard cards / table / chart */
+
+.dashboard-card h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 0.88rem;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dashboard-table thead th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+}
+
+.dashboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dashboard-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.dashboard-status--good {
+  background: rgba(16, 185, 129, 0.1);
+  color: #047857;
+}
+
+.dashboard-status--warn {
+  background: rgba(245, 158, 11, 0.12);
+  color: #92400e;
+}
+
+/* Mini bar chart */
+
+.dashboard-chart {
+  margin-top: 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  height: 140px;
+}
+
+.dashboard-chart__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.dashboard-chart__bar {
+  width: 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
+  height: calc(var(--bar-height, 50) * 1%);
+}
+
+.dashboard-chart__bar--primary {
+  background: linear-gradient(135deg, var(--color-primary), #7c3aed);
+}
+
+.dashboard-chart__bar--accent {
+  background: linear-gradient(135deg, var(--color-accent), #f97316);
+}
+
+.dashboard-chart__bar--primary-soft {
+  background: linear-gradient(135deg, #a855f7, var(--color-primary));
+}
+
+.dashboard-chart__bar--warn {
+  background: linear-gradient(135deg, #f97316, #ef4444);
+}
+
+.dashboard-chart__value {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.dashboard-chart__label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+
 /* --------------------
    Final CTA
 ----------------------- */
