@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Request a Quote – Lium Go</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container top-bar__content">
+      <span>3/27 Mandawali Block, A2 Saket Block, Delhi - 110092</span>
+      <span>Make a call : +91 8882 540 885</span>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header__content">
+      <div class="logo">
+        <a href="index.html">
+          <img src="images/liumgo-logo.png" alt="Lium Go logo" />
+        </a>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="quote.html">Get a Quote</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn btn-outline btn-login">Login</a>
+        <a href="quote.html" class="btn btn-primary btn-header-cta">Get a Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Request an EV logistics quote</h1>
+        <p>
+          Share your basic network details and preferred time slots. We’ll respond
+          with a configuration, commercials and a proposed discussion window.
+        </p>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container quote-layout">
+        <div class="quote-media">
+          <h2>See how Lium Go operates</h2>
+          <p>
+            Use the videos and visuals below to understand the operations philosophy,
+            control tower approach and EV network design before our discussion.
+          </p>
+
+          <div class="quote-videos">
+            <div class="video-card video-card--primary">
+              <h3>Full walkthrough</h3>
+              <!-- Long video -->
+              <video controls poster="images/hero-image.jpg">
+                <source src="videos/liumgo-long.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <p class="video-card__caption">
+                Overview of Lium Go’s EV logistics network, operating model and control tower.
+              </p>
+            </div>
+
+            <div class="video-card">
+              <h3>Short overview</h3>
+              <!-- Shorter video (update src as needed) -->
+              <video controls poster="images/ev-network.jpg">
+                <source src="videos/liumgo-short.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <p class="video-card__caption">
+                Quick summary of the value proposition and typical implementation journey.
+              </p>
+            </div>
+          </div>
+
+          <div class="quote-images">
+            <img src="images/hero-image.jpg" alt="Urban EV logistics operations" />
+            <img src="images/ev-network.jpg" alt="EV charging and logistics network" />
+          </div>
+        </div>
+
+        <div class="contact-form-card quote-form-card">
+          <h2>Share your details</h2>
+          <p class="quote-form__intro">
+            Fill this form to receive a tailored quote and a meeting invite.
+          </p>
+          <!-- Replace action with backend endpoint when ready -->
+          <form class="contact-form" action="#" method="post">
+            <div class="form-field">
+              <label for="q-name">Full name</label>
+              <input id="q-name" name="name" type="text" required />
+            </div>
+            <div class="form-field">
+              <label for="q-company">Company</label>
+              <input id="q-company" name="company" type="text" required />
+            </div>
+            <div class="form-field form-field--two-column">
+              <div>
+                <label for="q-email">Work email</label>
+                <input id="q-email" name="email" type="email" required />
+              </div>
+              <div>
+                <label for="q-phone">Phone</label>
+                <input id="q-phone" name="phone" type="tel" />
+              </div>
+            </div>
+            <div class="form-field form-field--two-column">
+              <div>
+                <label for="q-city">Primary city / region</label>
+                <input id="q-city" name="city" type="text" />
+              </div>
+              <div>
+                <label for="q-vertical">Industry</label>
+                <input id="q-vertical" name="vertical" type="text" placeholder="Retail, grocery, pharma…" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="q-volume">Approx. monthly delivery volume</label>
+              <input id="q-volume" name="volume" type="text" placeholder="e.g. 20,000 orders / month" />
+            </div>
+            <div class="form-field">
+              <label for="q-slot">Preferred discussion slot</label>
+              <input id="q-slot" name="slot" type="text" placeholder="e.g. Weekdays 3–6 PM IST" />
+            </div>
+            <div class="form-field">
+              <label for="q-notes">Context / requirements</label>
+              <textarea id="q-notes" name="notes" rows="4" placeholder="Routes, SLAs, challenges, timelines…"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Request quote & meeting</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer__content">
+      <div class="footer__left">
+        <p><strong>Lium Go</strong> – EV-first logistics network for enterprises.</p>
+        <p>3/27 Mandawali Block, A2 Saket Block, Delhi - 110092</p>
+      </div>
+      <div class="footer__right">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+        <a href="quote.html">Get a Quote</a>
+        <a href="login.html">Login</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
