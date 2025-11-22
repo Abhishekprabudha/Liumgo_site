@@ -1155,10 +1155,6 @@ a:hover {
 .dashboard-table__col--value,
 .dashboard-table__col--target {
   white-space: nowrap;
-}
-
-.dashboard-table__col--value,
-.dashboard-table__col--target {
   text-align: right;
 }
 
@@ -1190,11 +1186,13 @@ a:hover {
 
 .dashboard-chart {
   margin-top: 10px;
+  padding: 8px 4px 0;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 10px;
-  height: 130px;
+  height: 140px;               /* fixed vertical space so bars are visible */
+  border-top: 1px solid #e5e7eb;
 }
 
 .dashboard-chart__item {
@@ -1207,11 +1205,13 @@ a:hover {
 }
 
 .dashboard-chart__bar {
-  width: 18px;
+  width: 20px;
+  min-height: 20px;            /* 🔑 ensures even small bars are visible */
   border-radius: 999px;
   background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
   height: calc(var(--bar-height, 50) * 1%);
+  border: 1px solid rgba(15, 23, 42, 0.18);  /* outline so they pop */
 }
 
 .dashboard-chart__bar--primary {
