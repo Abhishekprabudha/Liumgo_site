@@ -55,152 +55,155 @@
 
     <!-- Map + side panels -->
     <section class="page-section page-section--alt">
-  <div class="container dashboard-layout">
-    <!-- Map + snapshot -->
-    <div class="dashboard-main">
-      <h2>Delhi network view</h2>
-      <p class="dashboard-subtitle">
-        2W &amp; 3W EVs operating across priority lanes, with indicative positions for a live control-tower view.
-      </p>
+  <div class="container">
+    <!-- Row 1: Map + live alerts -->
+    <div class="dashboard-layout">
+      <!-- Map -->
+      <div class="dashboard-main">
+        <h2>Delhi network view</h2>
+        <p class="dashboard-subtitle">
+          2W &amp; 3W EVs operating across priority lanes, with indicative positions for a live control-tower view.
+        </p>
 
-      <div class="dashboard-map">
-        <!-- 2W vehicles -->
-        <div class="vehicle vehicle--2w vehicle--path-a"></div>
-        <div class="vehicle vehicle--2w vehicle--path-b"></div>
+        <div class="dashboard-map">
+          <!-- 2W vehicles -->
+          <div class="vehicle vehicle--2w vehicle--path-a"></div>
+          <div class="vehicle vehicle--2w vehicle--path-b"></div>
 
-        <!-- 3W vehicles -->
-        <div class="vehicle vehicle--3w vehicle--path-c"></div>
-        <div class="vehicle vehicle--3w vehicle--path-d"></div>
+          <!-- 3W vehicles -->
+          <div class="vehicle vehicle--3w vehicle--path-c"></div>
+          <div class="vehicle vehicle--3w vehicle--path-d"></div>
+        </div>
       </div>
 
-      <!-- Current shift snapshot: table + mini chart BELOW the map -->
-      <div class="page-highlight-card dashboard-card dashboard-snapshot">
-        <div class="dashboard-snapshot__header">
-          <h3>Current shift snapshot</h3>
-          <span class="dashboard-snapshot__time">Updated 14:32 IST · Last 5 min</span>
+      <!-- Live alerts (right side, aligned with map) -->
+      <aside class="dashboard-side">
+        <div class="page-highlight-card dashboard-card dashboard-alerts">
+          <h3>Live alerts</h3>
+          <ul class="dashboard-alerts__list">
+            <li class="dashboard-alert">
+              <div class="dashboard-alert__title">Lane DL-02 · South Delhi</div>
+              <div class="dashboard-alert__meta">
+                <span class="dashboard-pill dashboard-pill--critical">❗ Congestion</span>
+                <span class="dashboard-alert__time">ETA +8–10 min</span>
+              </div>
+            </li>
+            <li class="dashboard-alert">
+              <div class="dashboard-alert__title">EV-3W-014 · Saket hub</div>
+              <div class="dashboard-alert__meta">
+                <span class="dashboard-pill dashboard-pill--warn">⚠ Low SOC</span>
+                <span class="dashboard-alert__time">Rerouted via swap station</span>
+              </div>
+            </li>
+            <li class="dashboard-alert">
+              <div class="dashboard-alert__title">Wave 3 · West Delhi cluster</div>
+              <div class="dashboard-alert__meta">
+                <span class="dashboard-pill dashboard-pill--info">ℹ Load spike</span>
+                <span class="dashboard-alert__time">Extra riders deployed</span>
+              </div>
+            </li>
+            <li class="dashboard-alert">
+              <div class="dashboard-alert__title">Hub Okhla · Pharma lane</div>
+              <div class="dashboard-alert__meta">
+                <span class="dashboard-pill dashboard-pill--warn">⚠ Temp check</span>
+                <span class="dashboard-alert__time">1 shipment under review</span>
+              </div>
+            </li>
+            <li class="dashboard-alert">
+              <div class="dashboard-alert__title">EV-2W-221 · North ring</div>
+              <div class="dashboard-alert__meta">
+                <span class="dashboard-pill dashboard-pill--info">ℹ Route deviation</span>
+                <span class="dashboard-alert__time">Auto-corrected by system</span>
+              </div>
+            </li>
+          </ul>
         </div>
+      </aside>
+    </div>
 
-        <table class="dashboard-table">
-          <thead>
-            <tr>
-              <th>Metric</th>
-              <th class="dashboard-table__col--value">Value</th>
-              <th class="dashboard-table__col--target">Target</th>
-              <th class="dashboard-table__col--status">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>On-time deliveries (60 min)</td>
-              <td class="dashboard-table__col--value">96.8%</td>
-              <td class="dashboard-table__col--target">&gt; 95%</td>
-              <td class="dashboard-table__col--status">
-                <span class="dashboard-status dashboard-status--good">On track</span>
-              </td>
-            </tr>
-            <tr>
-              <td>Active vehicles</td>
-              <td class="dashboard-table__col--value">42 (28 × 2W, 14 × 3W)</td>
-              <td class="dashboard-table__col--target">40–45</td>
-              <td class="dashboard-table__col--status">
-                <span class="dashboard-status dashboard-status--good">Stable</span>
-              </td>
-            </tr>
-            <tr>
-              <td>Avg. drops per vehicle</td>
-              <td class="dashboard-table__col--value">18.4</td>
-              <td class="dashboard-table__col--target">17–19</td>
-              <td class="dashboard-table__col--status">
-                <span class="dashboard-status dashboard-status--good">Healthy</span>
-              </td>
-            </tr>
-            <tr>
-              <td>Fleet availability</td>
-              <td class="dashboard-table__col--value">92%</td>
-              <td class="dashboard-table__col--target">&gt; 90%</td>
-              <td class="dashboard-table__col--status">
-                <span class="dashboard-status dashboard-status--good">OK</span>
-              </td>
-            </tr>
-            <tr>
-              <td>Energy exceptions</td>
-              <td class="dashboard-table__col--value">3 open</td>
-              <td class="dashboard-table__col--target">&lt; 5</td>
-              <td class="dashboard-table__col--status">
-                <span class="dashboard-status dashboard-status--warn">Watch</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Row 2: Snapshot table + bar chart full width -->
+    <div class="page-highlight-card dashboard-card dashboard-snapshot">
+      <div class="dashboard-snapshot__header">
+        <h3>Current shift snapshot</h3>
+        <span class="dashboard-snapshot__time">Updated 14:32 IST · Last 5 min</span>
+      </div>
 
-        <div class="dashboard-chart">
-          <div class="dashboard-chart__item">
-            <div class="dashboard-chart__bar dashboard-chart__bar--primary" style="--bar-height: 97;"></div>
-            <span class="dashboard-chart__value">96.8%</span>
-            <span class="dashboard-chart__label">On-time</span>
-          </div>
-          <div class="dashboard-chart__item">
-            <div class="dashboard-chart__bar dashboard-chart__bar--accent" style="--bar-height: 88;"></div>
-            <span class="dashboard-chart__value">18.4</span>
-            <span class="dashboard-chart__label">Drops / veh</span>
-          </div>
-          <div class="dashboard-chart__item">
-            <div class="dashboard-chart__bar dashboard-chart__bar--primary-soft" style="--bar-height: 92;"></div>
-            <span class="dashboard-chart__value">92%</span>
-            <span class="dashboard-chart__label">Fleet avail.</span>
-          </div>
-          <div class="dashboard-chart__item">
-            <div class="dashboard-chart__bar dashboard-chart__bar--warn" style="--bar-height: 40;"></div>
-            <span class="dashboard-chart__value">3</span>
-            <span class="dashboard-chart__label">Energy exc.</span>
-          </div>
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th class="dashboard-table__col--value">Value</th>
+            <th class="dashboard-table__col--target">Target</th>
+            <th class="dashboard-table__col--status">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>On-time deliveries (60 min)</td>
+            <td class="dashboard-table__col--value">96.8%</td>
+            <td class="dashboard-table__col--target">&gt; 95%</td>
+            <td class="dashboard-table__col--status">
+              <span class="dashboard-status dashboard-status--good">On track</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Active vehicles</td>
+            <td class="dashboard-table__col--value">42 (28 × 2W, 14 × 3W)</td>
+            <td class="dashboard-table__col--target">40–45</td>
+            <td class="dashboard-table__col--status">
+              <span class="dashboard-status dashboard-status--good">Stable</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Avg. drops per vehicle</td>
+            <td class="dashboard-table__col--value">18.4</td>
+            <td class="dashboard-table__col--target">17–19</td>
+            <td class="dashboard-table__col--status">
+              <span class="dashboard-status dashboard-status--good">Healthy</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Fleet availability</td>
+            <td class="dashboard-table__col--value">92%</td>
+            <td class="dashboard-table__col--target">&gt; 90%</td>
+            <td class="dashboard-table__col--status">
+              <span class="dashboard-status dashboard-status--good">OK</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Energy exceptions</td>
+            <td class="dashboard-table__col--value">3 open</td>
+            <td class="dashboard-table__col--target">&lt; 5</td>
+            <td class="dashboard-table__col--status">
+              <span class="dashboard-status dashboard-status--warn">Watch</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="dashboard-chart">
+        <div class="dashboard-chart__item">
+          <div class="dashboard-chart__bar dashboard-chart__bar--primary" style="--bar-height: 97;"></div>
+          <span class="dashboard-chart__value">96.8%</span>
+          <span class="dashboard-chart__label">On-time</span>
+        </div>
+        <div class="dashboard-chart__item">
+          <div class="dashboard-chart__bar dashboard-chart__bar--accent" style="--bar-height: 88;"></div>
+          <span class="dashboard-chart__value">18.4</span>
+          <span class="dashboard-chart__label">Drops / veh</span>
+        </div>
+        <div class="dashboard-chart__item">
+          <div class="dashboard-chart__bar dashboard-chart__bar--primary-soft" style="--bar-height: 92;"></div>
+          <span class="dashboard-chart__value">92%</span>
+          <span class="dashboard-chart__label">Fleet avail.</span>
+        </div>
+        <div class="dashboard-chart__item">
+          <div class="dashboard-chart__bar dashboard-chart__bar--warn" style="--bar-height: 40;"></div>
+          <span class="dashboard-chart__value">3</span>
+          <span class="dashboard-chart__label">Energy exc.</span>
         </div>
       </div>
     </div>
-
-    <!-- Right side: live alerts only -->
-    <aside class="dashboard-side">
-      <div class="page-highlight-card dashboard-card dashboard-alerts">
-        <h3>Live alerts</h3>
-        <ul class="dashboard-alerts__list">
-          <li class="dashboard-alert">
-            <div class="dashboard-alert__title">Lane DL-02 · South Delhi</div>
-            <div class="dashboard-alert__meta">
-              <span class="dashboard-pill dashboard-pill--critical">❗ Congestion</span>
-              <span class="dashboard-alert__time">ETA +8–10 min</span>
-            </div>
-          </li>
-          <li class="dashboard-alert">
-            <div class="dashboard-alert__title">EV-3W-014 · Saket hub</div>
-            <div class="dashboard-alert__meta">
-              <span class="dashboard-pill dashboard-pill--warn">⚠ Low SOC</span>
-              <span class="dashboard-alert__time">Rerouted via swap station</span>
-            </div>
-          </li>
-          <li class="dashboard-alert">
-            <div class="dashboard-alert__title">Wave 3 · West Delhi cluster</div>
-            <div class="dashboard-alert__meta">
-              <span class="dashboard-pill dashboard-pill--info">ℹ Load spike</span>
-              <span class="dashboard-alert__time">Extra riders deployed</span>
-            </div>
-          </li>
-          <li class="dashboard-alert">
-            <div class="dashboard-alert__title">Hub Okhla · Pharma lane</div>
-            <div class="dashboard-alert__meta">
-              <span class="dashboard-pill dashboard-pill--warn">⚠ Temp check</span>
-              <span class="dashboard-alert__time">1 shipment under review</span>
-            </div>
-          </li>
-          <li class="dashboard-alert">
-            <div class="dashboard-alert__title">EV-2W-221 · North ring</div>
-            <div class="dashboard-alert__meta">
-              <span class="dashboard-pill dashboard-pill--info">ℹ Route deviation</span>
-              <span class="dashboard-alert__time">Auto-corrected by system</span>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </aside>
   </div>
 </section>
 
