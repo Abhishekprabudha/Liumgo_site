@@ -2091,3 +2091,171 @@ a:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* Driver productivity command centre */
+.drivers-dashboard {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.drivers-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.drivers-kpi-grid article {
+  padding: 18px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+}
+
+.drivers-kpi-grid span {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.drivers-kpi-grid strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-primary);
+  font-size: 1.9rem;
+  line-height: 1;
+}
+
+.drivers-kpi-grid p {
+  margin: 8px 0 0;
+  color: #4b5563;
+  font-size: 0.86rem;
+}
+
+.driver-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.driver-chart-card h3 {
+  margin-top: 0;
+}
+
+.driver-chart-card--wide {
+  overflow: hidden;
+}
+
+.driver-histogram {
+  display: grid;
+  gap: 10px;
+}
+
+.driver-histogram__row {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr) 62px;
+  gap: 10px;
+  align-items: center;
+  color: #374151;
+  font-size: 0.84rem;
+}
+
+.driver-histogram__track {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #eef2f7;
+}
+
+.driver-histogram__track i {
+  display: block;
+  width: var(--bar-width);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+}
+
+.driver-histogram--hours .driver-histogram__track i {
+  background: linear-gradient(135deg, #4d148c, #8b5cf6);
+}
+
+.driver-histogram--productivity .driver-histogram__track i {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+.driver-histogram--deliveries .driver-histogram__track i {
+  background: linear-gradient(135deg, #ff6600, #f59e0b);
+}
+
+.driver-trend {
+  display: flex;
+  align-items: end;
+  justify-content: space-around;
+  min-height: 250px;
+  gap: 14px;
+  padding: 18px 8px 4px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+}
+
+.driver-trend__day {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  min-width: 58px;
+}
+
+.driver-trend__bars {
+  height: 190px;
+  display: flex;
+  align-items: end;
+  gap: 6px;
+}
+
+.driver-trend__bar {
+  width: 13px;
+  height: var(--bar-height);
+  min-height: 16px;
+  border-radius: 999px 999px 4px 4px;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+}
+
+.driver-trend__bar--deliveries {
+  background: var(--color-accent);
+}
+
+.driver-trend__bar--hours {
+  background: var(--color-primary);
+}
+
+.driver-trend__bar--productivity {
+  background: #22c55e;
+}
+
+.genbi-grid--drivers {
+  max-height: 980px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+@media (max-width: 960px) {
+  .drivers-kpi-grid,
+  .driver-analytics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .drivers-kpi-grid,
+  .driver-analytics-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .driver-histogram__row {
+    grid-template-columns: 74px minmax(0, 1fr) 56px;
+  }
+}
