@@ -247,6 +247,49 @@ function buildDelhiChargingPoints() {
   });
 }
 
+
+const driverFirstNames = ["Aarav", "Meera", "Rohan", "Nisha", "Kabir", "Ananya", "Vivaan", "Ishaan", "Priya", "Arjun", "Sana", "Dev", "Tanya", "Karan", "Aditi", "Rahul", "Simran", "Vikram", "Pooja", "Aditya", "Neha", "Farhan", "Ritu", "Manav", "Jaspreet", "Ira", "Om", "Kavya", "Yuvraj", "Diya"];
+const driverLastNames = ["Sharma", "Khan", "Verma", "Yadav", "Gupta", "Singh", "Bansal", "Mehta", "Malhotra", "Chauhan", "Kapoor", "Ansari", "Rana", "Saxena", "Gill", "Tyagi", "Sethi", "Bhardwaj", "Rawat", "Dutta"];
+const driverClients = ["Zomato", "Blinkit", "Tata 1mg", "BigBasket", "Amazon", "Flipkart", "Swiggy", "Zepto"];
+const driverZones = ["Saket", "Connaught Place", "Rohini", "Dwarka", "Okhla", "Lajpat Nagar", "Karol Bagh", "Janakpuri", "Mayur Vihar", "Hauz Khas"];
+const driverVehiclePool = ["DL9S-EV-2146", "DL7S-EV-3308", "DL2S-EV-1180", "DL6S-EV-4077", "DL4S-EV-5631", "DL8S-EV-9024", "DL5S-EV-7318", "DL1S-EV-6842", "DL3S-EV-2765", "DL3C-EV-8021", "DL5L-EV-7712", "DL8L-EV-6504", "DL2L-EV-3349", "DL6L-EV-1186", "DL1L-EV-4490"];
+
+function buildDriverRecords() {
+  return Array.from({ length: 128 }, (_, index) => {
+    const name = `${driverFirstNames[index % driverFirstNames.length]} ${driverLastNames[(index * 3) % driverLastNames.length]}`;
+    const client = driverClients[index % driverClients.length];
+    const zone = driverZones[(index * 2) % driverZones.length];
+    const hoursWorked = Number((6.5 + ((index * 7) % 35) / 10).toFixed(1));
+    const deliveries = 17 + ((index * 11) % 31) + (client === "Blinkit" || client === "Zepto" ? 6 : 0) + (client === "Zomato" || client === "Swiggy" ? 4 : 0);
+    const productivity = Number((deliveries / hoursWorked).toFixed(1));
+    const status = index % 13 === 0 ? "Break" : index % 17 === 0 ? "Training" : index % 19 === 0 ? "Leave" : "Working";
+    const onTime = 89 + ((index * 5) % 11);
+    const attendance = status === "Working" ? "On shift" : status;
+    const vehicle = driverVehiclePool[index % driverVehiclePool.length];
+    const dl = `DL${String(4 + (index % 8)).padStart(2, "0")}2026${String(1000000 + index * 7919).slice(-7)}`;
+    const aadhaar = String(2200 + ((index * 337) % 7600));
+
+    return {
+      key: `${name} · ${client} · ${String(index + 1).padStart(3, "0")}`,
+      title: name,
+      client,
+      zone,
+      status,
+      hoursWorked,
+      deliveries,
+      productivity,
+      onTime,
+      vehicle,
+      meta: `Client: ${client} · ${attendance} · Zone: ${zone}`,
+      detail: `Vehicle: ${vehicle}. Hours worked: ${hoursWorked}. Total deliveries: ${deliveries}. Productivity: ${productivity} deliveries/hour. On-time score: ${onTime}%. DL: ${dl} · Aadhaar: XXXX-XXXX-${aadhaar}.`,
+      insight: status === "Working" ? `GenBI recommends ${zone} ${client} lanes; productivity is ${productivity >= 5.5 ? "above" : "within"} benchmark.` : `GenBI marks ${status.toLowerCase()} coverage risk; keep a standby driver for ${client} in ${zone}.`
+    };
+  });
+}
+
+dashboardData.drivers.options = buildDriverRecords();
+
+
 dashboardData.vehicle.options = buildVehicleCatalogue();
 dashboardData.charging.options = buildDelhiChargingPoints();
 
@@ -277,6 +320,50 @@ function renderIntelligencePanel(tabKey) {
   const chargingMap = isCharging ? `<section class="charging-map-panel"><div class="charging-map-panel__map">${tab.options.map((item) => `<button class="charging-pin${item.utilization > 78 ? " charging-pin--busy" : ""}" style="--pin-x:${item.x}%; --pin-y:${item.y}%;" data-charge-key="${item.key}" aria-label="${item.title}"></button>`).join("")}</div><div class="charging-map-panel__legend"><span><i class="charging-dot"></i> Available / moderate</span><span><i class="charging-dot charging-dot--busy"></i> High-demand GenBI alert</span><strong>${tab.options.length} points across Delhi</strong></div></section>` : "";
   const listNote = isCharging ? `<p class="genbi-list-note">Showing 36 highlighted cards below; all ${tab.options.length} charging points are plotted on the Delhi map and available in the GenBI Agent selector.</p>` : "";
   return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Delhi EV network</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${chargingMap}${listNote}<div class="genbi-layout${isVehicle ? " genbi-layout--vehicle" : ""}"><section class="${isVehicle ? "vehicle-catalog" : `genbi-grid${isCharging ? " genbi-grid--charging" : ""}`}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+}
+
+
+function renderDriversDashboard() {
+  const tab = dashboardData.drivers;
+  const clientSummary = driverClients.map((client) => {
+    const records = tab.options.filter((item) => item.client === client);
+    const working = records.filter((item) => item.status === "Working").length;
+    const hours = Number(records.reduce((sum, item) => sum + item.hoursWorked, 0).toFixed(1));
+    const deliveries = records.reduce((sum, item) => sum + item.deliveries, 0);
+    const productivity = Number((deliveries / hours).toFixed(1));
+    return { client, records, working, hours, deliveries, productivity };
+  });
+  const totals = clientSummary.reduce((acc, item) => ({
+    working: acc.working + item.working,
+    hours: Number((acc.hours + item.hours).toFixed(1)),
+    deliveries: acc.deliveries + item.deliveries
+  }), { working: 0, hours: 0, deliveries: 0 });
+  totals.productivity = Number((totals.deliveries / totals.hours).toFixed(1));
+  const maxWorking = Math.max(...clientSummary.map((item) => item.working));
+  const maxHours = Math.max(...clientSummary.map((item) => item.hours));
+  const maxDeliveries = Math.max(...clientSummary.map((item) => item.deliveries));
+  const maxProductivity = Math.max(...clientSummary.map((item) => item.productivity));
+  const trendDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, index) => ({
+    day,
+    deliveries: 3650 + index * 210 + (index % 2 ? 180 : 40),
+    hours: 760 + index * 24,
+    productivity: Number((4.8 + index * 0.18 + (index % 2 ? 0.08 : 0)).toFixed(1))
+  }));
+  const cards = tab.options.slice(0, 48).map((item, index) => `<article class="genbi-card driver-record-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
+  const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
+  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Driver intelligence</p><h2>${tab.title}</h2><p>${tab.subtitle} The expanded dataset now tracks 100+ driver records across clients, shift status, hours, productivity and deliveries.</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>driver records</span></div></div>
+    <section class="drivers-dashboard">
+      <div class="drivers-kpi-grid"><article><span>Working now</span><strong>${totals.working}</strong><p>active drivers across ${driverClients.length} clients</p></article><article><span>Hours worked</span><strong>${totals.hours}</strong><p>cumulative current-shift hours</p></article><article><span>Total deliveries</span><strong>${totals.deliveries}</strong><p>completed client deliveries</p></article><article><span>Productivity</span><strong>${totals.productivity}</strong><p>deliveries per driver hour</p></article></div>
+      <div class="driver-analytics-grid">
+        <article class="page-highlight-card driver-chart-card"><h3>Numbers working by client</h3><div class="driver-histogram">${clientSummary.map((item) => `<div class="driver-histogram__row"><span>${item.client}</span><div class="driver-histogram__track"><i style="--bar-width:${(item.working / maxWorking) * 100}%"></i></div><strong>${item.working}</strong></div>`).join("")}</div></article>
+        <article class="page-highlight-card driver-chart-card"><h3>Hours worked by client</h3><div class="driver-histogram driver-histogram--hours">${clientSummary.map((item) => `<div class="driver-histogram__row"><span>${item.client}</span><div class="driver-histogram__track"><i style="--bar-width:${(item.hours / maxHours) * 100}%"></i></div><strong>${item.hours}h</strong></div>`).join("")}</div></article>
+        <article class="page-highlight-card driver-chart-card"><h3>Productivity by client</h3><div class="driver-histogram driver-histogram--productivity">${clientSummary.map((item) => `<div class="driver-histogram__row"><span>${item.client}</span><div class="driver-histogram__track"><i style="--bar-width:${(item.productivity / maxProductivity) * 100}%"></i></div><strong>${item.productivity}/h</strong></div>`).join("")}</div></article>
+        <article class="page-highlight-card driver-chart-card"><h3>Total deliveries by client</h3><div class="driver-histogram driver-histogram--deliveries">${clientSummary.map((item) => `<div class="driver-histogram__row"><span>${item.client}</span><div class="driver-histogram__track"><i style="--bar-width:${(item.deliveries / maxDeliveries) * 100}%"></i></div><strong>${item.deliveries}</strong></div>`).join("")}</div></article>
+      </div>
+      <article class="page-highlight-card driver-chart-card driver-chart-card--wide"><h3>6-day driver productivity trend</h3><div class="driver-trend">${trendDays.map((day) => `<div class="driver-trend__day"><div class="driver-trend__bars"><i class="driver-trend__bar driver-trend__bar--deliveries" style="--bar-height:${(day.deliveries / 4950) * 100}%" title="${day.deliveries} deliveries"></i><i class="driver-trend__bar driver-trend__bar--hours" style="--bar-height:${(day.hours / 910) * 100}%" title="${day.hours} hours"></i><i class="driver-trend__bar driver-trend__bar--productivity" style="--bar-height:${(day.productivity / 6.2) * 100}%" title="${day.productivity}/h"></i></div><span>${day.day}</span></div>`).join("")}</div><p class="maintenance-chart-note">Orange: deliveries · Purple: hours · Green: productivity.</p></article>
+      <p class="genbi-list-note">Showing 48 highlighted driver cards below; all ${tab.options.length} records are available in the GenBI Agent selector.</p>
+    </section>
+    <div class="genbi-layout"><section class="genbi-grid genbi-grid--drivers">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask driver performance</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
 }
 
 function renderMaintenanceDashboard() {
@@ -347,7 +434,7 @@ function bootDashboardTabs() {
 
   function render(tabKey) {
     buttons.forEach((button) => button.classList.toggle("dashboard-menu__item--active", button.dataset.dashboardTab === tabKey));
-    content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : tabKey === "maintenance" ? renderMaintenanceDashboard() : renderIntelligencePanel(tabKey);
+    content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : tabKey === "maintenance" ? renderMaintenanceDashboard() : tabKey === "drivers" ? renderDriversDashboard() : renderIntelligencePanel(tabKey);
     hydrateAgent(tabKey);
   }
 
