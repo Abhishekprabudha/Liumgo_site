@@ -58,11 +58,22 @@ const dashboardData = {
     subtitle: "Synthetic Delhi EV registrations with downtime, preventive maintenance schedules and fleet-health insights.",
     agentLabel: "Select registration",
     options: [
-      { key: "DL9S-EV-2146", title: "DL9S-EV-2146 · 2W · Ather 450X", meta: "Downtime: 1.2 days · Next PM: 08 Jul 2026", detail: "Open checks: brake pad inspection, tyre rotation and charger-port cleaning. Last route: Saket–Malviya Nagar grocery wave.", insight: "Low risk; combine PM with overnight charging to avoid rider idle time." },
-      { key: "DL3C-EV-8021", title: "DL3C-EV-8021 · 3W · Euler HiLoad", meta: "Downtime: 3.5 days · Next PM: 06 Jul 2026", detail: "Open checks: suspension noise, cargo-bed latch, battery thermal scan. Last route: Okhla pharma replenishment.", insight: "High priority; downtime above target and route has cold-chain dependency." },
-      { key: "DL1L-EV-4490", title: "DL1L-EV-4490 · 4W · Tata Ace EV", meta: "Downtime: 0.5 days · Next PM: 12 Jul 2026", detail: "Open checks: telematics SIM, brake-fluid level and DC charging cycle review. Last route: Dwarka B2B parcels.", insight: "Healthy asset; keep for west Delhi consolidated drops." },
-      { key: "DL7S-EV-3308", title: "DL7S-EV-3308 · 2W · Ola S1 Pro", meta: "Downtime: 2.0 days · Next PM: 09 Jul 2026", detail: "Open checks: rear tyre, mirror assembly and rider-reported range drop. Last route: Rohini quick-commerce loop.", insight: "Investigate range variance before assigning long north ring routes." },
-      { key: "DL5L-EV-7712", title: "DL5L-EV-7712 · 3W · Piaggio Ape E-Xtra", meta: "Downtime: 0.8 days · Next PM: 10 Jul 2026", detail: "Open checks: cabin wiring, cargo lock and AC charger handshake. Last route: CP restaurant supply.", insight: "Schedule as low-priority PM after lunch wave." }
+      { key: "DL9S-EV-2146", title: "DL9S-EV-2146 · 2W · Ather 450X", category: "2W", downtimeDays: 1.2, nextPm: "08 Jul 2026", meta: "Category: 2W · Downtime: 1.2 days · Next PM: 08 Jul 2026", detail: "Open checks: brake pad inspection, tyre rotation and charger-port cleaning. Last route: Saket–Malviya Nagar grocery wave.", insight: "Low risk; combine PM with overnight charging to avoid rider idle time." },
+      { key: "DL7S-EV-3308", title: "DL7S-EV-3308 · 2W · Ola S1 Pro", category: "2W", downtimeDays: 2.0, nextPm: "09 Jul 2026", meta: "Category: 2W · Downtime: 2.0 days · Next PM: 09 Jul 2026", detail: "Open checks: rear tyre, mirror assembly and rider-reported range drop. Last route: Rohini quick-commerce loop.", insight: "Investigate range variance before assigning long north ring routes." },
+      { key: "DL2S-EV-1180", title: "DL2S-EV-1180 · 2W · Ola S1 Pro", category: "2W", downtimeDays: 1.6, nextPm: "11 Jul 2026", meta: "Category: 2W · Downtime: 1.6 days · Next PM: 11 Jul 2026", detail: "Open checks: front fork tightening, battery health scan and brake lever calibration. Last route: Lajpat Nagar food-delivery peak.", insight: "Route only on short lunch loops until fork check is complete." },
+      { key: "DL6S-EV-4077", title: "DL6S-EV-4077 · 2W · Ather 450X", category: "2W", downtimeDays: 2.4, nextPm: "07 Jul 2026", meta: "Category: 2W · Downtime: 2.4 days · Next PM: 07 Jul 2026", detail: "Open checks: controller diagnostics, rear shock inspection and tyre pressure audit. Last route: Rohini Sector 18 quick-commerce shift.", insight: "Medium risk; clear controller alerts before next high-density assignment." },
+      { key: "DL4S-EV-5631", title: "DL4S-EV-5631 · 2W · TVS iQube ST", category: "2W", downtimeDays: 0.7, nextPm: "13 Jul 2026", meta: "Category: 2W · Downtime: 0.7 days · Next PM: 13 Jul 2026", detail: "Open checks: routine PM, charger cable inspection and wheel alignment. Last route: Dwarka apartment grocery drops.", insight: "Healthy asset; keep available for west Delhi residential clusters." },
+      { key: "DL8S-EV-9024", title: "DL8S-EV-9024 · 2W · Bajaj Chetak", category: "2W", downtimeDays: 1.0, nextPm: "15 Jul 2026", meta: "Category: 2W · Downtime: 1.0 days · Next PM: 15 Jul 2026", detail: "Open checks: body panel fitment, brake-fluid top-up and telematics ping review. Last route: Connaught Place restaurant errands.", insight: "Low downtime; align PM with off-peak afternoon parking." },
+      { key: "DL5S-EV-7318", title: "DL5S-EV-7318 · 2W · Hero Vida V1 Pro", category: "2W", downtimeDays: 1.8, nextPm: "10 Jul 2026", meta: "Category: 2W · Downtime: 1.8 days · Next PM: 10 Jul 2026", detail: "Open checks: removable battery latch, range validation and headlamp check. Last route: Hauz Khas medicine delivery.", insight: "GenBI recommends battery-swap audit before pharma night route." },
+      { key: "DL1S-EV-6842", title: "DL1S-EV-6842 · 2W · Ampere Magnus EX", category: "2W", downtimeDays: 0.9, nextPm: "16 Jul 2026", meta: "Category: 2W · Downtime: 0.9 days · Next PM: 16 Jul 2026", detail: "Open checks: chain lubrication, tyre tread check and app tracker reset. Last route: Karol Bagh document courier loop.", insight: "Suitable for micro-hub routes after quick preventive service." },
+      { key: "DL3S-EV-2765", title: "DL3S-EV-2765 · 2W · Okaya Faast F4", category: "2W", downtimeDays: 1.4, nextPm: "14 Jul 2026", meta: "Category: 2W · Downtime: 1.4 days · Next PM: 14 Jul 2026", detail: "Open checks: AC charger handshake, brake pad review and firmware check. Last route: Janakpuri retail parcels.", insight: "Keep below 45 km daily duty until charger handshake is stable." },
+      { key: "DL0S-EV-5197", title: "DL0S-EV-5197 · 2W · Revolt RV400", category: "2W", downtimeDays: 2.2, nextPm: "12 Jul 2026", meta: "Category: 2W · Downtime: 2.2 days · Next PM: 12 Jul 2026", detail: "Open checks: motor mount inspection, range test and indicator assembly replacement. Last route: CP field-supervisor rapid response.", insight: "Hold from urgent cross-zone trips until motor mount inspection passes." },
+      { key: "DL3C-EV-8021", title: "DL3C-EV-8021 · 3W · Euler HiLoad", category: "3W", downtimeDays: 3.5, nextPm: "06 Jul 2026", meta: "Category: 3W · Downtime: 3.5 days · Next PM: 06 Jul 2026", detail: "Open checks: suspension noise, cargo-bed latch and battery thermal scan. Last route: Okhla pharma replenishment.", insight: "High priority; downtime above target and route has cold-chain dependency." },
+      { key: "DL5L-EV-7712", title: "DL5L-EV-7712 · 3W · Piaggio Ape E-Xtra", category: "3W", downtimeDays: 0.8, nextPm: "10 Jul 2026", meta: "Category: 3W · Downtime: 0.8 days · Next PM: 10 Jul 2026", detail: "Open checks: cabin wiring, cargo lock and AC charger handshake. Last route: CP restaurant supply.", insight: "Schedule as low-priority PM after lunch wave." },
+      { key: "DL8L-EV-6504", title: "DL8L-EV-6504 · 3W · Euler HiLoad", category: "3W", downtimeDays: 2.9, nextPm: "09 Jul 2026", meta: "Category: 3W · Downtime: 2.9 days · Next PM: 09 Jul 2026", detail: "Open checks: rear axle noise, tyre replacement and SOC calibration. Last route: Nangloi warehouse replenishment.", insight: "GenBI flags for early bay slot because downtime is trending upward." },
+      { key: "DL2L-EV-3349", title: "DL2L-EV-3349 · 3W · Mahindra Treo Zor", category: "3W", downtimeDays: 1.7, nextPm: "13 Jul 2026", meta: "Category: 3W · Downtime: 1.7 days · Next PM: 13 Jul 2026", detail: "Open checks: cargo curtain repair, brake inspection and hub bearing check. Last route: Saket grocery crate shuttle.", insight: "Good candidate for preventive work between morning and evening waves." },
+      { key: "DL6L-EV-1186", title: "DL6L-EV-1186 · 3W · Altigreen neEV High Deck", category: "3W", downtimeDays: 2.1, nextPm: "11 Jul 2026", meta: "Category: 3W · Downtime: 2.1 days · Next PM: 11 Jul 2026", detail: "Open checks: high-deck latch, DC fast-charge logs and suspension bush review. Last route: Okhla industrial B2B lane.", insight: "Protect for planned B2B lanes after suspension bush review." },
+      { key: "DL1L-EV-4490", title: "DL1L-EV-4490 · 4W · Tata Ace EV", category: "4W", downtimeDays: 0.5, nextPm: "12 Jul 2026", meta: "Category: 4W · Downtime: 0.5 days · Next PM: 12 Jul 2026", detail: "Open checks: telematics SIM, brake-fluid level and DC charging cycle review. Last route: Dwarka B2B parcels.", insight: "Healthy asset; keep for west Delhi consolidated drops." }
     ]
   },
   drivers: {
@@ -268,6 +279,48 @@ function renderIntelligencePanel(tabKey) {
   return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Delhi EV network</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${chargingMap}${listNote}<div class="genbi-layout${isVehicle ? " genbi-layout--vehicle" : ""}"><section class="${isVehicle ? "vehicle-catalog" : `genbi-grid${isCharging ? " genbi-grid--charging" : ""}`}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
 }
 
+function renderMaintenanceDashboard() {
+  const tab = dashboardData.maintenance;
+  const categories = ["2W", "3W", "4W"];
+  const summary = categories.map((category) => {
+    const records = tab.options.filter((item) => item.category === category);
+    const downtime = records.reduce((sum, item) => sum + item.downtimeDays, 0);
+    return {
+      category,
+      records,
+      count: records.length,
+      downtime: Number(downtime.toFixed(1)),
+      avgDowntime: Number((downtime / records.length).toFixed(1)),
+      pmDue: records.filter((item) => new Date(item.nextPm) <= new Date("2026-07-10T00:00:00Z")).length
+    };
+  });
+  const maxDowntime = Math.max(...summary.map((item) => item.downtime));
+  const maxCount = Math.max(...summary.map((item) => item.count));
+  const trendWeeks = [
+    { label: "W1", downtime: { "2W": 8.4, "3W": 7.2, "4W": 1.0 }, pm: { "2W": 5, "3W": 2, "4W": 1 } },
+    { label: "W2", downtime: { "2W": 10.1, "3W": 8.4, "4W": 0.8 }, pm: { "2W": 6, "3W": 3, "4W": 1 } },
+    { label: "W3", downtime: { "2W": 12.7, "3W": 9.1, "4W": 0.6 }, pm: { "2W": 7, "3W": 4, "4W": 1 } },
+    { label: "W4", downtime: { "2W": 15.2, "3W": 11.0, "4W": 0.5 }, pm: { "2W": 8, "3W": 4, "4W": 1 } }
+  ];
+  const maxTrend = 16;
+  const maxPm = 8;
+  const cards = tab.options.map((item, index) => `<article class="genbi-card maintenance-record-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
+  const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
+  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Maintenance intelligence</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>maintenance records</span></div></div>
+    <section class="maintenance-dashboard">
+      <div class="maintenance-summary-grid">${summary.map((item) => `<article class="maintenance-summary-card"><span>${item.category}</span><strong>${item.count}</strong><p>${item.downtime} total downtime days · ${item.avgDowntime} avg days · ${item.pmDue} PM due by 10 Jul</p></article>`).join("")}</div>
+      <div class="maintenance-analytics-grid">
+        <article class="page-highlight-card maintenance-chart-card"><h3>Downtime histogram by category</h3><div class="maintenance-histogram">${summary.map((item) => `<div class="maintenance-histogram__row"><span>${item.category}</span><div class="maintenance-histogram__track"><i style="--bar-width:${(item.downtime / maxDowntime) * 100}%"></i></div><strong>${item.downtime}d</strong></div>`).join("")}</div></article>
+        <article class="page-highlight-card maintenance-chart-card"><h3>Preventive maintenance volume</h3><div class="maintenance-histogram maintenance-histogram--pm">${summary.map((item) => `<div class="maintenance-histogram__row"><span>${item.category}</span><div class="maintenance-histogram__track"><i style="--bar-width:${(item.count / maxCount) * 100}%"></i></div><strong>${item.count}</strong></div>`).join("")}</div></article>
+      </div>
+      <div class="maintenance-analytics-grid">
+        <article class="page-highlight-card maintenance-chart-card"><h3>4-week downtime trend</h3><div class="maintenance-trend">${trendWeeks.map((week) => `<div class="maintenance-trend__week"><div class="maintenance-trend__bars">${categories.map((cat) => `<i class="maintenance-trend__bar maintenance-trend__bar--${cat.toLowerCase().replace('w','w')}" style="--bar-height:${(week.downtime[cat] / maxTrend) * 100}%" title="${cat}: ${week.downtime[cat]} days"></i>`).join("")}</div><span>${week.label}</span></div>`).join("")}</div><p class="maintenance-chart-note">Purple: 2W · Teal: 3W · Orange: 4W</p></article>
+        <article class="page-highlight-card maintenance-chart-card"><h3>Preventive maintenance trend</h3><div class="maintenance-trend">${trendWeeks.map((week) => `<div class="maintenance-trend__week"><div class="maintenance-trend__bars">${categories.map((cat) => `<i class="maintenance-trend__bar maintenance-trend__bar--${cat.toLowerCase().replace('w','w')}" style="--bar-height:${(week.pm[cat] / maxPm) * 100}%" title="${cat}: ${week.pm[cat]} PM jobs"></i>`).join("")}</div><span>${week.label}</span></div>`).join("")}</div><p class="maintenance-chart-note">Trending planned PM jobs against downtime pressure.</p></article>
+      </div>
+    </section>
+    <div class="genbi-layout"><section class="genbi-grid genbi-grid--maintenance">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask maintenance by registration</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+}
+
 function bootDashboardTabs() {
   const content = document.getElementById("dashboard-tab-content");
   const buttons = document.querySelectorAll("[data-dashboard-tab]");
@@ -294,7 +347,7 @@ function bootDashboardTabs() {
 
   function render(tabKey) {
     buttons.forEach((button) => button.classList.toggle("dashboard-menu__item--active", button.dataset.dashboardTab === tabKey));
-    content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : renderIntelligencePanel(tabKey);
+    content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : tabKey === "maintenance" ? renderMaintenanceDashboard() : renderIntelligencePanel(tabKey);
     hydrateAgent(tabKey);
   }
 
