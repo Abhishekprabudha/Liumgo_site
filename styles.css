@@ -1876,3 +1876,72 @@ a:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.vehicle-catalog {
+  display: grid;
+  gap: 22px;
+}
+
+.vehicle-category {
+  display: grid;
+  gap: 14px;
+}
+
+.vehicle-category__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(77, 20, 140, 0.09), rgba(255, 102, 0, 0.09));
+  border: 1px solid rgba(77, 20, 140, 0.09);
+}
+
+.vehicle-category__header h3 {
+  margin: 0;
+  color: var(--color-primary);
+}
+
+.vehicle-category__header span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-accent);
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+
+.genbi-grid--vehicle {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.genbi-card--vehicle {
+  padding-top: 12px;
+}
+
+.genbi-card__image,
+.genbi-answer__image {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid #eef2f7;
+  background: #f8fafc;
+}
+
+.genbi-card__image {
+  aspect-ratio: 16 / 9;
+  margin-bottom: 12px;
+}
+
+.genbi-answer__image {
+  aspect-ratio: 16 / 10;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+  .genbi-grid--vehicle {
+    grid-template-columns: 1fr;
+  }
+}
