@@ -125,14 +125,9 @@ const dashboardData = {
   },
   clients: {
     title: "Client command centre",
-    subtitle: "Representative EV logistics clients in Delhi with account and service-level details.",
+    subtitle: "25+ representative EV logistics clients in Delhi with account and service-level details.",
     agentLabel: "Select client",
-    options: [
-      { key: "Zomato", title: "Zomato", meta: "Segment: Food delivery · Fleet mix: 2W", detail: "Delhi coverage: Saket, CP, Rohini, Dwarka. SLA: 95% under promised ETA. Current volume: 850 daily drops.", insight: "Needs high rider availability during lunch and dinner peaks." },
-      { key: "Blinkit", title: "Blinkit", meta: "Segment: Quick commerce · Fleet mix: 2W / 3W", detail: "Delhi coverage: South and West dark stores. SLA: rapid dispatch with short-haul density. Current volume: 1,150 daily drops.", insight: "Charge planning should mirror dark-store replenishment cycles." },
-      { key: "Tata 1mg", title: "Tata 1mg", meta: "Segment: Pharma · Fleet mix: 2W / 4W", detail: "Delhi coverage: Okhla, Lajpat Nagar, Dwarka and CP. SLA: high handover accuracy and exception tracking. Current volume: 430 daily drops.", insight: "Assign experienced drivers and prioritize package condition checks." },
-      { key: "BigBasket", title: "BigBasket", meta: "Segment: Grocery · Fleet mix: 3W / 4W", detail: "Delhi coverage: planned hub-to-home grocery waves. Current volume: 620 daily drops with morning and evening demand peaks.", insight: "Use 3W cargo EVs for dense basket consolidation." }
-    ]
+    options: []
   },
   trials: {
     title: "EV trial case studies",
@@ -157,6 +152,48 @@ const dashboardData = {
     ]
   }
 };
+
+
+const clientAccountSeed = [
+  ["Zomato", "Food delivery", "2W", "Saket, CP, Rohini, Dwarka", "95% under promised ETA", "850 daily drops", "Needs high rider availability during lunch and dinner peaks."],
+  ["Blinkit", "Quick commerce", "2W / 3W", "South and West dark stores", "rapid dispatch with short-haul density", "1,150 daily drops", "Charge planning should mirror dark-store replenishment cycles."],
+  ["Tata 1mg", "Pharma", "2W / 4W", "Okhla, Lajpat Nagar, Dwarka and CP", "high handover accuracy and exception tracking", "430 daily drops", "Assign experienced drivers and prioritize package condition checks."],
+  ["BigBasket", "Grocery", "3W / 4W", "Saket, Dwarka, Janakpuri and Rohini", "planned hub-to-home grocery waves", "620 daily drops", "Use 3W cargo EVs for dense basket consolidation."],
+  ["Amazon", "E-commerce", "2W / 3W / 4W", "Okhla, Bawana, Dwarka and Mayur Vihar", "same-day parcel handover and return scans", "980 daily drops", "Balance 4W trunk movement with 2W last-mile rider density."],
+  ["Flipkart", "E-commerce", "2W / 3W / 4W", "Nangloi, Karol Bagh, Shahdara and Saket", "first-attempt delivery and reverse-pickup visibility", "910 daily drops", "Reserve 3W cargo EVs for marketplace sale-day parcel spikes."],
+  ["Swiggy", "Food delivery", "2W", "CP, Hauz Khas, GK and Rohini", "peak-hour pickup-to-drop cycle control", "780 daily drops", "Protect rider charging windows between lunch and dinner peaks."],
+  ["Zepto", "Quick commerce", "2W / 3W", "Hauz Khas, Lajpat Nagar, Punjabi Bagh and Dwarka", "dense 10-minute neighborhood delivery loops", "1,020 daily drops", "Position standby riders near high-throughput dark stores."],
+  ["Dunzo", "Hyperlocal courier", "2W", "CP, Karol Bagh, Janakpuri and Mayur Vihar", "multi-category pickup accuracy", "360 daily drops", "Cluster assignments by merchant type to reduce deadhead travel."],
+  ["Delhivery", "Parcel logistics", "3W / 4W", "Okhla, Bawana, Shahdara and Dwarka", "scheduled parcel sweeps and hub injections", "740 daily drops", "Use cargo EVs for consolidated bags before residential rider splits."],
+  ["Blue Dart", "Express logistics", "2W / 4W", "Airport corridor, CP, Okhla and Saket", "premium timed delivery and proof-of-delivery", "310 daily drops", "Assign enclosed 4W EVs for secure and weather-sensitive consignments."],
+  ["Shadowfax", "On-demand logistics", "2W / 3W", "Rohini, Dwarka, Lajpat Nagar and Mayur Vihar", "flexible rider capacity and surge absorption", "690 daily drops", "Use GenBI to match floating riders to short-notice client waves."],
+  ["Porter", "Intra-city cargo", "3W / 4W", "Okhla, Naraina, Bawana and Shahdara", "scheduled cargo pickup windows", "280 daily trips", "Prioritize higher-payload EVs where loading-dock dwell time is predictable."],
+  ["JioMart", "Grocery and retail", "2W / 3W / 4W", "Dwarka, Rohini, Janakpuri and Shahdara", "basket integrity and slot adherence", "560 daily drops", "Mix 3W grocery crates with 2W top-up orders during evening waves."],
+  ["Reliance Digital", "Electronics retail", "2W / 4W", "CP, Saket, Punjabi Bagh and Nehru Place", "safe handling and scheduled customer handover", "145 daily drops", "Route fragile electronics on enclosed EV capacity with trained handlers."],
+  ["Apollo 24|7", "Pharma", "2W / 4W", "Lajpat Nagar, Saket, Rohini and Mayur Vihar", "prescription handover accuracy", "390 daily drops", "Keep experienced riders on medicine lanes and audit failed handovers daily."],
+  ["Netmeds", "Pharma", "2W / 4W", "Okhla, Dwarka, Janakpuri and CP", "temperature-aware delivery and exception logs", "340 daily drops", "Use 4W EVs for clinic replenishment and 2W for patient home deliveries."],
+  ["FirstCry", "Retail", "2W / 3W", "Rohini, Dwarka, Saket and Shahdara", "family-slot adherence and return pickup quality", "220 daily drops", "Consolidate bulky baby-care cartons on 3W routes before rider fan-out."],
+  ["Nykaa", "Beauty retail", "2W / 4W", "CP, GK, Saket and Punjabi Bagh", "premium packaging condition and timed handover", "260 daily drops", "Assign low-damage lanes and reinforce package-condition proofing."],
+  ["Myntra", "Fashion e-commerce", "2W / 3W", "Karol Bagh, Dwarka, Rohini and Lajpat Nagar", "delivery plus exchange pickup tracking", "520 daily drops", "Use 3W EVs for return-heavy sale periods and dense apartment clusters."],
+  ["Urban Company", "Service logistics", "2W", "Saket, Hauz Khas, Janakpuri and Mayur Vihar", "technician kit movement and on-time arrival", "180 daily service movements", "Pair field-service routes with document and spare-part micro-deliveries."],
+  ["Lenskart", "Optical retail", "2W", "CP, Rohini, Dwarka and Lajpat Nagar", "small-parcel safe handover", "210 daily drops", "Use compact 2W loops with strict handover verification for eyewear orders."],
+  ["Domino's", "Food delivery", "2W", "Saket, CP, Rohini and Janakpuri", "hot-food ETA adherence", "640 daily drops", "Stage charged riders close to restaurant clusters before meal peaks."],
+  ["McDonald's", "Food delivery", "2W", "CP, Dwarka, Saket and Mayur Vihar", "restaurant dispatch speed and customer ETA", "410 daily drops", "Separate short food loops from parcel routes to protect service levels."],
+  ["Metro Cash & Carry", "B2B wholesale", "3W / 4W", "Okhla, Bawana, Shahdara and Naraina", "bulk order slot adherence", "190 daily trips", "Use planned 4W lanes for heavier cartons and 3W for market top-ups."],
+  ["MedPlus", "Pharma retail", "2W / 4W", "Lajpat Nagar, Karol Bagh, Rohini and Saket", "medicine availability and delivery accuracy", "300 daily drops", "Prioritize rider continuity and exception escalation for medicine orders."],
+  ["FreshToHome", "Fresh food", "2W / 3W / 4W", "Okhla, Dwarka, Saket and Mayur Vihar", "cold-chain aware handover windows", "275 daily drops", "Assign insulated cargo options and avoid long dwell before customer handoff."],
+  ["Country Delight", "Dairy delivery", "2W / 3W", "Rohini, Dwarka, Janakpuri and Pitampura", "early-morning subscription completion", "700 daily drops", "Plan overnight charging so riders are ready before the dawn delivery wave."]
+];
+
+function buildClientAccounts() {
+  return clientAccountSeed.map(([name, segment, fleetMix, coverage, sla, volume, insight]) => ({
+    key: name,
+    title: name,
+    meta: `Segment: ${segment} · Fleet mix: ${fleetMix}`,
+    detail: `Delhi coverage: ${coverage}. SLA: ${sla}. Current volume: ${volume}.`,
+    insight
+  }));
+}
 
 const vehicleCatalogSeed = {
   "2W": [
@@ -338,6 +375,8 @@ function buildDriverRecords() {
     };
   });
 }
+
+dashboardData.clients.options = buildClientAccounts();
 
 dashboardData.drivers.options = buildDriverRecords();
 
