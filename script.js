@@ -49,16 +49,9 @@ const dashboardData = {
   },
   vehicle: {
     title: "EV vehicle catalogue for Delhi operations",
-    subtitle: "Representative 2W, 3W and 4W EV models available for Delhi fleet deployment.",
+    subtitle: "30 vehicle options grouped across 2W, 3W and 4W categories, with dispatch-fit details and vehicle pictures for Delhi fleet deployment.",
     agentLabel: "Select vehicle",
-    options: [
-      { key: "2W · Ola S1 Pro", title: "Ola S1 Pro", meta: "Category: 2W scooter · Range: ~170 km IDC", detail: "Payload fit: food, grocery and document delivery. Battery: fixed pack. Charging: home / AC. Typical Delhi use: high-density last-mile routes in South and Central Delhi.", insight: "Best productivity when assigned to 18–25 km compact delivery zones." },
-      { key: "2W · Ather 450X", title: "Ather 450X", meta: "Category: 2W scooter · Range: ~150 km IDC", detail: "Payload fit: quick commerce and premium courier. Strong telematics ecosystem and public fast-charging support in dense urban pockets.", insight: "Use for riders requiring high reliability and frequent app-based tracking." },
-      { key: "3W · Euler HiLoad EV", title: "Euler HiLoad EV", meta: "Category: 3W cargo · Payload: ~680 kg", detail: "Cargo fit: grocery crates, parcels and B2B replenishment. Strong Delhi NCR fleet presence with cargo-focused serviceability.", insight: "Ideal for hub-to-spoke replenishment before 11 AM and 4–7 PM waves." },
-      { key: "3W · Piaggio Ape E-Xtra FX", title: "Piaggio Ape E-Xtra FX", meta: "Category: 3W cargo · Payload: ~500 kg", detail: "Cargo fit: retail replenishment, FMCG and e-commerce. Swappable / fixed battery variants depend on configuration.", insight: "Works well on predictable loops with scheduled charge or swap windows." },
-      { key: "4W · Tata Ace EV", title: "Tata Ace EV", meta: "Category: 4W mini truck · Range: ~150 km certified", detail: "Cargo fit: larger B2B shipments, pharmacy crates and temperature-sensitive secondary distribution when upfitted.", insight: "Assign to consolidated lanes where drop density offsets vehicle cost." },
-      { key: "4W · Mahindra Zor Grand", title: "Mahindra Zor Grand", meta: "Category: 3W/4W-style cargo platform · Payload: ~400 kg", detail: "Cargo fit: city cargo, parcel and enterprise distribution. Useful where a compact cargo EV has to navigate narrow Delhi markets.", insight: "Good for Chandni Chowk, Karol Bagh and Lajpat Nagar market access." }
-    ]
+    options: []
   },
   maintenance: {
     title: "Maintenance planner",
@@ -141,6 +134,64 @@ const dashboardData = {
   }
 };
 
+const vehicleCatalogSeed = {
+  "2W": [
+    ["Ola S1 Pro", "Scooter", "Range: ~170 km IDC", "Food, grocery and document delivery", "Fixed battery · AC charging", "South and Central Delhi compact delivery zones", "Best productivity when assigned to 18–25 km high-density loops."],
+    ["Ather 450X", "Scooter", "Range: ~150 km IDC", "Quick commerce and premium courier", "Fixed battery · fast-charging ecosystem", "Saket, CP and Rohini app-tracked rider routes", "Use for riders requiring high reliability and frequent app-based tracking."],
+    ["TVS iQube ST", "Scooter", "Range: ~145 km IDC", "Grocery, documents and light parcels", "Fixed battery · AC charging", "Residential delivery clusters in Dwarka and Janakpuri", "Comfortable option for steady riders covering repeat apartment drops."],
+    ["Bajaj Chetak", "Scooter", "Range: ~126 km IDC", "Food delivery and customer-facing errands", "Fixed battery · AC charging", "Premium retail and restaurant routes", "Good fit where brand presentation and ride comfort are important."],
+    ["Hero Vida V1 Pro", "Scooter", "Range: ~165 km IDC", "Quick commerce and medicine delivery", "Removable batteries · AC charging", "Hauz Khas, GK and Lajpat Nagar", "Battery-removal flexibility helps teams without dedicated overnight bays."],
+    ["Ampere Magnus EX", "Scooter", "Range: ~100 km ARAI", "Low-cost local parcels and documents", "Removable battery · AC charging", "Short neighborhood loops from micro-hubs", "Use for low-distance routes where acquisition cost matters most."],
+    ["Bounce Infinity E1", "Scooter", "Range: ~85 km IDC", "Hyperlocal food and small parcels", "Swappable / removable battery options", "Dense market runs near Karol Bagh and CP", "Best when paired with predictable swap or top-up windows."],
+    ["Okaya Faast F4", "Scooter", "Range: ~140 km IDC", "Grocery bags and retail courier loads", "Fixed battery · AC charging", "West Delhi mixed retail clusters", "Useful for longer two-wheeler shifts with moderate payload."],
+    ["Simple One", "Scooter", "Range: ~212 km IDC", "Extended quick-commerce coverage", "Fixed + removable battery setup", "Longer feeder routes between hubs", "Reserve for routes needing extra range buffer before return-to-hub."],
+    ["Revolt RV400", "Motorcycle", "Range: ~150 km ARAI", "Documents, service visits and lightweight parcels", "Removable battery · AC charging", "Field-supervisor and rapid-response usage", "Motorcycle stance works well for urgent cross-zone trips."],
+  ],
+  "3W": [
+    ["Euler HiLoad EV", "Cargo 3W", "Payload: ~680 kg", "Grocery crates, parcels and B2B replenishment", "Fixed battery · fast charge capable", "Okhla and Saket hub-to-spoke waves", "Ideal for replenishment before 11 AM and 4–7 PM waves."],
+    ["Piaggio Ape E-Xtra FX", "Cargo 3W", "Payload: ~500 kg", "Retail replenishment, FMCG and e-commerce", "Fixed battery · AC charging", "Predictable retail loops", "Works well on scheduled loops with planned charge windows."],
+    ["Mahindra Treo Zor", "Cargo 3W", "Payload: ~550 kg", "Parcel bags, grocery crates and returns", "Lithium-ion battery · AC charging", "South Delhi and West Delhi cargo lanes", "Strong option for multi-drop city cargo with familiar ergonomics."],
+    ["Altigreen neEV High Deck", "Cargo 3W", "Payload: ~550 kg", "E-commerce sacks and high-volume crates", "Fixed battery · fast charging", "Dense B2B lanes around industrial clusters", "High-deck format helps teams separate bulky packages."],
+    ["Omega Seiki Rage+", "Cargo 3W", "Payload: ~500 kg", "Cold-chain boxes, retail stock and parcels", "Fixed battery · AC charging", "Okhla pharma and market replenishment", "Good candidate for upfit-based pharma or insulated box use."],
+    ["Kinetic Safar Jumbo", "Cargo 3W", "Payload: ~500 kg", "Bulk grocery and light FMCG", "Lithium battery · AC charging", "Morning grocery waves", "Use where loading simplicity and affordable operations are priority."],
+    ["Atul Elite Cargo", "Cargo 3W", "Payload: ~400 kg", "Neighborhood retail and courier bags", "Lead-acid / lithium variants", "Short-range market access", "Useful for narrow lanes and smaller merchant routes."],
+    ["Lohia Narain Cargo", "Cargo 3W", "Payload: ~500 kg", "General cargo and daily replenishment", "Lithium battery · AC charging", "Local hub distribution", "Best for predictable cargo duty cycles with simple maintenance."],
+    ["ETO Trilux Cargo", "Cargo 3W", "Payload: ~500 kg", "Parcel consolidation and corporate deliveries", "Fixed battery · fleet charging", "Corporate and station-linked logistics", "Works well for managed fleet deployments with central charging."],
+    ["YC Electric E-Loader", "Cargo 3W", "Payload: ~450 kg", "Budget cargo, returns and local wholesale", "Lead-acid / lithium variants", "Wholesale market loops", "Deploy on low-speed, low-distance routes with clear charging discipline."],
+  ],
+  "4W": [
+    ["Tata Ace EV", "Mini truck", "Range: ~150 km certified", "B2B shipments, pharma crates and secondary distribution", "Fixed battery · fast charge capable", "Dwarka and Okhla consolidated lanes", "Assign to consolidated lanes where drop density offsets vehicle cost."],
+    ["Mahindra Zor Grand", "Compact cargo EV", "Payload: ~400 kg", "City cargo, parcels and enterprise distribution", "Fixed battery · AC charging", "Narrow Delhi market access", "Good for Chandni Chowk, Karol Bagh and Lajpat Nagar access."],
+    ["Tata Ace EV 1000", "Mini truck", "Payload: ~1 tonne", "Heavier B2B cartons and wholesale replenishment", "Fixed battery · fleet charging", "Industrial and warehouse lanes", "Reserve for heavier consolidated manifests and fewer drops."],
+    ["EKA K1.5", "Electric light commercial vehicle", "Payload: ~1.5 tonne", "Bulky B2B freight and scheduled replenishment", "Fixed battery · DC charging", "Hub-to-hub and industrial corridors", "Use when route planning can protect range and loading windows."],
+    ["Switch IeV4", "Electric LCV", "Payload: ~1.7 tonne", "Large parcels, grocery pallets and distribution runs", "Fixed battery · DC charging", "Outer ring and warehouse routes", "Best for high-volume lanes with disciplined depot charging."],
+    ["Switch IeV3", "Electric LCV", "Payload: ~1.2 tonne", "Retail cartons and urban logistics", "Fixed battery · DC charging", "Mixed city and arterial runs", "Flexible 4W option between mini-truck and larger LCV duties."],
+    ["Mahindra eSupro Cargo Van", "Cargo van", "Range: ~115 km", "Protected parcel and service logistics", "Fixed battery · AC charging", "Documented handover and secure parcel routes", "Closed body is useful for weather-sensitive parcels."],
+    ["BYD T3", "Cargo van", "Range: ~250 km NEDC", "Premium parcels, pharma and electronics", "Fixed battery · AC / DC charging", "Longer secure delivery routes", "Use for higher-value loads that need enclosed cargo security."],
+    ["Omega Seiki M1KA", "Electric truck", "Payload: ~1 tonne", "B2B cargo and larger retail replenishment", "Fixed battery · fleet charging", "Okhla, Bawana and warehouse clusters", "Good candidate for planned day routes with loading-dock access."],
+    ["Ashok Leyland BOSS EV", "Electric truck", "Payload: heavy-duty urban cargo", "Large scheduled shipments and enterprise logistics", "Depot charging · commercial duty cycle", "Warehouse-to-client trunk movements", "Use for larger clients once lane demand justifies dedicated capacity."],
+  ]
+};
+
+function vehicleImage(category, index, title) {
+  const palette = { "2W": ["#4d148c", "#ff6600"], "3W": ["#0f766e", "#4d148c"], "4W": ["#1d4ed8", "#ff6600"] };
+  const [primary, accent] = palette[category];
+  const label = encodeURIComponent(title.replace(/&/g, "and"));
+  const wheels = category === "2W" ? 2 : category === "3W" ? 3 : 4;
+  return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 390'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='${encodeURIComponent(primary)}'/%3E%3Cstop offset='1' stop-color='${encodeURIComponent(accent)}'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='640' height='390' rx='34' fill='%23f8fafc'/%3E%3Ccircle cx='535' cy='80' r='92' fill='${encodeURIComponent(accent)}' opacity='.14'/%3E%3Cpath d='M88 292h464' stroke='%23dbe4ee' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M${category === "2W" ? "206 206h146l60 58H152z" : category === "3W" ? "150 190h250l80 78H120z" : "126 178h348l64 90H92z"}' fill='url(%23g)'/%3E%3Cpath d='M${category === "2W" ? "274 150h70l42 56h-112z" : category === "3W" ? "356 128h86l42 62h-128z" : "178 126h210l62 52H152z"}' fill='%23ffffff' opacity='.86'/%3E%3Cg fill='%23111827'%3E${Array.from({length:wheels},(_,i)=>`%3Ccircle cx='${wheels===2?[198,426][i]:wheels===3?[174,322,474][i]:[152,272,416,520][i]}' cy='292' r='32'/%3E%3Ccircle cx='${wheels===2?[198,426][i]:wheels===3?[174,322,474][i]:[152,272,416,520][i]}' cy='292' r='14' fill='%23e5e7eb'/%3E`).join("")}%3C/g%3E%3Ctext x='42' y='58' font-family='Arial, sans-serif' font-size='30' font-weight='800' fill='${encodeURIComponent(primary)}'%3E${category} EV%3C/text%3E%3Ctext x='42' y='94' font-family='Arial, sans-serif' font-size='22' font-weight='700' fill='%23374151'%3E${label}%3C/text%3E%3C/svg%3E`;
+}
+
+function buildVehicleCatalogue() {
+  return Object.entries(vehicleCatalogSeed).flatMap(([category, vehicles]) => vehicles.map(([title, type, spec, payload, battery, useCase, insight], index) => ({
+    key: `${category} · ${title}`,
+    title,
+    category,
+    image: vehicleImage(category, index, title),
+    meta: `Category: ${category} ${type} · ${spec}`,
+    detail: `Payload fit: ${payload}. Battery: ${battery}. Typical Delhi use: ${useCase}.`,
+    insight
+  })));
+}
 
 const delhiChargingLocalities = [
   { area: "Saket", x: 48, y: 70, pin: "110017" }, { area: "Connaught Place", x: 52, y: 48, pin: "110001" }, { area: "Dwarka", x: 23, y: 60, pin: "110075" },
@@ -185,6 +236,7 @@ function buildDelhiChargingPoints() {
   });
 }
 
+dashboardData.vehicle.options = buildVehicleCatalogue();
 dashboardData.charging.options = buildDelhiChargingPoints();
 
 function renderDashboardOverview() {
@@ -201,12 +253,19 @@ function renderDashboardOverview() {
 function renderIntelligencePanel(tabKey) {
   const tab = dashboardData[tabKey];
   const isCharging = tabKey === "charging";
+  const isVehicle = tabKey === "vehicle";
   const visibleOptions = isCharging ? tab.options.slice(0, 36) : tab.options;
-  const cards = visibleOptions.map((item, index) => `<article class="genbi-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
+  const renderCard = (item, index) => `<article class="genbi-card${item.image ? " genbi-card--vehicle" : ""}">${item.image ? `<img class="genbi-card__image" src="${item.image}" alt="${item.title} ${item.category || "EV"} illustration" loading="lazy">` : ""}<div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`;
+  const cards = isVehicle
+    ? ["2W", "3W", "4W"].map((category) => {
+        const categoryItems = visibleOptions.filter((item) => item.category === category);
+        return `<section class="vehicle-category"><div class="vehicle-category__header"><h3>${category} vehicles</h3><span>${categoryItems.length} options</span></div><div class="genbi-grid genbi-grid--vehicle">${categoryItems.map((item, index) => renderCard(item, index)).join("")}</div></section>`;
+      }).join("")
+    : visibleOptions.map((item, index) => renderCard(item, index)).join("");
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
   const chargingMap = isCharging ? `<section class="charging-map-panel"><div class="charging-map-panel__map">${tab.options.map((item) => `<button class="charging-pin${item.utilization > 78 ? " charging-pin--busy" : ""}" style="--pin-x:${item.x}%; --pin-y:${item.y}%;" data-charge-key="${item.key}" aria-label="${item.title}"></button>`).join("")}</div><div class="charging-map-panel__legend"><span><i class="charging-dot"></i> Available / moderate</span><span><i class="charging-dot charging-dot--busy"></i> High-demand GenBI alert</span><strong>${tab.options.length} points across Delhi</strong></div></section>` : "";
   const listNote = isCharging ? `<p class="genbi-list-note">Showing 36 highlighted cards below; all ${tab.options.length} charging points are plotted on the Delhi map and available in the GenBI Agent selector.</p>` : "";
-  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Delhi EV network</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${chargingMap}${listNote}<div class="genbi-layout"><section class="genbi-grid${isCharging ? " genbi-grid--charging" : ""}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Delhi EV network</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${chargingMap}${listNote}<div class="genbi-layout${isVehicle ? " genbi-layout--vehicle" : ""}"><section class="${isVehicle ? "vehicle-catalog" : `genbi-grid${isCharging ? " genbi-grid--charging" : ""}`}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
 }
 
 function bootDashboardTabs() {
@@ -220,7 +279,7 @@ function bootDashboardTabs() {
     if (!select || !answer) return;
     function updateAnswer() {
       const item = dashboardData[tabKey].options.find((entry) => entry.key === select.value) || dashboardData[tabKey].options[0];
-      answer.innerHTML = `<h4>${item.title}</h4><p class="genbi-answer__meta">${item.meta}</p><p>${item.detail}</p><strong>Insight:</strong><p>${item.insight}</p>${item.utilization ? `<p><strong>GenBI capability:</strong> utilization ${item.utilization}%, ${item.fastSlots} fast slots, ${item.chargers} total chargers. Use this to match SOC, connector type and route ETA before dispatch.</p>` : ""}`;
+      answer.innerHTML = `${item.image ? `<img class="genbi-answer__image" src="${item.image}" alt="${item.title} ${item.category || "EV"} illustration">` : ""}<h4>${item.title}</h4><p class="genbi-answer__meta">${item.meta}</p><p>${item.detail}</p><strong>Insight:</strong><p>${item.insight}</p>${item.utilization ? `<p><strong>GenBI capability:</strong> utilization ${item.utilization}%, ${item.fastSlots} fast slots, ${item.chargers} total chargers. Use this to match SOC, connector type and route ETA before dispatch.</p>` : ""}`;
       document.querySelectorAll("[data-charge-key]").forEach((pin) => pin.classList.toggle("charging-pin--selected", pin.dataset.chargeKey === item.key));
     }
     select.addEventListener("change", updateAnswer);
