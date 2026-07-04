@@ -43,16 +43,9 @@ const dashboardData = {
   },
   charging: {
     title: "Delhi EV charging intelligence",
-    subtitle: "Curated public and fleet charging points across Delhi localities, shown as an operator-ready GenBI lookup.",
-    agentLabel: "Select locality",
-    options: [
-      { key: "Saket", title: "Saket District Centre Charging Hub", meta: "Area: Saket · Connector: CCS2 / Type-2 / Bharat AC", detail: "Address: Near Select Citywalk service lane, Saket District Centre, New Delhi 110017. Operator mix: Tata Power EZ Charge, Statiq and fleet AC points. Best for 2W top-ups and 4W mid-shift charging.", insight: "Peak demand 6–9 PM; reserve 4W slots before evening grocery lanes." },
-      { key: "Connaught Place", title: "CP Inner Circle EV Point", meta: "Area: Connaught Place · Connector: DC fast / AC", detail: "Address: Inner Circle parking zone near Palika Bazaar, Connaught Place, New Delhi 110001. Useful for central Delhi delivery waves and executive EV fleets.", insight: "High parking turnover; 35–45 minute planned dwell recommended." },
-      { key: "Dwarka", title: "Dwarka Sector 10 Metro Charger", meta: "Area: Dwarka · Connector: CCS2 / Type-2", detail: "Address: Sector 10 Metro Station parking, Dwarka, New Delhi 110075. Strong west Delhi coverage for 3W and 4W fleet returns.", insight: "Use as fallback for Janakpuri and Uttam Nagar routes." },
-      { key: "Okhla", title: "Okhla Industrial Area Fleet Charger", meta: "Area: Okhla · Connector: Bharat DC / AC", detail: "Address: Okhla Industrial Area Phase II logistics cluster, New Delhi 110020. Suitable for cargo 3W, pharma routes and B2B morning departures.", insight: "Schedule preventive energy checks with maintenance visits." },
-      { key: "Rohini", title: "Rohini Sector 18 Charging Plaza", meta: "Area: Rohini · Connector: Type-2 / AC slow", detail: "Address: Sector 18 market parking, Rohini, New Delhi 110089. Good north Delhi anchor for two-wheeler delivery fleets.", insight: "Overnight AC charging gives lower battery stress for 2W assets." },
-      { key: "Nehru Place", title: "Nehru Place Commercial Charger", meta: "Area: Nehru Place · Connector: CCS2 / AC", detail: "Address: Multi-level parking, Nehru Place, New Delhi 110019. Covers Kalkaji, CR Park and Greater Kailash routes.", insight: "Prioritize 4W top-ups after B2B electronics delivery windows." }
-    ]
+    subtitle: "100+ synthetic public, fleet and partner charging points plotted across Delhi for GenBI-led route planning.",
+    agentLabel: "Select charging point",
+    options: []
   },
   vehicle: {
     title: "EV vehicle catalogue for Delhi operations",
@@ -148,6 +141,52 @@ const dashboardData = {
   }
 };
 
+
+const delhiChargingLocalities = [
+  { area: "Saket", x: 48, y: 70, pin: "110017" }, { area: "Connaught Place", x: 52, y: 48, pin: "110001" }, { area: "Dwarka", x: 23, y: 60, pin: "110075" },
+  { area: "Okhla", x: 63, y: 72, pin: "110020" }, { area: "Rohini", x: 38, y: 24, pin: "110089" }, { area: "Nehru Place", x: 58, y: 68, pin: "110019" },
+  { area: "Karol Bagh", x: 47, y: 42, pin: "110005" }, { area: "Lajpat Nagar", x: 57, y: 63, pin: "110024" }, { area: "Janakpuri", x: 30, y: 53, pin: "110058" },
+  { area: "Vasant Kunj", x: 41, y: 74, pin: "110070" }, { area: "Mayur Vihar", x: 70, y: 52, pin: "110091" }, { area: "Shahdara", x: 72, y: 40, pin: "110032" },
+  { area: "Pitampura", x: 40, y: 32, pin: "110034" }, { area: "Chandni Chowk", x: 55, y: 39, pin: "110006" }, { area: "Hauz Khas", x: 50, y: 66, pin: "110016" },
+  { area: "Greater Kailash", x: 59, y: 66, pin: "110048" }, { area: "Punjabi Bagh", x: 38, y: 44, pin: "110026" }, { area: "Preet Vihar", x: 68, y: 46, pin: "110092" }
+];
+
+const chargingOperators = ["Tata Power EZ", "Statiq", "ChargeZone", "BSES EV", "E-Fill", "Lium Go Partner"];
+const chargingConnectors = ["CCS2 / Type-2", "Bharat AC / DC", "Type-2 AC", "DC fast / AC", "Fleet AC + CCS2"];
+
+function buildDelhiChargingPoints() {
+  return Array.from({ length: 108 }, (_, index) => {
+    const locality = delhiChargingLocalities[index % delhiChargingLocalities.length];
+    const ring = Math.floor(index / delhiChargingLocalities.length);
+    const xOffset = ((index * 7) % 13) - 6;
+    const yOffset = ((index * 11) % 15) - 7;
+    const chargerCount = 2 + ((index + ring) % 7);
+    const fastSlots = 1 + (index % 4);
+    const utilization = 42 + ((index * 5) % 48);
+    const operator = chargingOperators[index % chargingOperators.length];
+    const connector = chargingConnectors[index % chargingConnectors.length];
+    const pointNumber = String(index + 1).padStart(3, "0");
+
+    return {
+      key: `${locality.area} CP-${pointNumber}`,
+      title: `${locality.area} EV Charge Point ${pointNumber}`,
+      meta: `Area: ${locality.area} · ${chargerCount} chargers · ${connector}`,
+      detail: `Address: ${locality.area} mobility cluster ${ring + 1}, New Delhi ${locality.pin}. Operator: ${operator}. Available capacity: ${fastSlots} fast slots plus ${Math.max(chargerCount - fastSlots, 1)} AC fleet bays.`,
+      insight: utilization > 78 ? "GenBI flags heavy demand; reserve slots before dispatching low-SOC vehicles." : "GenBI sees usable buffer; suitable for planned top-ups and return-to-hub charging.",
+      area: locality.area,
+      operator,
+      connectors: connector,
+      chargers: chargerCount,
+      fastSlots,
+      utilization,
+      x: Math.min(88, Math.max(12, locality.x + xOffset)),
+      y: Math.min(86, Math.max(14, locality.y + yOffset))
+    };
+  });
+}
+
+dashboardData.charging.options = buildDelhiChargingPoints();
+
 function renderDashboardOverview() {
   return `
     <h2>Delhi network view</h2>
@@ -161,9 +200,13 @@ function renderDashboardOverview() {
 
 function renderIntelligencePanel(tabKey) {
   const tab = dashboardData[tabKey];
-  const cards = tab.options.map((item, index) => `<article class="genbi-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
+  const isCharging = tabKey === "charging";
+  const visibleOptions = isCharging ? tab.options.slice(0, 36) : tab.options;
+  const cards = visibleOptions.map((item, index) => `<article class="genbi-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
-  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Delhi EV network</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div><div class="genbi-layout"><section class="genbi-grid">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+  const chargingMap = isCharging ? `<section class="charging-map-panel"><div class="charging-map-panel__map">${tab.options.map((item) => `<button class="charging-pin${item.utilization > 78 ? " charging-pin--busy" : ""}" style="--pin-x:${item.x}%; --pin-y:${item.y}%;" data-charge-key="${item.key}" aria-label="${item.title}"></button>`).join("")}</div><div class="charging-map-panel__legend"><span><i class="charging-dot"></i> Available / moderate</span><span><i class="charging-dot charging-dot--busy"></i> High-demand GenBI alert</span><strong>${tab.options.length} points across Delhi</strong></div></section>` : "";
+  const listNote = isCharging ? `<p class="genbi-list-note">Showing 36 highlighted cards below; all ${tab.options.length} charging points are plotted on the Delhi map and available in the GenBI Agent selector.</p>` : "";
+  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Delhi EV network</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${chargingMap}${listNote}<div class="genbi-layout"><section class="genbi-grid${isCharging ? " genbi-grid--charging" : ""}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
 }
 
 function bootDashboardTabs() {
@@ -177,9 +220,16 @@ function bootDashboardTabs() {
     if (!select || !answer) return;
     function updateAnswer() {
       const item = dashboardData[tabKey].options.find((entry) => entry.key === select.value) || dashboardData[tabKey].options[0];
-      answer.innerHTML = `<h4>${item.title}</h4><p class="genbi-answer__meta">${item.meta}</p><p>${item.detail}</p><strong>Insight:</strong><p>${item.insight}</p>`;
+      answer.innerHTML = `<h4>${item.title}</h4><p class="genbi-answer__meta">${item.meta}</p><p>${item.detail}</p><strong>Insight:</strong><p>${item.insight}</p>${item.utilization ? `<p><strong>GenBI capability:</strong> utilization ${item.utilization}%, ${item.fastSlots} fast slots, ${item.chargers} total chargers. Use this to match SOC, connector type and route ETA before dispatch.</p>` : ""}`;
+      document.querySelectorAll("[data-charge-key]").forEach((pin) => pin.classList.toggle("charging-pin--selected", pin.dataset.chargeKey === item.key));
     }
     select.addEventListener("change", updateAnswer);
+    document.querySelectorAll("[data-charge-key]").forEach((pin) => {
+      pin.addEventListener("click", () => {
+        select.value = pin.dataset.chargeKey;
+        updateAnswer();
+      });
+    });
     updateAnswer();
   }
 
