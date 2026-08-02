@@ -1,4 +1,4 @@
-const HRMS_API_ENDPOINT = ""; // Paste the deployed Apps Script /exec URL here.
+const HRMS_API_ENDPOINT = "https://script.google.com/macros/s/AKfycbyg3OPSX-y6cqOYAEqmXzDSACi-zOsQYWIy-6JJB4Epel1eAYj_n7Fzz_P2Nypa6-eW/exec";
 const HRMS_STORAGE_KEY = "liumgoHrmsRecords";
 const HRMS_FILE_FIELDS = ["appointmentLetter", "attendanceSheet", "kmStatement", "payslip"];
 
