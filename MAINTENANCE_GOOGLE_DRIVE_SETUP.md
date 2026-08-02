@@ -112,6 +112,14 @@ function json(value) {
 6. Submit a test record. Confirm that a new row appears in `Vehicles`, a vehicle subfolder is created, and each uploaded document opens only for an authorised user.
 7. Every time the Apps Script code changes, create a new deployment version (or edit the deployment to use the new version) and retest.
 
+## Troubleshooting backend saves
+
+- If the page reports that the backend could not be reached, confirm that the configured URL is the deployed `/exec` URL, not the editor or `/dev` URL.
+- Open the deployment URL in a private browser window. A Google sign-in or permission page means the static site cannot access the web app with its current deployment permissions. Update **Who has access**, then deploy a new version.
+- In Apps Script, check **Executions** immediately after a failed save. No execution usually indicates a deployment URL, permission, browser-policy or network problem; a failed execution provides the server-side exception to fix.
+- The endpoint must always return JSON in the shape `{ "ok": true, "recordId": "..." }` on success or `{ "ok": false, "error": "..." }` on failure. HTML login/error pages are not valid API responses.
+- A backend failure no longer clears the form or locks the later sections. Field values are retained in that browser so they can be retried, but they have **not** reached the Sheet/Drive until the page displays a successful backend-save message. Selected file contents cannot be retained by browser storage and must be selected again when retrying document uploads.
+
 ## Production checklist
 
 - Put the page and endpoint behind organisation authentication. An unguessable Apps Script URL is not authentication.
