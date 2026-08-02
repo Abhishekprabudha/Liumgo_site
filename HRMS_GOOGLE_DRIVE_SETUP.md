@@ -23,6 +23,7 @@ const HRMS_SHEET_ID = "REPLACE_WITH_SPREADSHEET_ID";
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
+    if (payload.action === "bulkEmployees") return importHrmsBatch(payload);
     const f = payload.fields || {};
     const recordId = safe(payload.recordId || `HR-${Date.now()}`);
     const section = safe(payload.section || "unknown");
@@ -54,6 +55,41 @@ function doPost(e) {
   } catch (error) {
     return json({ ok: false, error: error.message });
   }
+}
+
+function importHrmsBatch(payload) {
+  const employees = payload.employees || [];
+  const documents = payload.documents || [];
+  if (!employees.length) throw new Error("No employee records supplied");
+  const ids = new Set(employees.map(employee => safe(employee.recordId)));
+  if (ids.size !== employees.length) throw new Error("Record IDs must be unique");
+  const parent = DriveApp.getFolderById(HRMS_FOLDER_ID);
+  const sheet = SpreadsheetApp.openById(HRMS_SHEET_ID).getSheetByName("HRMS");
+  employees.forEach(employee => {
+    if (!employee.recordId || !employee.employeeId || !employee.fullName || !employee.mobile) throw new Error("Each row requires recordId, employeeId, fullName and mobile");
+    const recordId = safe(employee.recordId);
+    const folders = parent.getFoldersByName(recordId);
+    const folder = folders.hasNext() ? folders.next() : parent.createFolder(recordId);
+    sheet.appendRow(hrmsRow(recordId, employee, folder.getUrl(), "bulk"));
+  });
+  documents.forEach(document => {
+    const recordId = safe(document.recordId);
+    if (!ids.has(recordId)) throw new Error("A document does not match an employee record");
+    const allowed = ["application/pdf", "image/jpeg", "image/png"];
+    if (!allowed.includes(document.type)) throw new Error("Unsupported document type");
+    const bytes = Utilities.base64Decode(document.data);
+    if (bytes.length > 10 * 1024 * 1024) throw new Error("Document exceeds 10 MB");
+    const folders = parent.getFoldersByName(recordId);
+    const employeeFolder = folders.hasNext() ? folders.next() : parent.createFolder(recordId);
+    const documentFolders = employeeFolder.getFoldersByName("documents");
+    const documentFolder = documentFolders.hasNext() ? documentFolders.next() : employeeFolder.createFolder("documents");
+    documentFolder.createFile(Utilities.newBlob(bytes, document.type, safe(document.name)));
+  });
+  return json({ ok: true, imported: employees.length, documentCount: documents.length });
+}
+
+function hrmsRow(recordId, f, folderUrl, section) {
+  return [recordId, new Date(), section, f.employeeId || "", f.fullName || "", f.mobile || "", f.email || "", f.hub || "", f.role || "", f.vehicleRegistration || "", f.employmentStatus || "", f.appointmentDate || "", f.contractType || "", f.paymentType || "", f.monthlySalary || "", f.hourlyRate || "", f.kmRate || "", f.payrollMonth || "", f.approvedHours || "", f.approvedKm || "", f.incentives || "", f.reimbursements || "", f.deductions || "", "", "", "", "", f.approvalStatus || "", f.paymentReference || "", folderUrl];
 }
 
 function doGet(e) {

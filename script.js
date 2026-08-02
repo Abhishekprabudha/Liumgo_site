@@ -361,6 +361,7 @@ const DRIVER_RECORDS_STORAGE_KEY = "liumgoDriverRecords";
 const DRIVER_BULK_COLUMNS = ["recordId", "fullName", "mobile", "email", "dateOfBirth", "emergencyContact", "hub", "address", "aadhaarNumber", "licenceNumber", "licenceExpiry", "policeVerification", "attendanceDate", "attendanceStatus", "shift", "checkIn", "vehicleRegistration", "vehicleCategory", "client", "mappingStart", "remarks"];
 const HRMS_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbyg3OPSX-y6cqOYAEqmXzDSACi-zOsQYWIy-6JJB4Epel1eAYj_n7Fzz_P2Nypa6-eW/exec";
 const HRMS_RECORDS_STORAGE_KEY = "liumgoHrmsRecords";
+const HRMS_BULK_COLUMNS = ["recordId", "employeeId", "fullName", "mobile", "email", "hub", "role", "vehicleRegistration", "employmentStatus", "appointmentDate", "contractType", "paymentType", "monthlySalary", "hourlyRate", "kmRate", "payrollMonth", "approvedHours", "approvedKm", "incentives", "reimbursements", "deductions", "approvalStatus", "paymentReference"];
 const MAINTENANCE_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbz5FqngMF4rO_9EQeOnpx7PFEGoBLfty3535T41-X-HSYi8d2uSCO6DF8FlwwEJ0e01/exec";
 const MAINTENANCE_RECORDS_STORAGE_KEY = "liumgoMaintenanceRecords";
 const MAINTENANCE_BULK_COLUMNS = ["recordId", "registrationNumber", "assetId", "category", "powertrain", "make", "model", "modelYear", "odometerKm", "homeHub", "operationalStatus", "serviceType", "priority", "lastServiceDate", "nextServiceDate", "workshop", "estimatedCost", "maintenanceNotes", "insuranceExpiry", "fitnessExpiry", "permitExpiry", "pucExpiry", "driverName", "driverId", "driverMobile", "mappingStart", "mappingEnd", "shift", "mappingNotes"];
@@ -441,6 +442,11 @@ function renderHrmsDashboard() {
   const rows = payroll.map((row) => `<tr><td><strong>${row.title}</strong><small>${row.driverId} · ${row.hub}</small></td><td>${row.paymentType}</td><td>${row.approvedHours}h</td><td>${row.approvedKm.toLocaleString("en-IN")} km</td><td>${money(row.basePay)}</td><td>${money(row.kmPayment)}</td><td>${money(row.incentives + row.reimbursements)}</td><td>${money(row.deductions)}</td><td><strong>${money(row.netPay)}</strong></td></tr>`).join("");
   const options = payroll.map((row) => `<option value="${row.key}">${row.title} · ${row.driverId}</option>`).join("");
   return `<div class="genbi-hero"><div><p class="genbi-eyebrow">People operations · July 2026</p><h2>${dashboardData.hrms.title}</h2><p>${dashboardData.hrms.subtitle}</p><a class="btn btn-primary driver-entry-link" href="hrms-entry.html">+ Add HRMS & payroll record</a></div><div class="genbi-kpi"><strong>${payroll.length}</strong><span>drivers mapped</span></div></div>
+    <section class="driver-bulk-upload" aria-labelledby="hrms-bulk-heading">
+      <div class="driver-bulk-upload__intro"><p class="genbi-eyebrow">Bulk HRMS onboarding</p><h3 id="hrms-bulk-heading">Upload employees, drivers & vehicle documents</h3><p>Complete the CSV template for multiple people and mapped vehicles. Prefix every supporting filename with its matching <strong>recordId</strong>, for example <code>HR-001__appointment-letter.pdf</code>.</p></div>
+      <div class="driver-bulk-upload__actions"><button type="button" class="btn btn-outline" id="download-hrms-template">↓ Download CSV template</button><label class="driver-bulk-file">Employee & driver details (.csv)<input id="hrms-bulk-csv" type="file" accept=".csv,text/csv"></label><label class="driver-bulk-file">Documents for multiple records<input id="hrms-bulk-documents" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple></label><button type="button" class="btn btn-primary" id="upload-hrms-bulk" disabled>Upload to backend</button></div>
+      <p id="hrms-bulk-status" class="driver-report-status" role="status" aria-live="polite">Select a completed CSV to validate the batch.</p><div id="hrms-bulk-preview" class="driver-bulk-preview" hidden></div>
+    </section>
     <section class="driver-report-tools" aria-labelledby="hrms-report-heading">
       <div><p class="genbi-eyebrow">Reports & storage</p><h3 id="hrms-report-heading">Pull employee & driver records</h3><p>Download one CSV containing all dashboard, locally entered and stored HRMS details, or retrieve employee document folders from secure storage.</p></div>
       <div class="driver-report-tools__actions"><button type="button" class="btn btn-primary" id="download-hrms-report">↓ Download all details</button><button type="button" class="btn btn-outline" id="pull-hrms-documents">↻ Pull stored documents</button></div>
@@ -450,6 +456,63 @@ function renderHrmsDashboard() {
     <section class="hrms-kpis"><article><span>Gross payroll</span><strong>${money(total("grossPay"))}</strong><p>Before deductions</p></article><article><span>KM payments</span><strong>${money(total("kmPayment"))}</strong><p>${total("approvedKm").toLocaleString("en-IN")} approved km</p></article><article><span>Incentives</span><strong>${money(total("incentives"))}</strong><p>Performance additions</p></article><article><span>Net payable</span><strong>${money(total("netPay"))}</strong><p>After ${money(total("deductions"))} deductions</p></article></section>
     <article class="page-highlight-card hrms-formula"><h3>Synthetic payroll algorithm</h3><code>Base pay = monthly salary OR approved hours × hourly rate<br>KM payment = approved kilometres × kilometre rate<br>Gross = base + KM payment + incentives + reimbursements<br>Net payable = gross − deductions</code><p>Prototype calculations are deterministic and illustrative. Production payroll must apply contracts, attendance approvals, tax, PF/ESI and applicable labour rules through an authorised payroll review.</p></article>
     <div class="hrms-layout"><section class="page-highlight-card hrms-table-wrap"><table class="dashboard-table hrms-table"><thead><tr><th>Driver</th><th>Plan</th><th>Hours</th><th>Distance</th><th>Base</th><th>KM pay</th><th>Additions</th><th>Deductions</th><th>Net</th></tr></thead><tbody>${rows}</tbody></table></section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">Payroll detail</div><h3>Driver pay breakdown</h3><label for="genbi-select">${dashboardData.hrms.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+}
+
+function hydrateHrmsBulkUpload() {
+  const templateButton = document.getElementById("download-hrms-template");
+  const csvInput = document.getElementById("hrms-bulk-csv");
+  const documentsInput = document.getElementById("hrms-bulk-documents");
+  const uploadButton = document.getElementById("upload-hrms-bulk");
+  const status = document.getElementById("hrms-bulk-status");
+  const preview = document.getElementById("hrms-bulk-preview");
+  if (!templateButton || !csvInput || !documentsInput || !uploadButton || !status || !preview) return;
+  let rows = [];
+
+  templateButton.addEventListener("click", () => {
+    const example = ["HR-001", "DRV-1009", "Aarav Sharma", "9876543210", "aarav@example.com", "Saket", "Driver", "DL3C-EV-8021", "Active", "2026-08-01", "Permanent", "Monthly + km", "22000", "", "3.5", "2026-08", "", "1850", "1200", "500", "250", "Manager approved", ""];
+    downloadCsv([Object.fromEntries(HRMS_BULK_COLUMNS.map((column, index) => [column, example[index]]))], "liumgo-hrms-bulk-upload-template.csv");
+    status.textContent = "Template downloaded. Keep every heading unchanged and use a unique recordId on each row.";
+  });
+
+  csvInput.addEventListener("change", async () => {
+    rows = []; uploadButton.disabled = true; preview.hidden = true;
+    const file = csvInput.files[0]; if (!file) return;
+    try {
+      const parsed = parseCsv(await file.text());
+      const missing = HRMS_BULK_COLUMNS.filter((column) => !parsed.headers.includes(column));
+      if (missing.length) throw new Error(`Missing columns: ${missing.join(", ")}`);
+      rows = parsed.rows.filter((row) => Object.values(row).some((value) => value.trim()));
+      if (!rows.length) throw new Error("The CSV has no employee or driver rows.");
+      const invalid = rows.map((row, index) => (!row.recordId || !row.employeeId || !row.fullName || !row.mobile ? index + 2 : null)).filter(Boolean);
+      if (invalid.length) throw new Error(`recordId, employeeId, fullName and mobile are required on row(s): ${invalid.join(", ")}`);
+      const ids = rows.map((row) => row.recordId);
+      if (new Set(ids).size !== ids.length) throw new Error("Every recordId must be unique in the CSV.");
+      status.textContent = `${rows.length} records validated. Add documents if required, then upload the batch.`;
+      preview.innerHTML = `<strong>${rows.length} records ready</strong><span>${rows.slice(0, 5).map((row) => escapeHtml(`${row.recordId} · ${row.fullName} · ${row.vehicleRegistration || "No vehicle"}`)).join("<br>")}${rows.length > 5 ? `<br>and ${rows.length - 5} more…` : ""}</span>`;
+      preview.hidden = false; uploadButton.disabled = false;
+    } catch (error) { status.textContent = `CSV could not be validated: ${error.message}`; }
+  });
+
+  uploadButton.addEventListener("click", async () => {
+    uploadButton.disabled = true; status.textContent = "Preparing HRMS details and documents for secure upload…";
+    try {
+      const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+      const documents = await Promise.all([...documentsInput.files].map(async (file) => {
+        const separator = file.name.indexOf("__");
+        if (separator < 1) throw new Error(`${file.name} must start with recordId__`);
+        const recordId = file.name.slice(0, separator);
+        if (!rows.some((row) => row.recordId === recordId)) throw new Error(`${file.name} does not match a CSV recordId.`);
+        if (!allowedTypes.includes(file.type)) throw new Error(`${file.name} must be PDF, JPG or PNG.`);
+        if (file.size > 10 * 1024 * 1024) throw new Error(`${file.name} exceeds 10 MB.`);
+        return { recordId, name: file.name.slice(separator + 2), type: file.type, data: (await fileToDataUrl(file)).split(",")[1] };
+      }));
+      const response = await fetch(HRMS_STORAGE_ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "bulkEmployees", employees: rows, documents }) });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Backend rejected the batch.");
+      status.textContent = `Uploaded ${payload.imported || rows.length} employee/driver records and ${payload.documentCount ?? documents.length} documents to backend storage.`;
+      csvInput.value = ""; documentsInput.value = ""; rows = []; preview.hidden = true;
+    } catch (error) { status.textContent = `Bulk upload failed: ${error.message}`; uploadButton.disabled = false; }
+  });
 }
 
 function hydrateHrmsReportTools() {
@@ -1038,7 +1101,7 @@ function bootDashboardTabs() {
     content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : tabKey === "maintenance" ? renderMaintenanceDashboard() : tabKey === "drivers" ? renderDriversDashboard() : tabKey === "hrms" ? renderHrmsDashboard() : renderIntelligencePanel(tabKey);
     hydrateAgent(tabKey);
     if (tabKey === "drivers") hydrateDriverReportTools();
-    if (tabKey === "hrms") hydrateHrmsReportTools();
+    if (tabKey === "hrms") { hydrateHrmsReportTools(); hydrateHrmsBulkUpload(); }
     if (tabKey === "maintenance") { hydrateMaintenanceReportTools(); hydrateMaintenanceBulkUpload(); }
   }
 
