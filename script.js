@@ -120,8 +120,8 @@ const dashboardData = {
     ]
   },
   parking: {
-    title: "Delhi EV parking and hub intelligence",
-    subtitle: "100+ synthetic parking yards, micro-hubs and fleet staging points plotted across Delhi for GenBI-led dispatch planning.",
+    title: "Delhi multi-fuel parking and hub intelligence",
+    subtitle: "100+ synthetic parking yards, micro-hubs and fleet staging points for every vehicle class—from 2W, 3W and 4W to commercial vehicles—across ICE, EV and alternative-fuel fleets, plotted across Delhi for GenBI-led dispatch planning.",
     agentLabel: "Select parking or hub",
     options: []
   },
@@ -301,8 +301,8 @@ function buildDelhiChargingPoints() {
 
 
 const parkingFacilityTypes = ["Fleet parking yard", "Micro-hub", "Partner mall basement", "Metro-adjacent lot", "Industrial hub", "Market association bay"];
-const parkingOperators = ["Lium Go partner yard", "DMRC parking partner", "Market association", "Industrial logistics park", "Mall facilities partner", "EV fleet operator"];
-const parkingFacilities = ["secure overnight parking", "driver check-in", "CCTV", "AC top-up charging", "cargo staging", "battery-swap coordination", "maintenance handover", "route briefing desk"];
+const parkingOperators = ["Lium Go partner yard", "DMRC parking partner", "Market association", "Industrial logistics park", "Mall facilities partner", "multi-fuel fleet operator"];
+const parkingFacilities = ["secure overnight parking", "driver check-in", "CCTV", "fuel and energy access", "cargo staging", "charging and battery-swap coordination", "maintenance handover", "route briefing desk"];
 
 function buildDelhiParkingHubs() {
   return Array.from({ length: 126 }, (_, index) => {
@@ -323,10 +323,10 @@ function buildDelhiParkingHubs() {
 
     return {
       key: `${locality.area} Hub-${pointNumber}`,
-      title: `${locality.area} ${isHub ? "EV Hub" : "EV Parking"} ${pointNumber}`,
-      meta: `Area: ${locality.area} · ${facilityType} · Capacity: ${capacity} EVs · Available: ${availableBays}`,
-      detail: `Address: ${locality.area} fleet cluster ${ring + 1}, New Delhi ${locality.pin}. Operator: ${operator}. Facilities: ${facilityA}, ${facilityB} and ${facilityC}. Supports ${index % 3 === 0 ? "2W/3W" : index % 3 === 1 ? "2W/4W" : "2W/3W/4W"} staging with geofenced check-in.`,
-      insight: utilization >= 78 ? "GenBI flags high bay utilization; reserve overflow parking before dispatch wave starts." : "GenBI sees usable bay buffer; suitable for route staging, driver briefing and return-to-hub parking.",
+      title: `${locality.area} ${isHub ? "Fleet Hub" : "Vehicle Parking"} ${pointNumber}`,
+      meta: `Area: ${locality.area} · ${facilityType} · Capacity: ${capacity} vehicles · Available: ${availableBays}`,
+      detail: `Address: ${locality.area} fleet cluster ${ring + 1}, New Delhi ${locality.pin}. Operator: ${operator}. Facilities: ${facilityA}, ${facilityB} and ${facilityC}. Supports 2W, 3W, 4W and commercial-vehicle staging across ICE, EV and alternative-fuel fleets, with geofenced check-in and access planning for petrol, diesel, CNG, LNG, biofuels, hydrogen, charging and battery swapping.`,
+      insight: utilization >= 78 ? "GenBI flags high bay utilization; reserve fuel-agnostic overflow parking before the dispatch wave starts." : "GenBI sees usable bay buffer for mixed-fuel route staging, driver briefing, refuelling or charging coordination and return-to-hub parking.",
       area: locality.area,
       operator,
       facilityType,
@@ -414,7 +414,7 @@ function renderIntelligencePanel(tabKey) {
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
   const mapPanel = (isCharging || isParking) ? `<section class="charging-map-panel ${isParking ? "parking-map-panel" : ""}"><div class="charging-map-panel__map ${isParking ? "parking-map-panel__map" : ""}">${tab.options.map((item) => `<button class="charging-pin${isParking ? " parking-pin" : ""}${item.utilization > 78 ? " charging-pin--busy" : ""}" style="--pin-x:${item.x}%; --pin-y:${item.y}%;" data-map-key="${item.key}" aria-label="${item.title}"></button>`).join("")}</div><div class="charging-map-panel__legend"><span><i class="charging-dot"></i> Available / moderate</span><span><i class="charging-dot charging-dot--busy"></i> High-demand GenBI alert</span><strong>${tab.options.length} ${isParking ? "parking and hub records" : "points"} across Delhi</strong></div></section>` : "";
   const listNote = isCharging ? `<p class="genbi-list-note">Showing 36 highlighted cards below; all ${tab.options.length} charging points are plotted on the Delhi map and available in the GenBI Agent selector.</p>` : isParking ? `<p class="genbi-list-note">Showing 48 highlighted parking and hub cards below; all ${tab.options.length} Delhi records are plotted on the map and searchable in the GenBI Agent selector.</p>` : "";
-  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Delhi EV network</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${mapPanel}${listNote}<div class="genbi-layout${isVehicle ? " genbi-layout--vehicle" : ""}"><section class="${isVehicle ? "vehicle-catalog" : `genbi-grid${isCharging ? " genbi-grid--charging" : ""}`}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · ${isParking ? "Delhi multi-fuel network" : "Delhi EV network"}</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${mapPanel}${listNote}<div class="genbi-layout${isVehicle ? " genbi-layout--vehicle" : ""}"><section class="${isVehicle ? "vehicle-catalog" : `genbi-grid${isCharging ? " genbi-grid--charging" : ""}`}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
 }
 
 
@@ -514,7 +514,7 @@ function bootDashboardTabs() {
     if (!select || !answer) return;
     function updateAnswer() {
       const item = dashboardData[tabKey].options.find((entry) => entry.key === select.value) || dashboardData[tabKey].options[0];
-      answer.innerHTML = `${item.image ? `<img class="genbi-answer__image" src="${item.image}" alt="${item.title} ${item.category || "EV"} illustration">` : ""}<h4>${item.title}</h4><p class="genbi-answer__meta">${item.meta}</p><p>${item.detail}</p><strong>Insight:</strong><p>${item.insight}</p>${item.utilization ? `<p><strong>GenBI capability:</strong> utilization ${item.utilization}%, ${item.fastSlots ? `${item.fastSlots} fast slots, ${item.chargers} total chargers` : `${item.availableBays} open bays, ${item.capacity} total EV capacity`}. Use this to match SOC, bay availability, route ETA and return-to-hub planning before dispatch.</p>` : ""}`;
+      answer.innerHTML = `${item.image ? `<img class="genbi-answer__image" src="${item.image}" alt="${item.title} ${item.category || "EV"} illustration">` : ""}<h4>${item.title}</h4><p class="genbi-answer__meta">${item.meta}</p><p>${item.detail}</p><strong>Insight:</strong><p>${item.insight}</p>${item.utilization ? `<p><strong>GenBI capability:</strong> utilization ${item.utilization}%, ${item.fastSlots ? `${item.fastSlots} fast slots, ${item.chargers} total chargers` : `${item.availableBays} open bays, ${item.capacity} total vehicle capacity`}. Use this to match ${item.fastSlots ? "SOC" : "fuel or energy needs"}, bay availability, route ETA and return-to-hub planning before dispatch.</p>` : ""}`;
       document.querySelectorAll("[data-map-key]").forEach((pin) => pin.classList.toggle("charging-pin--selected", pin.dataset.mapKey === item.key));
     }
     select.addEventListener("change", updateAnswer);
