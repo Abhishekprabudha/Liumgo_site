@@ -2284,7 +2284,15 @@ a:hover {
 .entry-progress span { padding: 7px 13px; border: 1px solid rgba(255,255,255,.24); border-radius: 999px; background: rgba(255,255,255,.1); font-size: .78rem; font-weight: 700; }
 .driver-entry-layout { display: grid; grid-template-columns: minmax(0, 1fr) 285px; gap: 24px; align-items: start; }
 .driver-entry-form { display: grid; gap: 20px; }
+.entry-record-picker { display: flex; justify-content: space-between; gap: 24px; align-items: end; padding: 18px 22px; border: 1px solid #d8c7e7; border-radius: 16px; background: #faf6ff; }
+.entry-record-picker h2 { margin: 0; font-size: 1rem; }
+.entry-record-picker p { margin: 4px 0 0; color: var(--color-muted); font-size: .82rem; }
+.entry-record-picker label { display: grid; flex: 0 1 320px; gap: 6px; color: #283142; font-size: .78rem; font-weight: 700; }
+.entry-record-picker select { width: 100%; padding: 10px 12px; border: 1px solid #cfc2da; border-radius: 10px; background: #fff; font: inherit; }
 .entry-card, .entry-help-card { padding: 26px; border: 1px solid #e9e5ee; border-radius: 22px; background: #fff; box-shadow: var(--shadow-soft); }
+.entry-card { transition: opacity .2s ease, border-color .2s ease; }
+.entry-card--locked { position: relative; opacity: .58; border-style: dashed; box-shadow: none; }
+.entry-card--locked::after { content: "Save or select personal details to unlock"; position: absolute; top: 24px; right: 24px; max-width: 180px; padding: 6px 9px; border-radius: 999px; color: #5c426f; background: #f1e9f7; font-size: .68rem; font-weight: 700; text-align: center; }
 .entry-card__heading { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; margin-bottom: 20px; border-bottom: 1px solid #eeeaf2; }
 .entry-card__heading > span, .entry-help-card__icon { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; border-radius: 11px; color: #fff; background: var(--color-primary); font-weight: 800; }
 .entry-card h2, .entry-help-card h2 { margin: 0; font-size: 1.15rem; }
@@ -2308,10 +2316,11 @@ a:hover {
 .entry-help-card--drive .entry-help-card__icon { background: var(--color-primary); }
 .entry-help-card a { color: var(--color-primary); font-size: .85rem; font-weight: 800; }
 .entry-actions { display: flex; justify-content: flex-end; gap: 12px; }
+.entry-card__actions { display: flex; justify-content: flex-end; padding-top: 20px; margin-top: 20px; border-top: 1px solid #eeeaf2; }
 .entry-message { display: none; padding: 13px 15px; border-radius: 11px; font-size: .88rem; font-weight: 700; }
 .entry-message--working, .entry-message--success, .entry-message--error { display: block; }
 .entry-message--working { color: #4d148c; background: #f3e8ff; }
 .entry-message--success { color: #11633f; background: #e7f8ef; }
 .entry-message--error { color: #9b1c1c; background: #feecec; }
 @media (max-width: 850px) { .driver-entry-layout { grid-template-columns: 1fr; } .entry-sidebar { position: static; } }
-@media (max-width: 600px) { .entry-fields, .document-grid { grid-template-columns: 1fr; } .entry-field--wide { grid-column: auto; } .entry-card { padding: 19px; } .entry-actions { flex-direction: column-reverse; } }
+@media (max-width: 600px) { .entry-record-picker { align-items: stretch; flex-direction: column; } .entry-record-picker label { flex-basis: auto; } .entry-fields, .document-grid { grid-template-columns: 1fr; } .entry-field--wide { grid-column: auto; } .entry-card { padding: 19px; } .entry-card--locked::after { position: static; display: block; max-width: none; margin: -6px 0 16px; } .entry-actions, .entry-card__actions { flex-direction: column-reverse; } }

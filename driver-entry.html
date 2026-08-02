@@ -23,15 +23,20 @@
       <div class="container">
         <p class="eyebrow">Drivers / New record</p>
         <h1>Driver onboarding & daily operations</h1>
-        <p>Add one complete driver record, upload compliance documents, mark attendance, and map a vehicle. Required fields are marked with *.</p>
+        <p>Save personal details first, then add documents, attendance, or vehicle mapping independently whenever they are available. Required fields are marked with *.</p>
         <div class="entry-progress" aria-label="Form sections"><span>1 Personal</span><span>2 Documents</span><span>3 Attendance</span><span>4 Vehicle</span></div>
       </div>
     </section>
 
     <section class="page-section">
       <div class="container driver-entry-layout">
-        <form id="driver-entry-form" class="driver-entry-form">
-          <section class="entry-card" aria-labelledby="personal-heading">
+        <form id="driver-entry-form" class="driver-entry-form" novalidate>
+          <section class="entry-record-picker" aria-labelledby="record-picker-heading">
+            <div><h2 id="record-picker-heading">Driver record</h2><p id="record-context">Create a personal profile to unlock the remaining sections.</p></div>
+            <label>Continue an existing record<select id="driver-record-select"><option value="">New driver</option></select></label>
+          </section>
+
+          <section class="entry-card" data-section="personal" aria-labelledby="personal-heading">
             <div class="entry-card__heading"><span>01</span><div><h2 id="personal-heading">Personal details</h2><p>Identity and contact information for the driver profile.</p></div></div>
             <div class="entry-fields">
               <label>Full name *<input name="fullName" type="text" autocomplete="name" required placeholder="e.g. Aarav Sharma"></label>
@@ -42,9 +47,10 @@
               <label>Operating hub *<select name="hub" required><option value="">Select hub</option><option>Saket</option><option>Okhla</option><option>Dwarka</option><option>Rohini</option><option>Mayur Vihar</option></select></label>
               <label class="entry-field--wide">Current address *<textarea name="address" rows="3" required placeholder="House number, street, locality, city and PIN code"></textarea></label>
             </div>
+            <div class="entry-card__actions"><button type="button" class="btn btn-primary entry-save" data-save-section="personal">Save personal details</button></div>
           </section>
 
-          <section class="entry-card" aria-labelledby="documents-heading">
+          <section class="entry-card entry-card--locked" data-section="documents" aria-labelledby="documents-heading" aria-disabled="true">
             <div class="entry-card__heading"><span>02</span><div><h2 id="documents-heading">Documents & compliance</h2><p>PDF, JPG or PNG files, up to 10 MB each.</p></div></div>
             <div class="entry-fields">
               <label>Aadhaar number *<input name="aadhaarNumber" type="text" inputmode="numeric" pattern="[0-9]{12}" required placeholder="12-digit Aadhaar number"></label>
@@ -58,9 +64,10 @@
               <label class="document-upload"><strong>Driver photo *</strong><span>Recent passport photo</span><input name="photoFile" type="file" accept=".jpg,.jpeg,.png" required></label>
               <label class="document-upload"><strong>Police verification</strong><span>Certificate or receipt</span><input name="policeFile" type="file" accept=".pdf,.jpg,.jpeg,.png"></label>
             </div>
+            <div class="entry-card__actions"><button type="button" class="btn btn-primary entry-save" data-save-section="documents">Save documents & compliance</button></div>
           </section>
 
-          <section class="entry-card" aria-labelledby="attendance-heading">
+          <section class="entry-card entry-card--locked" data-section="attendance" aria-labelledby="attendance-heading" aria-disabled="true">
             <div class="entry-card__heading"><span>03</span><div><h2 id="attendance-heading">Attendance</h2><p>Capture today's shift and check-in details.</p></div></div>
             <div class="entry-fields">
               <label>Attendance date *<input name="attendanceDate" id="attendance-date" type="date" required></label>
@@ -68,9 +75,10 @@
               <label>Shift *<select name="shift" required><option>Morning · 06:00–14:00</option><option>Evening · 14:00–22:00</option><option>Night · 22:00–06:00</option></select></label>
               <label>Check-in time<input name="checkIn" type="time"></label>
             </div>
+            <div class="entry-card__actions"><button type="button" class="btn btn-primary entry-save" data-save-section="attendance">Save attendance</button></div>
           </section>
 
-          <section class="entry-card" aria-labelledby="vehicle-heading">
+          <section class="entry-card entry-card--locked" data-section="vehicle" aria-labelledby="vehicle-heading" aria-disabled="true">
             <div class="entry-card__heading"><span>04</span><div><h2 id="vehicle-heading">Vehicle mapping</h2><p>Assign the primary vehicle and route relationship.</p></div></div>
             <div class="entry-fields">
               <label>Vehicle registration *<input name="vehicleRegistration" type="text" required placeholder="e.g. DL9S-EV-2146"></label>
@@ -79,10 +87,11 @@
               <label>Mapping start date *<input name="mappingStart" type="date" required></label>
               <label class="entry-field--wide">Route / remarks<textarea name="remarks" rows="3" placeholder="Primary service zone, route or handover notes"></textarea></label>
             </div>
+            <div class="entry-card__actions"><button type="button" class="btn btn-primary entry-save" data-save-section="vehicle">Save vehicle mapping</button></div>
           </section>
 
           <div id="entry-message" class="entry-message" role="status" aria-live="polite"></div>
-          <div class="entry-actions"><button type="reset" class="btn btn-outline">Clear form</button><button type="submit" class="btn btn-primary">Save driver record</button></div>
+          <div class="entry-actions"><button type="reset" class="btn btn-outline">Start a new driver</button></div>
         </form>
 
         <aside class="entry-sidebar">
