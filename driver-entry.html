@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Driver data entry – Lium Go</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="driver-entry-page">
+  <div class="top-bar"><div class="container top-bar__content"><span>Driver operations portal</span><span>Support: +91 8882 540 885</span></div></div>
+  <header class="site-header">
+    <div class="container header__content">
+      <a class="logo" href="dashboard.html"><img src="images/liumgo-logo.png" alt="Lium Go logo"></a>
+      <a href="dashboard.html" class="btn btn-outline">← Back to control tower</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="driver-entry-hero">
+      <div class="container">
+        <p class="eyebrow">Drivers / New record</p>
+        <h1>Driver onboarding & daily operations</h1>
+        <p>Add one complete driver record, upload compliance documents, mark attendance, and map a vehicle. Required fields are marked with *.</p>
+        <div class="entry-progress" aria-label="Form sections"><span>1 Personal</span><span>2 Documents</span><span>3 Attendance</span><span>4 Vehicle</span></div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container driver-entry-layout">
+        <form id="driver-entry-form" class="driver-entry-form">
+          <section class="entry-card" aria-labelledby="personal-heading">
+            <div class="entry-card__heading"><span>01</span><div><h2 id="personal-heading">Personal details</h2><p>Identity and contact information for the driver profile.</p></div></div>
+            <div class="entry-fields">
+              <label>Full name *<input name="fullName" type="text" autocomplete="name" required placeholder="e.g. Aarav Sharma"></label>
+              <label>Mobile number *<input name="mobile" type="tel" inputmode="numeric" pattern="[0-9]{10}" required placeholder="10-digit mobile number"></label>
+              <label>Email address<input name="email" type="email" autocomplete="email" placeholder="driver@example.com"></label>
+              <label>Date of birth *<input name="dateOfBirth" type="date" required></label>
+              <label>Emergency contact *<input name="emergencyContact" type="tel" inputmode="numeric" pattern="[0-9]{10}" required placeholder="10-digit mobile number"></label>
+              <label>Operating hub *<select name="hub" required><option value="">Select hub</option><option>Saket</option><option>Okhla</option><option>Dwarka</option><option>Rohini</option><option>Mayur Vihar</option></select></label>
+              <label class="entry-field--wide">Current address *<textarea name="address" rows="3" required placeholder="House number, street, locality, city and PIN code"></textarea></label>
+            </div>
+          </section>
+
+          <section class="entry-card" aria-labelledby="documents-heading">
+            <div class="entry-card__heading"><span>02</span><div><h2 id="documents-heading">Documents & compliance</h2><p>PDF, JPG or PNG files, up to 10 MB each.</p></div></div>
+            <div class="entry-fields">
+              <label>Aadhaar number *<input name="aadhaarNumber" type="text" inputmode="numeric" pattern="[0-9]{12}" required placeholder="12-digit Aadhaar number"></label>
+              <label>Driving licence number *<input name="licenceNumber" type="text" required placeholder="e.g. DL0420260012345"></label>
+              <label>Licence expiry *<input name="licenceExpiry" type="date" required></label>
+              <label>Police verification status *<select name="policeVerification" required><option value="">Select status</option><option>Verified</option><option>Pending</option><option>Not started</option></select></label>
+            </div>
+            <div class="document-grid">
+              <label class="document-upload"><strong>Aadhaar card *</strong><span>Front/back combined</span><input name="aadhaarFile" type="file" accept=".pdf,.jpg,.jpeg,.png" required></label>
+              <label class="document-upload"><strong>Driving licence *</strong><span>Clear front/back copy</span><input name="licenceFile" type="file" accept=".pdf,.jpg,.jpeg,.png" required></label>
+              <label class="document-upload"><strong>Driver photo *</strong><span>Recent passport photo</span><input name="photoFile" type="file" accept=".jpg,.jpeg,.png" required></label>
+              <label class="document-upload"><strong>Police verification</strong><span>Certificate or receipt</span><input name="policeFile" type="file" accept=".pdf,.jpg,.jpeg,.png"></label>
+            </div>
+          </section>
+
+          <section class="entry-card" aria-labelledby="attendance-heading">
+            <div class="entry-card__heading"><span>03</span><div><h2 id="attendance-heading">Attendance</h2><p>Capture today's shift and check-in details.</p></div></div>
+            <div class="entry-fields">
+              <label>Attendance date *<input name="attendanceDate" id="attendance-date" type="date" required></label>
+              <label>Status *<select name="attendanceStatus" required><option>Present</option><option>Absent</option><option>Leave</option><option>Weekly off</option></select></label>
+              <label>Shift *<select name="shift" required><option>Morning · 06:00–14:00</option><option>Evening · 14:00–22:00</option><option>Night · 22:00–06:00</option></select></label>
+              <label>Check-in time<input name="checkIn" type="time"></label>
+            </div>
+          </section>
+
+          <section class="entry-card" aria-labelledby="vehicle-heading">
+            <div class="entry-card__heading"><span>04</span><div><h2 id="vehicle-heading">Vehicle mapping</h2><p>Assign the primary vehicle and route relationship.</p></div></div>
+            <div class="entry-fields">
+              <label>Vehicle registration *<input name="vehicleRegistration" type="text" required placeholder="e.g. DL9S-EV-2146"></label>
+              <label>Vehicle category *<select name="vehicleCategory" required><option value="">Select category</option><option>2W</option><option>3W</option><option>4W</option></select></label>
+              <label>Client account *<select name="client" required><option value="">Select client</option><option>Zomato</option><option>Blinkit</option><option>Tata 1mg</option><option>BigBasket</option><option>Amazon</option><option>Flipkart</option><option>Swiggy</option><option>Zepto</option></select></label>
+              <label>Mapping start date *<input name="mappingStart" type="date" required></label>
+              <label class="entry-field--wide">Route / remarks<textarea name="remarks" rows="3" placeholder="Primary service zone, route or handover notes"></textarea></label>
+            </div>
+          </section>
+
+          <div id="entry-message" class="entry-message" role="status" aria-live="polite"></div>
+          <div class="entry-actions"><button type="reset" class="btn btn-outline">Clear form</button><button type="submit" class="btn btn-primary">Save driver record</button></div>
+        </form>
+
+        <aside class="entry-sidebar">
+          <div class="entry-help-card"><span class="entry-help-card__icon">✓</span><h2>Before you submit</h2><ul><li>Confirm names match the uploaded ID.</li><li>Check licence validity and vehicle registration.</li><li>Upload only approved business documents.</li><li>Get driver consent before storing personal data.</li></ul></div>
+          <div class="entry-help-card entry-help-card--drive"><span class="entry-help-card__icon">☁</span><h2>Google Drive connection</h2><p>This prototype saves locally until a secure Apps Script endpoint is configured.</p><ol><li>Create a restricted Drive folder.</li><li>Deploy the supplied Apps Script web app.</li><li>Set the endpoint in <code>driver-entry.js</code>.</li></ol><a href="GOOGLE_DRIVE_SETUP.md">Open full setup guide →</a></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container footer__content"><p><strong>Lium Go</strong> – Secure driver operations.</p><a href="dashboard.html">Control tower</a></div></footer>
+  <script src="script.js"></script>
+  <script src="driver-entry.js"></script>
+</body>
+</html>
