@@ -358,6 +358,7 @@ const driverZones = ["Saket", "Connaught Place", "Rohini", "Dwarka", "Okhla", "L
 const driverVehiclePool = ["DL9S-EV-2146", "DL7S-EV-3308", "DL2S-EV-1180", "DL6S-EV-4077", "DL4S-EV-5631", "DL8S-EV-9024", "DL5S-EV-7318", "DL1S-EV-6842", "DL3S-EV-2765", "DL3C-EV-8021", "DL5L-EV-7712", "DL8L-EV-6504", "DL2L-EV-3349", "DL6L-EV-1186", "DL1L-EV-4490"];
 const DRIVER_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbweZ7bZP9FmlLtiGJMuPGLkKDAgtqFhOJsTLSswcWvM9xc0cRLjSl2MVw5TjRvzpUf1Dw/exec";
 const DRIVER_RECORDS_STORAGE_KEY = "liumgoDriverRecords";
+const DRIVER_BULK_COLUMNS = ["recordId", "fullName", "mobile", "email", "dateOfBirth", "emergencyContact", "hub", "address", "aadhaarNumber", "licenceNumber", "licenceExpiry", "policeVerification", "attendanceDate", "attendanceStatus", "shift", "checkIn", "vehicleRegistration", "vehicleCategory", "client", "mappingStart", "remarks"];
 const HRMS_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbyg3OPSX-y6cqOYAEqmXzDSACi-zOsQYWIy-6JJB4Epel1eAYj_n7Fzz_P2Nypa6-eW/exec";
 const HRMS_RECORDS_STORAGE_KEY = "liumgoHrmsRecords";
 const MAINTENANCE_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbz5FqngMF4rO_9EQeOnpx7PFEGoBLfty3535T41-X-HSYi8d2uSCO6DF8FlwwEJ0e01/exec";
@@ -590,6 +591,12 @@ function renderDriversDashboard() {
   const cards = tab.options.slice(0, 48).map((item, index) => `<article class="genbi-card driver-record-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
   return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Driver intelligence</p><h2>${tab.title}</h2><p>${tab.subtitle} The expanded dataset now tracks 100+ driver records across clients, shift status, hours, productivity and deliveries.</p><a class="btn btn-primary driver-entry-link" href="driver-entry.html">+ Add driver details</a></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>driver records</span></div></div>
+    <section class="driver-bulk-upload" aria-labelledby="driver-bulk-heading">
+      <div class="driver-bulk-upload__intro"><p class="genbi-eyebrow">Bulk onboarding</p><h3 id="driver-bulk-heading">Upload multiple drivers</h3><p>Complete the CSV template, then select all supporting documents. Start every document filename with the matching <strong>recordId</strong>, for example <code>DRV-001__aadhaar.pdf</code>.</p></div>
+      <div class="driver-bulk-upload__actions"><button type="button" class="btn btn-outline" id="download-driver-template">↓ Download CSV template</button><label class="driver-bulk-file">Driver details (.csv)<input id="driver-bulk-csv" type="file" accept=".csv,text/csv"></label><label class="driver-bulk-file">Driver documents<input id="driver-bulk-documents" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple></label><button type="button" class="btn btn-primary" id="upload-drivers-bulk" disabled>Upload to backend</button></div>
+      <p id="driver-bulk-status" class="driver-report-status" role="status" aria-live="polite">Select a completed CSV to validate the batch.</p>
+      <div id="driver-bulk-preview" class="driver-bulk-preview" hidden></div>
+    </section>
     <section class="driver-report-tools" aria-labelledby="driver-report-heading">
       <div><p class="genbi-eyebrow">Reports & storage</p><h3 id="driver-report-heading">Pull driver information</h3><p>Download a CSV report of every dashboard and locally entered driver, or retrieve document folders from the connected secure storage.</p></div>
       <div class="driver-report-tools__actions"><button type="button" class="btn btn-primary" id="download-driver-report">↓ Download all drivers</button><button type="button" class="btn btn-outline" id="pull-driver-documents">↻ Pull stored documents</button></div>
@@ -616,6 +623,7 @@ function hydrateDriverReportTools() {
   const status = document.getElementById("driver-report-status");
   const results = document.getElementById("driver-document-results");
   if (!reportButton || !documentsButton || !status || !results) return;
+  hydrateDriverBulkUpload();
 
   reportButton.addEventListener("click", async () => {
     reportButton.disabled = true;
@@ -665,6 +673,89 @@ function hydrateDriverReportTools() {
       documentsButton.disabled = false;
     }
   });
+}
+
+function hydrateDriverBulkUpload() {
+  const templateButton = document.getElementById("download-driver-template");
+  const csvInput = document.getElementById("driver-bulk-csv");
+  const documentsInput = document.getElementById("driver-bulk-documents");
+  const uploadButton = document.getElementById("upload-drivers-bulk");
+  const status = document.getElementById("driver-bulk-status");
+  const preview = document.getElementById("driver-bulk-preview");
+  if (!templateButton || !csvInput || !documentsInput || !uploadButton || !status || !preview) return;
+  let rows = [];
+
+  templateButton.addEventListener("click", () => {
+    const example = ["DRV-001", "Aarav Sharma", "9876543210", "aarav@example.com", "1994-08-16", "9876500000", "Saket", "New Delhi", "1234", "DL0120260001234", "2029-08-15", "Verified", "2026-08-02", "Present", "Morning", "08:00", "DL9S-EV-2146", "2W", "Zomato", "2026-08-03", "Ready for onboarding"];
+    downloadCsv([Object.fromEntries(DRIVER_BULK_COLUMNS.map((column, index) => [column, example[index]]))], "liumgo-driver-bulk-upload-template.csv");
+    status.textContent = "Template downloaded. Keep the column names unchanged and use a unique recordId for every driver.";
+  });
+
+  csvInput.addEventListener("change", async () => {
+    rows = [];
+    uploadButton.disabled = true;
+    preview.hidden = true;
+    const file = csvInput.files[0];
+    if (!file) return;
+    try {
+      const parsed = parseCsv(await file.text());
+      const missing = DRIVER_BULK_COLUMNS.filter((column) => !parsed.headers.includes(column));
+      if (missing.length) throw new Error(`Missing columns: ${missing.join(", ")}`);
+      rows = parsed.rows.filter((row) => Object.values(row).some((value) => value.trim()));
+      if (!rows.length) throw new Error("The CSV has no driver rows.");
+      const invalid = rows.map((row, index) => (!row.recordId || !row.fullName || !row.mobile ? index + 2 : null)).filter(Boolean);
+      const ids = rows.map((row) => row.recordId);
+      if (invalid.length) throw new Error(`recordId, fullName and mobile are required on row(s): ${invalid.join(", ")}`);
+      if (new Set(ids).size !== ids.length) throw new Error("Every recordId must be unique in the CSV.");
+      status.textContent = `${rows.length} drivers validated. Select documents if required, then upload the batch.`;
+      preview.innerHTML = `<strong>${rows.length} drivers ready</strong><span>${rows.slice(0, 5).map((row) => escapeHtml(`${row.recordId} · ${row.fullName}`)).join("<br>")}${rows.length > 5 ? `<br>and ${rows.length - 5} more…` : ""}</span>`;
+      preview.hidden = false;
+      uploadButton.disabled = false;
+    } catch (error) {
+      status.textContent = `CSV could not be validated: ${error.message}`;
+    }
+  });
+
+  uploadButton.addEventListener("click", async () => {
+    uploadButton.disabled = true;
+    status.textContent = "Preparing driver details and documents for secure upload…";
+    try {
+      const documents = await Promise.all([...documentsInput.files].map(async (file) => {
+        const separator = file.name.indexOf("__");
+        if (separator < 1) throw new Error(`${file.name} must start with recordId__`);
+        const recordId = file.name.slice(0, separator);
+        if (!rows.some((row) => row.recordId === recordId)) throw new Error(`${file.name} does not match a CSV recordId.`);
+        return { recordId, name: file.name.slice(separator + 2), type: file.type, data: (await fileToDataUrl(file)).split(",")[1] };
+      }));
+      const response = await fetch(DRIVER_STORAGE_ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "bulkDrivers", drivers: rows, documents }) });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Backend rejected the batch.");
+      status.textContent = `Uploaded ${payload.imported || rows.length} drivers and ${payload.documentCount ?? documents.length} documents to backend storage.`;
+      csvInput.value = ""; documentsInput.value = ""; rows = []; preview.hidden = true;
+    } catch (error) {
+      status.textContent = `Bulk upload failed: ${error.message}`;
+      uploadButton.disabled = false;
+    }
+  });
+}
+
+function parseCsv(text) {
+  const table = []; let row = []; let cell = ""; let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    if (char === '"' && quoted && text[index + 1] === '"') { cell += '"'; index += 1; }
+    else if (char === '"') quoted = !quoted;
+    else if (char === "," && !quoted) { row.push(cell); cell = ""; }
+    else if ((char === "\n" || char === "\r") && !quoted) { if (char === "\r" && text[index + 1] === "\n") index += 1; row.push(cell); if (row.some(Boolean)) table.push(row); row = []; cell = ""; }
+    else cell += char;
+  }
+  row.push(cell); if (row.some(Boolean)) table.push(row);
+  const headers = (table.shift() || []).map((header) => header.replace(/^\ufeff/, "").trim());
+  return { headers, rows: table.map((values) => Object.fromEntries(headers.map((header, index) => [header, (values[index] || "").trim()]))) };
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(new Error(`Could not read ${file.name}.`)); reader.readAsDataURL(file); });
 }
 
 function readLocalDriverRecords() {

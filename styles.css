@@ -2111,6 +2111,17 @@ a:hover {
   background: linear-gradient(135deg, #fff 55%, #f6effc);
   box-shadow: 0 12px 28px rgba(77, 20, 140, 0.08);
 }
+.driver-bulk-upload { margin-bottom: 22px; padding: 24px; display: grid; grid-template-columns: minmax(240px, 1fr) minmax(320px, 1.35fr); gap: 20px 28px; border: 1px solid #dbe7df; border-radius: 18px; background: linear-gradient(135deg, #f7fbf8, #fff); box-shadow: 0 12px 28px rgba(15, 54, 36, .06); }
+.driver-bulk-upload h3, .driver-bulk-upload p { margin: 0; }
+.driver-bulk-upload__intro { display: grid; align-content: start; gap: 8px; }
+.driver-bulk-upload__intro code { padding: 2px 5px; border-radius: 5px; background: #e7f1eb; font-size: .82em; }
+.driver-bulk-upload__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.driver-bulk-file { display: grid; gap: 6px; padding: 10px 12px; color: #34423a; border: 1px dashed #9eb9a8; border-radius: 10px; background: #fff; font-size: .8rem; font-weight: 700; }
+.driver-bulk-file input { min-width: 0; font-size: .76rem; font-weight: 400; }
+.driver-bulk-upload .driver-report-status, .driver-bulk-preview { grid-column: 1 / -1; }
+.driver-bulk-preview { display: flex; gap: 18px; padding: 12px 15px; border-left: 4px solid #1d7448; border-radius: 8px; background: #edf7f1; }
+.driver-bulk-preview[hidden] { display: none; }
+.driver-bulk-preview span { color: #4b6355; font-size: .84rem; line-height: 1.6; }
 .driver-report-tools h3, .driver-report-tools p { margin: 0; }
 .driver-report-tools__actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
 .driver-report-status { grid-column: 1 / -1; color: #4b5563; font-size: .88rem; }
@@ -2282,6 +2293,8 @@ a:hover {
   }
 
   .driver-report-tools { grid-template-columns: 1fr; }
+  .driver-bulk-upload { grid-template-columns: 1fr; }
+  .driver-bulk-upload__actions { grid-template-columns: 1fr; }
   .driver-report-tools__actions { justify-content: stretch; }
   .driver-report-tools__actions .btn { width: 100%; }
   .driver-document-results article { align-items: flex-start; flex-direction: column; }
