@@ -360,6 +360,8 @@ const DRIVER_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbweZ7bZ
 const DRIVER_RECORDS_STORAGE_KEY = "liumgoDriverRecords";
 const HRMS_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbyg3OPSX-y6cqOYAEqmXzDSACi-zOsQYWIy-6JJB4Epel1eAYj_n7Fzz_P2Nypa6-eW/exec";
 const HRMS_RECORDS_STORAGE_KEY = "liumgoHrmsRecords";
+const MAINTENANCE_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbz5FqngMF4rO_9EQeOnpx7PFEGoBLfty3535T41-X-HSYi8d2uSCO6DF8FlwwEJ0e01/exec";
+const MAINTENANCE_RECORDS_STORAGE_KEY = "liumgoMaintenanceRecords";
 
 function buildDriverRecords() {
   return Array.from({ length: 128 }, (_, index) => {
@@ -740,6 +742,12 @@ function renderMaintenanceDashboard() {
   const cards = tab.options.map((item, index) => `<article class="genbi-card maintenance-record-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
   return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Maintenance intelligence</p><h2>${tab.title}</h2><p>${tab.subtitle}</p><a class="btn btn-primary driver-entry-link" href="maintenance-entry.html">+ Add vehicle & maintenance details</a></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>maintenance records</span></div></div>
+    <section class="driver-report-tools" aria-labelledby="maintenance-report-heading">
+      <div><p class="genbi-eyebrow">Reports & storage</p><h3 id="maintenance-report-heading">Pull vehicle records & documents</h3><p>Download a CSV with every dashboard, locally entered and stored vehicle detail, or retrieve vehicle document folders from secure storage.</p></div>
+      <div class="driver-report-tools__actions"><button type="button" class="btn btn-primary" id="download-maintenance-report">↓ Download all vehicle details</button><button type="button" class="btn btn-outline" id="pull-maintenance-documents">↻ Pull stored documents</button></div>
+      <p id="maintenance-report-status" class="driver-report-status" role="status" aria-live="polite"></p>
+      <div id="maintenance-document-results" class="driver-document-results" hidden></div>
+    </section>
     <section class="maintenance-dashboard">
       <div class="maintenance-summary-grid">${summary.map((item) => `<article class="maintenance-summary-card"><span>${item.category}</span><strong>${item.count}</strong><p>${item.downtime} total downtime days · ${item.avgDowntime} avg days · ${item.pmDue} PM due by 10 Jul</p></article>`).join("")}</div>
       <div class="maintenance-analytics-grid">
@@ -752,6 +760,95 @@ function renderMaintenanceDashboard() {
       </div>
     </section>
     <div class="genbi-layout"><section class="genbi-grid genbi-grid--maintenance">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask maintenance by registration</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+}
+
+function readLocalMaintenanceRecords() {
+  try { return JSON.parse(localStorage.getItem(MAINTENANCE_RECORDS_STORAGE_KEY) || "[]"); }
+  catch { return []; }
+}
+
+function flattenLocalMaintenanceRecord(record) {
+  const sections = record.sections || {};
+  const merged = Object.assign({}, sections.vehicle, sections.maintenance, sections.documents, sections.mapping);
+  return {
+    recordId: record.recordId || "", registrationNumber: merged.registrationNumber || "", assetId: merged.assetId || "",
+    category: merged.category || "", powertrain: merged.powertrain || "", make: merged.make || "", model: merged.model || "",
+    modelYear: merged.modelYear || "", odometerKm: merged.odometerKm || "", homeHub: merged.homeHub || "",
+    operationalStatus: merged.operationalStatus || "", serviceType: merged.serviceType || "", priority: merged.priority || "",
+    lastServiceDate: merged.lastServiceDate || "", nextServiceDate: merged.nextServiceDate || "", workshop: merged.workshop || "",
+    estimatedCost: merged.estimatedCost || "", maintenanceNotes: merged.maintenanceNotes || "", insuranceExpiry: merged.insuranceExpiry || "",
+    fitnessExpiry: merged.fitnessExpiry || "", permitExpiry: merged.permitExpiry || "", pucExpiry: merged.pucExpiry || "",
+    driverName: merged.driverName || "", driverId: merged.driverId || "", driverMobile: merged.driverMobile || "",
+    mappingStart: merged.mappingStart || "", mappingEnd: merged.mappingEnd || "", shift: merged.shift || "",
+    mappingNotes: merged.mappingNotes || "", documents: (sections.documents?.documentNames || []).join("; "),
+    updatedAt: record.updatedAt || "", source: "Local entry"
+  };
+}
+
+function renderMaintenanceDocuments(documents, container, localOnly = false) {
+  container.innerHTML = documents.map((record) => {
+    const registration = record.registrationNumber || record.title || "Unnamed vehicle";
+    const id = record.recordId || record.assetId || "No record ID";
+    const files = Array.isArray(record.files) ? record.files : [];
+    const names = files.map((file) => typeof file === "string" ? file : file.name).filter(Boolean).join(", ") || record.documents || "Documents on file";
+    const folderUrl = /^https:\/\/drive\.google\.com\//.test(record.folderUrl || record.documentFolderUrl || "") ? (record.folderUrl || record.documentFolderUrl) : "";
+    return `<article><div><strong>${escapeHtml(registration)}</strong><span>${escapeHtml(id)} · ${escapeHtml(names)}</span></div>${folderUrl && !localOnly ? `<a class="btn btn-outline" href="${escapeHtml(folderUrl)}" target="_blank" rel="noopener noreferrer">Open documents ↗</a>` : `<span class="driver-document-results__local">${localOnly ? "Local reference" : "Folder unavailable"}</span>`}</article>`;
+  }).join("");
+}
+
+function hydrateMaintenanceReportTools() {
+  const reportButton = document.getElementById("download-maintenance-report");
+  const documentsButton = document.getElementById("pull-maintenance-documents");
+  const status = document.getElementById("maintenance-report-status");
+  const results = document.getElementById("maintenance-document-results");
+  if (!reportButton || !documentsButton || !status || !results) return;
+
+  reportButton.addEventListener("click", async () => {
+    reportButton.disabled = true;
+    status.textContent = "Preparing the complete vehicle report…";
+    const dashboardRecords = dashboardData.maintenance.options.map((record) => ({
+      registrationNumber: record.title, category: record.category, maintenanceSummary: record.meta,
+      maintenanceDetail: record.detail, maintenanceInsight: record.insight, downtimeDays: record.downtimeDays,
+      nextServiceDate: record.nextPm, source: "Dashboard"
+    }));
+    const localRecords = readLocalMaintenanceRecords().map(flattenLocalMaintenanceRecord);
+    let storedRecords = [];
+    try {
+      const response = await fetch(`${MAINTENANCE_STORAGE_ENDPOINT}?action=vehicles`, { method: "GET" });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Storage report is unavailable.");
+      storedRecords = Array.isArray(payload.vehicles) ? payload.vehicles : [];
+    } catch (error) {
+      status.textContent = `Storage could not be reached (${error.message}); downloaded dashboard and local records only.`;
+    }
+    const allRecords = [...dashboardRecords, ...localRecords, ...storedRecords];
+    downloadCsv(allRecords, `liumgo-all-vehicle-details-${new Date().toISOString().slice(0, 10)}.csv`);
+    if (storedRecords.length) status.textContent = `Downloaded ${allRecords.length} vehicle records, including ${storedRecords.length} pulled from secure storage.`;
+    else if (!status.textContent.includes("Storage could not")) status.textContent = `Downloaded ${allRecords.length} dashboard and locally entered vehicle records.`;
+    reportButton.disabled = false;
+  });
+
+  documentsButton.addEventListener("click", async () => {
+    documentsButton.disabled = true;
+    status.textContent = "Pulling vehicle documents from secure storage…";
+    results.hidden = true;
+    try {
+      const response = await fetch(`${MAINTENANCE_STORAGE_ENDPOINT}?action=documents`, { method: "GET" });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Storage did not return document records.");
+      const documents = Array.isArray(payload.documents) ? payload.documents : [];
+      renderMaintenanceDocuments(documents, results);
+      status.textContent = documents.length ? `Pulled ${documents.length} vehicle document folders.` : "No vehicle document folders are available yet.";
+      results.hidden = false;
+    } catch (error) {
+      const localDocuments = readLocalMaintenanceRecords().map(flattenLocalMaintenanceRecord).filter((record) => record.documents);
+      renderMaintenanceDocuments(localDocuments, results, true);
+      status.textContent = localDocuments.length ? `Secure storage is unavailable (${error.message}). Showing ${localDocuments.length} locally saved document references instead.` : `Could not pull documents: ${error.message}`;
+      results.hidden = localDocuments.length === 0;
+    } finally {
+      documentsButton.disabled = false;
+    }
+  });
 }
 
 function bootDashboardTabs() {
@@ -784,6 +881,7 @@ function bootDashboardTabs() {
     hydrateAgent(tabKey);
     if (tabKey === "drivers") hydrateDriverReportTools();
     if (tabKey === "hrms") hydrateHrmsReportTools();
+    if (tabKey === "maintenance") hydrateMaintenanceReportTools();
   }
 
   buttons.forEach((button) => button.addEventListener("click", () => render(button.dataset.dashboardTab)));

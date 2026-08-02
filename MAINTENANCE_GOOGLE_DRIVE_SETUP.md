@@ -57,6 +57,46 @@ function doPost(e) {
   }
 }
 
+function doGet(e) {
+  try {
+    const action = String((e.parameter || {}).action || "vehicles");
+    const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("Vehicles");
+    const values = sheet.getDataRange().getDisplayValues();
+    const headers = values.shift() || [];
+    const vehicles = values.filter(row => row[0]).map(row =>
+      Object.fromEntries(headers.map((header, index) => [camel(header), row[index]]))
+    );
+
+    if (action === "documents") {
+      const documents = vehicles.filter(vehicle => vehicle.documentFolderUrl).map(vehicle => ({
+        recordId: vehicle.recordId,
+        registrationNumber: vehicle.registrationNumber,
+        assetId: vehicle.assetId,
+        folderUrl: vehicle.documentFolderUrl,
+        files: listVehicleFiles(vehicle.recordId)
+      }));
+      return json({ ok: true, documents });
+    }
+    if (action !== "vehicles") throw new Error("Unsupported action");
+    return json({ ok: true, vehicles });
+  } catch (error) {
+    return json({ ok: false, error: error.message });
+  }
+}
+
+function listVehicleFiles(recordId) {
+  const folder = findVehicleFolder(recordId);
+  if (!folder) return [];
+  const files = folder.getFiles();
+  const names = [];
+  while (files.hasNext()) names.push(files.next().getName());
+  return names;
+}
+
+function camel(value) {
+  return String(value).trim().replace(/[^a-zA-Z0-9]+(.)/g, (_, letter) => letter.toUpperCase()).replace(/^./, first => first.toLowerCase());
+}
+
 function findOrCreateRow(sheet, recordId) {
   const lastRow = sheet.getLastRow();
   if (lastRow > 1) {
