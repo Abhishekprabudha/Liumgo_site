@@ -1545,7 +1545,11 @@ a:hover {
 
 /* GenBI dashboard tab workspaces */
 .dashboard-tab-content {
+  width: 100%;
+  min-width: 0;
   min-height: 520px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
 }
 
 .genbi-hero {
@@ -1617,6 +1621,37 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+  max-height: min(980px, calc(100vh - 120px));
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--color-primary) #eef2f7;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  padding-right: 6px;
+}
+
+.genbi-grid::-webkit-scrollbar,
+.vehicle-catalog::-webkit-scrollbar,
+.dashboard-tab-content::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.genbi-grid::-webkit-scrollbar-track,
+.vehicle-catalog::-webkit-scrollbar-track,
+.dashboard-tab-content::-webkit-scrollbar-track {
+  background: #eef2f7;
+  border-radius: 999px;
+}
+
+.genbi-grid::-webkit-scrollbar-thumb,
+.vehicle-catalog::-webkit-scrollbar-thumb,
+.dashboard-tab-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-primary), var(--color-accent));
+  border: 2px solid #eef2f7;
+  border-radius: 999px;
 }
 
 .genbi-card {
@@ -1880,6 +1915,15 @@ a:hover {
 .vehicle-catalog {
   display: grid;
   gap: 22px;
+  max-height: min(980px, calc(100vh - 120px));
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--color-primary) #eef2f7;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  padding-right: 6px;
 }
 
 .vehicle-category {
