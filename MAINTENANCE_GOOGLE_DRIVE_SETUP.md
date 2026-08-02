@@ -33,6 +33,7 @@ function doPost(e) {
   lock.waitLock(30000);
   try {
     const payload = JSON.parse(e.postData.contents);
+    if (payload.action === "bulkVehicles") return importVehicleBatch(payload);
     const fields = payload.fields || {};
     const recordId = String(payload.recordId || `VEH-${Date.now()}`).slice(0, 50);
     const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("Vehicles");
@@ -55,6 +56,37 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+function importVehicleBatch(payload) {
+  const vehicles = payload.vehicles || [];
+  const documents = payload.documents || [];
+  if (!vehicles.length || vehicles.length > 100) throw new Error("Upload between 1 and 100 vehicles per batch");
+  const required = ["recordId", "registrationNumber", "assetId"];
+  const ids = vehicles.map(vehicle => String(vehicle.recordId || "").trim());
+  if (new Set(ids).size !== ids.length) throw new Error("Duplicate recordId in batch");
+  vehicles.forEach(vehicle => required.forEach(field => {
+    if (!String(vehicle[field] || "").trim()) throw new Error(`${field} is required`);
+  }));
+  documents.forEach(doc => {
+    if (!ids.includes(String(doc.recordId || ""))) throw new Error(`Unknown recordId for ${doc.name}`);
+  });
+
+  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("Vehicles");
+  const parent = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+  vehicles.forEach(vehicle => {
+    const recordId = String(vehicle.recordId).slice(0, 50);
+    const row = findOrCreateRow(sheet, recordId);
+    let folder = findVehicleFolder(recordId);
+    if (!folder) folder = parent.createFolder(`${safeName(recordId)} - ${safeName(vehicle.registrationNumber)}`);
+    documents.filter(doc => doc.recordId === vehicle.recordId).forEach(doc => saveDocument(folder, doc));
+    Object.keys(vehicle).forEach(name => {
+      if (FIELD_COLUMNS[name]) sheet.getRange(row, FIELD_COLUMNS[name]).setValue(vehicle[name]);
+    });
+    sheet.getRange(row, 2).setValue(new Date());
+    sheet.getRange(row, 31).setValue(folder.getUrl());
+  });
+  return json({ ok: true, imported: vehicles.length, documentCount: documents.length });
 }
 
 function doGet(e) {
@@ -151,6 +183,15 @@ function json(value) {
 
 6. Submit a test record. Confirm that a new row appears in `Vehicles`, a vehicle subfolder is created, and each uploaded document opens only for an authorised user.
 7. Every time the Apps Script code changes, create a new deployment version (or edit the deployment to use the new version) and retest.
+
+## 4. Use bulk vehicle upload
+
+1. Open **Dashboard → Maintenance** and select **Download CSV template** in the Bulk vehicle import panel.
+2. Keep every template header unchanged. `recordId`, `registrationNumber`, and `assetId` are required; each `recordId` must be unique within the batch.
+3. Name every supporting file with the vehicle record ID, two underscores, and a useful filename—for example `VEH-001__rc.pdf` or `VEH-001__insurance.jpg`. Select all PDF, JPEG, and PNG documents together; each file can be up to 10 MB.
+4. Select the completed CSV and documents, review the validated vehicle count, and choose **Upload to backend**. The backend writes each vehicle into the `Vehicles` sheet and creates a matching subfolder inside the configured Drive folder, including for vehicles that do not yet have documents.
+
+The sample endpoint accepts up to 100 vehicles per request. Google Apps Script request-size and execution-time quotas still apply, so split batches containing many large documents.
 
 ## Troubleshooting backend saves
 
