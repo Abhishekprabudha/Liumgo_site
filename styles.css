@@ -1782,7 +1782,7 @@ a:hover {
 }
 
 .charging-map-panel__map::after {
-  content: "Delhi charging coverage";
+  content: "Delhi multi-fuel energy coverage";
   position: absolute;
   left: 18px;
   top: 18px;

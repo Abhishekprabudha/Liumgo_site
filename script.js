@@ -42,9 +42,9 @@ const dashboardData = {
     subtitle: "2W, 3W and 4W EVs operating across priority lanes, with indicative positions for a live control-tower view."
   },
   charging: {
-    title: "Delhi EV charging intelligence",
-    subtitle: "100+ synthetic public, fleet and partner charging points plotted across Delhi for GenBI-led route planning.",
-    agentLabel: "Select charging point",
+    title: "Delhi multi-fuel energy intelligence",
+    subtitle: "100+ synthetic public, fleet and partner fuel and energy stations across Delhi, supporting 2W, 3W, 4W and commercial vehicles powered by ICE, electricity and alternative fuels.",
+    agentLabel: "Select fuel or energy station",
     options: []
   },
   vehicle: {
@@ -266,40 +266,45 @@ const delhiChargingLocalities = [
   { area: "Greater Kailash", x: 59, y: 66, pin: "110048" }, { area: "Punjabi Bagh", x: 38, y: 44, pin: "110026" }, { area: "Preet Vihar", x: 68, y: 46, pin: "110092" }
 ];
 
-const chargingOperators = ["Tata Power EZ", "Statiq", "ChargeZone", "BSES EV", "E-Fill", "Lium Go Partner"];
-const chargingConnectors = ["CCS2 / Type-2", "Bharat AC / DC", "Type-2 AC", "DC fast / AC", "Fleet AC + CCS2"];
+const energyStationProfiles = [
+  { type: "Petrol & diesel station", fuel: "Petrol / diesel", operator: "IndianOil partner", infrastructure: "4 liquid-fuel dispensers", capacityLabel: "4 active dispensing bays", vehicles: "ICE 2W, 3W, 4W and commercial vehicles" },
+  { type: "CNG station", fuel: "CNG", operator: "IGL partner", infrastructure: "3 CNG dispensers", capacityLabel: "3 active CNG bays", vehicles: "CNG 3W, 4W and commercial vehicles" },
+  { type: "EV charging hub", fuel: "Electricity", operator: "Tata Power EZ", infrastructure: "CCS2, Type-2 and Bharat AC / DC", capacityLabel: "6 charging bays", vehicles: "electric 2W, 3W, 4W and commercial vehicles" },
+  { type: "Battery swapping station", fuel: "Swappable batteries", operator: "Lium Go energy partner", infrastructure: "automated battery-swap cabinets", capacityLabel: "12 charged battery slots", vehicles: "compatible electric 2W and 3W vehicles" },
+  { type: "Biofuel station", fuel: "Bio-CNG / biodiesel", operator: "Green fuel partner", infrastructure: "biofuel-compatible dispensers", capacityLabel: "3 active refuelling bays", vehicles: "compatible ICE and alternative-fuel 3W, 4W and commercial vehicles" },
+  { type: "LNG station", fuel: "LNG", operator: "Corridor energy partner", infrastructure: "cryogenic LNG dispenser", capacityLabel: "2 heavy-vehicle bays", vehicles: "LNG commercial vehicles and trucks" },
+  { type: "Hydrogen station", fuel: "Hydrogen", operator: "Clean mobility pilot", infrastructure: "certified hydrogen dispenser", capacityLabel: "2 controlled refuelling bays", vehicles: "approved hydrogen fuel-cell vehicles" },
+  { type: "Multi-energy mobility hub", fuel: "Petrol / diesel / CNG / electricity", operator: "Lium Go multi-energy partner", infrastructure: "liquid-fuel, CNG, fast-charge and AC facilities", capacityLabel: "10 mixed-energy bays", vehicles: "ICE, EV and alternative-fuel 2W, 3W, 4W and commercial vehicles" }
+];
 
-function buildDelhiChargingPoints() {
+function buildDelhiEnergyStations() {
   return Array.from({ length: 108 }, (_, index) => {
     const locality = delhiChargingLocalities[index % delhiChargingLocalities.length];
     const ring = Math.floor(index / delhiChargingLocalities.length);
+    const profile = energyStationProfiles[index % energyStationProfiles.length];
     const xOffset = ((index * 7) % 13) - 6;
     const yOffset = ((index * 11) % 15) - 7;
-    const chargerCount = 2 + ((index + ring) % 7);
-    const fastSlots = 1 + (index % 4);
     const utilization = 42 + ((index * 5) % 48);
-    const operator = chargingOperators[index % chargingOperators.length];
-    const connector = chargingConnectors[index % chargingConnectors.length];
     const pointNumber = String(index + 1).padStart(3, "0");
 
     return {
-      key: `${locality.area} CP-${pointNumber}`,
-      title: `${locality.area} EV Charge Point ${pointNumber}`,
-      meta: `Area: ${locality.area} · ${chargerCount} chargers · ${connector}`,
-      detail: `Address: ${locality.area} mobility cluster ${ring + 1}, New Delhi ${locality.pin}. Operator: ${operator}. Available capacity: ${fastSlots} fast slots plus ${Math.max(chargerCount - fastSlots, 1)} AC fleet bays.`,
-      insight: utilization > 78 ? "GenBI flags heavy demand; reserve slots before dispatching low-SOC vehicles." : "GenBI sees usable buffer; suitable for planned top-ups and return-to-hub charging.",
+      key: `${locality.area} ES-${pointNumber}`,
+      title: `${locality.area} ${profile.type} ${pointNumber}`,
+      meta: `Area: ${locality.area} · ${profile.fuel} · ${profile.capacityLabel}`,
+      detail: `Address: ${locality.area} mobility cluster ${ring + 1}, New Delhi ${locality.pin}. Operator: ${profile.operator}. Infrastructure: ${profile.infrastructure}. Vehicle access: ${profile.vehicles}.`,
+      insight: utilization > 78 ? "GenBI flags heavy demand; reserve a compatible refuelling, charging or swapping slot before dispatch." : "GenBI sees usable capacity; match the vehicle powertrain, fuel requirement and route window before dispatch.",
       area: locality.area,
-      operator,
-      connectors: connector,
-      chargers: chargerCount,
-      fastSlots,
+      operator: profile.operator,
+      stationType: profile.type,
+      fuel: profile.fuel,
+      vehicles: profile.vehicles,
+      capacityLabel: profile.capacityLabel,
       utilization,
       x: Math.min(88, Math.max(12, locality.x + xOffset)),
       y: Math.min(86, Math.max(14, locality.y + yOffset))
     };
   });
 }
-
 
 const parkingFacilityTypes = ["Fleet parking yard", "Micro-hub", "Partner mall basement", "Metro-adjacent lot", "Industrial hub", "Market association bay"];
 const parkingOperators = ["Lium Go partner yard", "DMRC parking partner", "Market association", "Industrial logistics park", "Mall facilities partner", "multi-fuel fleet operator"];
@@ -385,7 +390,7 @@ dashboardData.drivers.options = buildDriverRecords();
 
 
 dashboardData.vehicle.options = buildVehicleCatalogue();
-dashboardData.charging.options = buildDelhiChargingPoints();
+dashboardData.charging.options = buildDelhiEnergyStations();
 dashboardData.parking.options = buildDelhiParkingHubs();
 
 function renderDashboardOverview() {
@@ -413,9 +418,9 @@ function renderIntelligencePanel(tabKey) {
       }).join("")
     : visibleOptions.map((item, index) => renderCard(item, index)).join("");
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
-  const mapPanel = (isCharging || isParking) ? `<section class="charging-map-panel ${isParking ? "parking-map-panel" : ""}"><div class="charging-map-panel__map ${isParking ? "parking-map-panel__map" : ""}">${tab.options.map((item) => `<button class="charging-pin${isParking ? " parking-pin" : ""}${item.utilization > 78 ? " charging-pin--busy" : ""}" style="--pin-x:${item.x}%; --pin-y:${item.y}%;" data-map-key="${item.key}" aria-label="${item.title}"></button>`).join("")}</div><div class="charging-map-panel__legend"><span><i class="charging-dot"></i> Available / moderate</span><span><i class="charging-dot charging-dot--busy"></i> High-demand GenBI alert</span><strong>${tab.options.length} ${isParking ? "parking and hub records" : "points"} across Delhi</strong></div></section>` : "";
-  const listNote = isCharging ? `<p class="genbi-list-note">Showing 36 highlighted cards below; all ${tab.options.length} charging points are plotted on the Delhi map and available in the GenBI Agent selector.</p>` : isParking ? `<p class="genbi-list-note">Showing 48 highlighted parking and hub cards below; all ${tab.options.length} Delhi records are plotted on the map and searchable in the GenBI Agent selector.</p>` : "";
-  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · ${isParking || isVehicle ? "Delhi multi-fuel network" : "Delhi EV network"}</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${mapPanel}${listNote}<div class="genbi-layout${isVehicle ? " genbi-layout--vehicle" : ""}"><section class="${isVehicle ? "vehicle-catalog" : `genbi-grid${isCharging ? " genbi-grid--charging" : ""}`}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+  const mapPanel = (isCharging || isParking) ? `<section class="charging-map-panel ${isParking ? "parking-map-panel" : ""}"><div class="charging-map-panel__map ${isParking ? "parking-map-panel__map" : ""}">${tab.options.map((item) => `<button class="charging-pin${isParking ? " parking-pin" : ""}${item.utilization > 78 ? " charging-pin--busy" : ""}" style="--pin-x:${item.x}%; --pin-y:${item.y}%;" data-map-key="${item.key}" aria-label="${item.title}"></button>`).join("")}</div><div class="charging-map-panel__legend"><span><i class="charging-dot"></i> Available / moderate</span><span><i class="charging-dot charging-dot--busy"></i> High-demand GenBI alert</span><strong>${tab.options.length} ${isParking ? "parking and hub records" : "fuel and energy stations"} across Delhi</strong></div></section>` : "";
+  const listNote = isCharging ? `<p class="genbi-list-note">Showing 36 highlighted cards below; all ${tab.options.length} fuel and energy stations are plotted on the Delhi map and available in the GenBI Agent selector.</p>` : isParking ? `<p class="genbi-list-note">Showing 48 highlighted parking and hub cards below; all ${tab.options.length} Delhi records are plotted on the map and searchable in the GenBI Agent selector.</p>` : "";
+  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · ${isParking || isVehicle || isCharging ? "Delhi multi-fuel network" : "Delhi EV network"}</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>records ready</span></div></div>${mapPanel}${listNote}<div class="genbi-layout${isVehicle ? " genbi-layout--vehicle" : ""}"><section class="${isVehicle ? "vehicle-catalog" : `genbi-grid${isCharging ? " genbi-grid--charging" : ""}`}">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask by selection</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
 }
 
 
@@ -515,7 +520,7 @@ function bootDashboardTabs() {
     if (!select || !answer) return;
     function updateAnswer() {
       const item = dashboardData[tabKey].options.find((entry) => entry.key === select.value) || dashboardData[tabKey].options[0];
-      answer.innerHTML = `${item.image ? `<img class="genbi-answer__image" src="${item.image}" alt="${item.title} ${item.powertrain || item.category || "vehicle"} illustration">` : ""}<h4>${item.title}</h4><p class="genbi-answer__meta">${item.meta}</p><p>${item.detail}</p><strong>Insight:</strong><p>${item.insight}</p>${item.utilization ? `<p><strong>GenBI capability:</strong> utilization ${item.utilization}%, ${item.fastSlots ? `${item.fastSlots} fast slots, ${item.chargers} total chargers` : `${item.availableBays} open bays, ${item.capacity} total vehicle capacity`}. Use this to match ${item.fastSlots ? "SOC" : "fuel or energy needs"}, bay availability, route ETA and return-to-hub planning before dispatch.</p>` : ""}`;
+      answer.innerHTML = `${item.image ? `<img class="genbi-answer__image" src="${item.image}" alt="${item.title} ${item.powertrain || item.category || "vehicle"} illustration">` : ""}<h4>${item.title}</h4><p class="genbi-answer__meta">${item.meta}</p><p>${item.detail}</p><strong>Insight:</strong><p>${item.insight}</p>${item.utilization ? `<p><strong>GenBI capability:</strong> utilization ${item.utilization}%, ${item.stationType ? `${item.capacityLabel} for ${item.vehicles}` : `${item.availableBays} open bays, ${item.capacity} total vehicle capacity`}. Use this to match fuel or energy needs, bay availability, route ETA and return-to-hub planning before dispatch.</p>` : ""}`;
       document.querySelectorAll("[data-map-key]").forEach((pin) => pin.classList.toggle("charging-pin--selected", pin.dataset.mapKey === item.key));
     }
     select.addEventListener("change", updateAnswer);
