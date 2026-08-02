@@ -2309,12 +2309,9 @@ a:hover {
 .entry-sidebar { position: sticky; top: 82px; display: grid; gap: 17px; }
 .entry-help-card { padding: 21px; }
 .entry-help-card__icon { margin-bottom: 14px; background: #16845b; }
-.entry-help-card p, .entry-help-card li { color: #566071; font-size: .84rem; }
-.entry-help-card ul, .entry-help-card ol { padding-left: 20px; }
+.entry-help-card li { color: #566071; font-size: .84rem; }
+.entry-help-card ul { padding-left: 20px; }
 .entry-help-card li + li { margin-top: 8px; }
-.entry-help-card--drive { background: #faf6ff; border-color: #decbed; }
-.entry-help-card--drive .entry-help-card__icon { background: var(--color-primary); }
-.entry-help-card a { color: var(--color-primary); font-size: .85rem; font-weight: 800; }
 .entry-actions { display: flex; justify-content: flex-end; gap: 12px; }
 .entry-card__actions { display: flex; justify-content: flex-end; padding-top: 20px; margin-top: 20px; border-top: 1px solid #eeeaf2; }
 .entry-message { display: none; padding: 13px 15px; border-radius: 11px; font-size: .88rem; font-weight: 700; }
