@@ -358,6 +358,8 @@ const driverZones = ["Saket", "Connaught Place", "Rohini", "Dwarka", "Okhla", "L
 const driverVehiclePool = ["DL9S-EV-2146", "DL7S-EV-3308", "DL2S-EV-1180", "DL6S-EV-4077", "DL4S-EV-5631", "DL8S-EV-9024", "DL5S-EV-7318", "DL1S-EV-6842", "DL3S-EV-2765", "DL3C-EV-8021", "DL5L-EV-7712", "DL8L-EV-6504", "DL2L-EV-3349", "DL6L-EV-1186", "DL1L-EV-4490"];
 const DRIVER_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbweZ7bZP9FmlLtiGJMuPGLkKDAgtqFhOJsTLSswcWvM9xc0cRLjSl2MVw5TjRvzpUf1Dw/exec";
 const DRIVER_RECORDS_STORAGE_KEY = "liumgoDriverRecords";
+const HRMS_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbyg3OPSX-y6cqOYAEqmXzDSACi-zOsQYWIy-6JJB4Epel1eAYj_n7Fzz_P2Nypa6-eW/exec";
+const HRMS_RECORDS_STORAGE_KEY = "liumgoHrmsRecords";
 
 function buildDriverRecords() {
   return Array.from({ length: 128 }, (_, index) => {
@@ -435,9 +437,95 @@ function renderHrmsDashboard() {
   const rows = payroll.map((row) => `<tr><td><strong>${row.title}</strong><small>${row.driverId} · ${row.hub}</small></td><td>${row.paymentType}</td><td>${row.approvedHours}h</td><td>${row.approvedKm.toLocaleString("en-IN")} km</td><td>${money(row.basePay)}</td><td>${money(row.kmPayment)}</td><td>${money(row.incentives + row.reimbursements)}</td><td>${money(row.deductions)}</td><td><strong>${money(row.netPay)}</strong></td></tr>`).join("");
   const options = payroll.map((row) => `<option value="${row.key}">${row.title} · ${row.driverId}</option>`).join("");
   return `<div class="genbi-hero"><div><p class="genbi-eyebrow">People operations · July 2026</p><h2>${dashboardData.hrms.title}</h2><p>${dashboardData.hrms.subtitle}</p><a class="btn btn-primary driver-entry-link" href="hrms-entry.html">+ Add HRMS & payroll record</a></div><div class="genbi-kpi"><strong>${payroll.length}</strong><span>drivers mapped</span></div></div>
+    <section class="driver-report-tools" aria-labelledby="hrms-report-heading">
+      <div><p class="genbi-eyebrow">Reports & storage</p><h3 id="hrms-report-heading">Pull employee & driver records</h3><p>Download one CSV containing all dashboard, locally entered and stored HRMS details, or retrieve employee document folders from secure storage.</p></div>
+      <div class="driver-report-tools__actions"><button type="button" class="btn btn-primary" id="download-hrms-report">↓ Download all details</button><button type="button" class="btn btn-outline" id="pull-hrms-documents">↻ Pull stored documents</button></div>
+      <p id="hrms-report-status" class="driver-report-status" role="status" aria-live="polite"></p>
+      <div id="hrms-document-results" class="driver-document-results" hidden></div>
+    </section>
     <section class="hrms-kpis"><article><span>Gross payroll</span><strong>${money(total("grossPay"))}</strong><p>Before deductions</p></article><article><span>KM payments</span><strong>${money(total("kmPayment"))}</strong><p>${total("approvedKm").toLocaleString("en-IN")} approved km</p></article><article><span>Incentives</span><strong>${money(total("incentives"))}</strong><p>Performance additions</p></article><article><span>Net payable</span><strong>${money(total("netPay"))}</strong><p>After ${money(total("deductions"))} deductions</p></article></section>
     <article class="page-highlight-card hrms-formula"><h3>Synthetic payroll algorithm</h3><code>Base pay = monthly salary OR approved hours × hourly rate<br>KM payment = approved kilometres × kilometre rate<br>Gross = base + KM payment + incentives + reimbursements<br>Net payable = gross − deductions</code><p>Prototype calculations are deterministic and illustrative. Production payroll must apply contracts, attendance approvals, tax, PF/ESI and applicable labour rules through an authorised payroll review.</p></article>
     <div class="hrms-layout"><section class="page-highlight-card hrms-table-wrap"><table class="dashboard-table hrms-table"><thead><tr><th>Driver</th><th>Plan</th><th>Hours</th><th>Distance</th><th>Base</th><th>KM pay</th><th>Additions</th><th>Deductions</th><th>Net</th></tr></thead><tbody>${rows}</tbody></table></section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">Payroll detail</div><h3>Driver pay breakdown</h3><label for="genbi-select">${dashboardData.hrms.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+}
+
+function hydrateHrmsReportTools() {
+  const reportButton = document.getElementById("download-hrms-report");
+  const documentsButton = document.getElementById("pull-hrms-documents");
+  const status = document.getElementById("hrms-report-status");
+  const results = document.getElementById("hrms-document-results");
+  if (!reportButton || !documentsButton || !status || !results) return;
+
+  reportButton.addEventListener("click", async () => {
+    reportButton.disabled = true;
+    status.textContent = "Preparing the complete employee and driver report…";
+    const dashboardRecords = dashboardData.hrms.options.map((row) => ({
+      recordId: row.driverId, employeeId: row.driverId, fullName: row.title, role: "Driver", hub: row.hub,
+      paymentType: row.paymentType, monthlySalary: row.monthlySalary, hourlyRate: row.hourlyRate,
+      kmRate: row.kmRate, approvedHours: row.approvedHours, approvedKm: row.approvedKm,
+      incentives: row.incentives, reimbursements: row.reimbursements, deductions: row.deductions,
+      grossPay: row.grossPay, netPay: row.netPay, source: "Dashboard"
+    }));
+    const localRecords = readLocalHrmsRecords().map(flattenLocalHrmsRecord);
+    let storedRecords = [];
+    try {
+      const response = await fetch(`${HRMS_STORAGE_ENDPOINT}?action=employees`, { method: "GET" });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Storage report is unavailable.");
+      storedRecords = Array.isArray(payload.employees) ? payload.employees : [];
+    } catch (error) {
+      status.textContent = `Storage could not be reached (${error.message}); downloaded dashboard and local records only.`;
+    }
+    const allRecords = [...dashboardRecords, ...localRecords, ...storedRecords];
+    downloadCsv(allRecords, `liumgo-all-employees-and-drivers-${new Date().toISOString().slice(0, 10)}.csv`);
+    if (storedRecords.length) status.textContent = `Downloaded ${allRecords.length} employee and driver records, including ${storedRecords.length} pulled from secure storage.`;
+    else if (!status.textContent.includes("Storage could not")) status.textContent = `Downloaded ${allRecords.length} dashboard and locally entered employee and driver records.`;
+    reportButton.disabled = false;
+  });
+
+  documentsButton.addEventListener("click", async () => {
+    documentsButton.disabled = true;
+    status.textContent = "Pulling HRMS document folders from secure storage…";
+    results.hidden = true;
+    try {
+      const response = await fetch(`${HRMS_STORAGE_ENDPOINT}?action=documents`, { method: "GET" });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Storage did not return document records.");
+      const documents = Array.isArray(payload.documents) ? payload.documents : [];
+      renderDriverDocuments(documents, results);
+      status.textContent = documents.length ? `Pulled ${documents.length} HRMS document folders.` : "No HRMS document folders are available yet.";
+      results.hidden = false;
+    } catch (error) {
+      const localDocuments = readLocalHrmsRecords().map(flattenLocalHrmsRecord).filter((record) => record.documents);
+      renderDriverDocuments(localDocuments, results, true);
+      status.textContent = localDocuments.length
+        ? `Secure storage is unavailable (${error.message}). Showing ${localDocuments.length} locally saved document references instead.`
+        : `Could not pull documents: ${error.message}`;
+      results.hidden = localDocuments.length === 0;
+    } finally {
+      documentsButton.disabled = false;
+    }
+  });
+}
+
+function readLocalHrmsRecords() {
+  try { return JSON.parse(localStorage.getItem(HRMS_RECORDS_STORAGE_KEY) || "[]"); }
+  catch { return []; }
+}
+
+function flattenLocalHrmsRecord(record) {
+  const sections = record.sections || {};
+  const merged = Object.assign({}, sections.employee, sections.appointment, sections.payroll);
+  const documentNames = sections.documents?.documentNames || [];
+  return {
+    recordId: record.id, employeeId: merged.employeeId || "", fullName: merged.fullName || "Unnamed employee",
+    mobile: merged.mobile || "", email: merged.email || "", hub: merged.hub || "", role: merged.role || "",
+    vehicle: merged.vehicleRegistration || "", employmentStatus: merged.employmentStatus || "",
+    appointmentDate: merged.appointmentDate || "", contractType: merged.contractType || "",
+    paymentType: merged.paymentType || "", monthlySalary: merged.monthlySalary || "", hourlyRate: merged.hourlyRate || "",
+    kmRate: merged.kmRate || "", payrollMonth: merged.payrollMonth || "", approvedHours: merged.approvedHours || "",
+    approvedKm: merged.approvedKm || "", grossPay: merged.grossPay || "", netPay: merged.netPay || "",
+    approvalStatus: merged.approvalStatus || "", documents: documentNames.join("; "), updatedAt: record.updatedAt || "", source: "Local entry"
+  };
 }
 
 function renderDashboardOverview() {
@@ -695,6 +783,7 @@ function bootDashboardTabs() {
     content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : tabKey === "maintenance" ? renderMaintenanceDashboard() : tabKey === "drivers" ? renderDriversDashboard() : tabKey === "hrms" ? renderHrmsDashboard() : renderIntelligencePanel(tabKey);
     hydrateAgent(tabKey);
     if (tabKey === "drivers") hydrateDriverReportTools();
+    if (tabKey === "hrms") hydrateHrmsReportTools();
   }
 
   buttons.forEach((button) => button.addEventListener("click", () => render(button.dataset.dashboardTab)));

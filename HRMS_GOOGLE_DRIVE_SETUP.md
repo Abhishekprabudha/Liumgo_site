@@ -56,6 +56,34 @@ function doPost(e) {
   }
 }
 
+function doGet(e) {
+  try {
+    const action = String((e.parameter || {}).action || "employees");
+    const sheet = SpreadsheetApp.openById(HRMS_SHEET_ID).getSheetByName("HRMS");
+    const values = sheet.getDataRange().getDisplayValues();
+    const headers = values.shift() || [];
+    const rows = values.map(row => Object.fromEntries(headers.map((header, index) => [camel(header), row[index]])));
+
+    if (action === "documents") {
+      const documents = rows.filter(row => row.documentFolderUrl).map(row => ({
+        recordId: row.recordId,
+        fullName: row.fullName,
+        files: row.section === "documents" ? ["HRMS documents"] : [],
+        folderUrl: row.documentFolderUrl
+      }));
+      return json({ ok: true, documents });
+    }
+    if (action !== "employees") throw new Error("Unsupported action");
+    return json({ ok: true, employees: rows });
+  } catch (error) {
+    return json({ ok: false, error: error.message });
+  }
+}
+
+function camel(value) {
+  return String(value).trim().replace(/[^a-zA-Z0-9]+(.)/g, (_, letter) => letter.toUpperCase()).replace(/^./, first => first.toLowerCase());
+}
+
 function safe(value) {
   return String(value || "record").replace(/[\\/:*?"<>|]/g, "-").slice(0, 100);
 }
