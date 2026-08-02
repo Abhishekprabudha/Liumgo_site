@@ -1,6 +1,7 @@
 const MAINTENANCE_API_ENDPOINT = "https://script.google.com/macros/s/AKfycbz5FqngMF4rO_9EQeOnpx7PFEGoBLfty3535T41-X-HSYi8d2uSCO6DF8FlwwEJ0e01/exec";
 const MAINTENANCE_STORAGE_KEY = "liumgoMaintenanceRecords";
 const MAINTENANCE_FILE_FIELDS = ["rcFile", "insuranceFile", "fitnessFile", "serviceFile"];
+const MAINTENANCE_REQUEST_TIMEOUT_MS = 30000;
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("maintenance-entry-form");
@@ -63,6 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const fields = Object.fromEntries([...formData.entries()].filter(([, value]) => typeof value === "string"));
       if (!activeRecordId) activeRecordId = createRecordId();
+      // Keep the user's field values even when the remote service is unavailable. Previously,
+      // any backend error discarded a new record ID and left every later section locked.
+      saveLocally(sectionName, fields, files);
+      setRelatedSectionsEnabled(true);
+      refreshRecordOptions();
+      recordSelect.value = activeRecordId;
+      updateRecordContext();
+
       if (MAINTENANCE_API_ENDPOINT) {
         const documents = await Promise.all(files.map(async (file) => ({
           field: MAINTENANCE_FILE_FIELDS.find((name) => formData.get(name) === file),
@@ -70,24 +79,27 @@ document.addEventListener("DOMContentLoaded", () => {
           type: file.type,
           data: await fileToBase64(file)
         })));
-        const response = await fetch(MAINTENANCE_API_ENDPOINT, {
+        const response = await fetchWithTimeout(MAINTENANCE_API_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({ recordId: activeRecordId, section: sectionName, fields, documents })
         });
-        const result = await response.json();
+        const responseText = await response.text();
+        let result;
+        try {
+          result = JSON.parse(responseText);
+        } catch {
+          throw new Error("The backend returned an invalid response. Check the Apps Script deployment access and /exec URL.");
+        }
         if (!response.ok || !result.ok) throw new Error(result.error || "The storage service rejected the update.");
         activeRecordId = result.recordId || activeRecordId;
       }
-      saveLocally(sectionName, fields, files);
-      setRelatedSectionsEnabled(true);
-      refreshRecordOptions();
-      recordSelect.value = activeRecordId;
-      updateRecordContext();
-      showMessage(`${sectionTitle(sectionName)} saved independently for ${activeRecordId}.`, "success");
+      showMessage(`${sectionTitle(sectionName)} saved to the backend for ${activeRecordId}.`, "success");
     } catch (error) {
-      if (isNewRecord) activeRecordId = "";
-      showMessage(`Could not save: ${error.message}`, "error");
+      const localMessage = isNewRecord
+        ? `Your entries are saved in this browser as ${activeRecordId}, and the remaining sections are now available.`
+        : "Your latest entries are still saved in this browser.";
+      showMessage(`Backend save failed: ${friendlyError(error)} ${localMessage} Try saving this section again.`, "error");
     } finally {
       button.disabled = false;
     }
@@ -188,4 +200,20 @@ function fileToBase64(file) {
     reader.onerror = () => reject(new Error(`Could not read ${file.name}.`));
     reader.readAsDataURL(file);
   });
+}
+
+async function fetchWithTimeout(url, options) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), MAINTENANCE_REQUEST_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
+function friendlyError(error) {
+  if (error?.name === "AbortError") return "The backend did not respond within 30 seconds.";
+  if (error instanceof TypeError) return "The backend could not be reached. Check the deployment URL, access permissions, and network connection.";
+  return error?.message || "An unexpected error occurred.";
 }
