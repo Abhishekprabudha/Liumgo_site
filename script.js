@@ -363,6 +363,7 @@ const HRMS_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbyg3OPSX-
 const HRMS_RECORDS_STORAGE_KEY = "liumgoHrmsRecords";
 const MAINTENANCE_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbz5FqngMF4rO_9EQeOnpx7PFEGoBLfty3535T41-X-HSYi8d2uSCO6DF8FlwwEJ0e01/exec";
 const MAINTENANCE_RECORDS_STORAGE_KEY = "liumgoMaintenanceRecords";
+const MAINTENANCE_BULK_COLUMNS = ["recordId", "registrationNumber", "assetId", "category", "powertrain", "make", "model", "modelYear", "odometerKm", "homeHub", "operationalStatus", "serviceType", "priority", "lastServiceDate", "nextServiceDate", "workshop", "estimatedCost", "maintenanceNotes", "insuranceExpiry", "fitnessExpiry", "permitExpiry", "pucExpiry", "driverName", "driverId", "driverMobile", "mappingStart", "mappingEnd", "shift", "mappingNotes"];
 
 function buildDriverRecords() {
   return Array.from({ length: 128 }, (_, index) => {
@@ -833,6 +834,12 @@ function renderMaintenanceDashboard() {
   const cards = tab.options.map((item, index) => `<article class="genbi-card maintenance-record-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
   return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Maintenance intelligence</p><h2>${tab.title}</h2><p>${tab.subtitle}</p><a class="btn btn-primary driver-entry-link" href="maintenance-entry.html">+ Add vehicle & maintenance details</a></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>maintenance records</span></div></div>
+    <section class="driver-bulk-upload" aria-labelledby="maintenance-bulk-heading">
+      <div class="driver-bulk-upload__intro"><p class="genbi-eyebrow">Bulk vehicle import</p><h3 id="maintenance-bulk-heading">Upload multiple vehicles</h3><p>Complete the CSV template and add supporting documents. Start each filename with the matching <strong>recordId</strong>, for example <code>VEH-001__rc.pdf</code>.</p></div>
+      <div class="driver-bulk-upload__actions"><button type="button" class="btn btn-outline" id="download-maintenance-template">↓ Download CSV template</button><label class="driver-bulk-file">Vehicle details (.csv)<input id="maintenance-bulk-csv" type="file" accept=".csv,text/csv"></label><label class="driver-bulk-file">Vehicle documents<input id="maintenance-bulk-documents" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple></label><button type="button" class="btn btn-primary" id="upload-maintenance-bulk" disabled>Upload to backend</button></div>
+      <p id="maintenance-bulk-status" class="driver-report-status" role="status" aria-live="polite">Select a completed CSV to validate the batch.</p>
+      <div id="maintenance-bulk-preview" class="driver-bulk-preview" hidden></div>
+    </section>
     <section class="driver-report-tools" aria-labelledby="maintenance-report-heading">
       <div><p class="genbi-eyebrow">Reports & storage</p><h3 id="maintenance-report-heading">Pull vehicle records & documents</h3><p>Download a CSV with every dashboard, locally entered and stored vehicle detail, or retrieve vehicle document folders from secure storage.</p></div>
       <div class="driver-report-tools__actions"><button type="button" class="btn btn-primary" id="download-maintenance-report">↓ Download all vehicle details</button><button type="button" class="btn btn-outline" id="pull-maintenance-documents">↻ Pull stored documents</button></div>
@@ -942,6 +949,66 @@ function hydrateMaintenanceReportTools() {
   });
 }
 
+function hydrateMaintenanceBulkUpload() {
+  const templateButton = document.getElementById("download-maintenance-template");
+  const csvInput = document.getElementById("maintenance-bulk-csv");
+  const documentsInput = document.getElementById("maintenance-bulk-documents");
+  const uploadButton = document.getElementById("upload-maintenance-bulk");
+  const status = document.getElementById("maintenance-bulk-status");
+  const preview = document.getElementById("maintenance-bulk-preview");
+  if (!templateButton || !csvInput || !documentsInput || !uploadButton || !status || !preview) return;
+  let rows = [];
+
+  templateButton.addEventListener("click", () => {
+    const example = ["VEH-001", "DL3C-EV-8021", "ASSET-001", "3W", "Electric", "Euler", "HiLoad EV", "2025", "12450", "Okhla hub", "Active", "Preventive maintenance", "Routine", "2026-07-01", "2026-10-01", "Approved workshop", "3500", "Quarterly inspection", "2027-01-31", "2027-03-31", "2027-03-31", "2027-02-28", "Aarav Sharma", "DRV-001", "9876543210", "2026-08-01", "", "Morning", "Primary custodian"];
+    downloadCsv([Object.fromEntries(MAINTENANCE_BULK_COLUMNS.map((column, index) => [column, example[index]]))], "liumgo-vehicle-bulk-upload-template.csv");
+    status.textContent = "Template downloaded. Keep the headers unchanged and use one unique recordId per vehicle.";
+  });
+
+  csvInput.addEventListener("change", async () => {
+    rows = []; uploadButton.disabled = true; preview.hidden = true;
+    const file = csvInput.files[0];
+    if (!file) return;
+    try {
+      const parsed = parseCsv(await file.text());
+      const missing = MAINTENANCE_BULK_COLUMNS.filter((column) => !parsed.headers.includes(column));
+      if (missing.length) throw new Error(`Missing columns: ${missing.join(", ")}`);
+      rows = parsed.rows.filter((row) => Object.values(row).some((value) => value.trim()));
+      if (!rows.length) throw new Error("The CSV has no vehicle rows.");
+      if (rows.length > 100) throw new Error("Upload no more than 100 vehicles at a time.");
+      const invalid = rows.map((row, index) => (!row.recordId || !row.registrationNumber || !row.assetId ? index + 2 : null)).filter(Boolean);
+      const ids = rows.map((row) => row.recordId);
+      if (invalid.length) throw new Error(`recordId, registrationNumber and assetId are required on row(s): ${invalid.join(", ")}`);
+      if (new Set(ids).size !== ids.length) throw new Error("Every recordId must be unique in the CSV.");
+      status.textContent = `${rows.length} vehicles validated. Select documents if required, then upload the batch.`;
+      preview.innerHTML = `<strong>${rows.length} vehicles ready</strong><span>${rows.slice(0, 5).map((row) => escapeHtml(`${row.recordId} · ${row.registrationNumber}`)).join("<br>")}${rows.length > 5 ? `<br>and ${rows.length - 5} more…` : ""}</span>`;
+      preview.hidden = false; uploadButton.disabled = false;
+    } catch (error) { status.textContent = `CSV could not be validated: ${error.message}`; }
+  });
+
+  uploadButton.addEventListener("click", async () => {
+    uploadButton.disabled = true;
+    status.textContent = "Preparing vehicle details and documents for secure upload…";
+    try {
+      const allowed = ["application/pdf", "image/jpeg", "image/png"];
+      const documents = await Promise.all([...documentsInput.files].map(async (file) => {
+        const separator = file.name.indexOf("__");
+        if (separator < 1) throw new Error(`${file.name} must start with recordId__`);
+        const recordId = file.name.slice(0, separator);
+        if (!rows.some((row) => row.recordId === recordId)) throw new Error(`${file.name} does not match a CSV recordId.`);
+        if (!allowed.includes(file.type)) throw new Error(`${file.name} is not a supported PDF, JPG or PNG file.`);
+        if (file.size > 10 * 1024 * 1024) throw new Error(`${file.name} exceeds 10 MB.`);
+        return { recordId, name: file.name.slice(separator + 2), type: file.type, data: (await fileToDataUrl(file)).split(",")[1] };
+      }));
+      const response = await fetch(MAINTENANCE_STORAGE_ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "bulkVehicles", vehicles: rows, documents }) });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Backend rejected the batch.");
+      status.textContent = `Uploaded ${payload.imported || rows.length} vehicles and ${payload.documentCount ?? documents.length} documents to backend storage.`;
+      csvInput.value = ""; documentsInput.value = ""; rows = []; preview.hidden = true;
+    } catch (error) { status.textContent = `Bulk upload failed: ${error.message}`; uploadButton.disabled = false; }
+  });
+}
+
 function bootDashboardTabs() {
   const content = document.getElementById("dashboard-tab-content");
   const buttons = document.querySelectorAll("[data-dashboard-tab]");
@@ -972,7 +1039,7 @@ function bootDashboardTabs() {
     hydrateAgent(tabKey);
     if (tabKey === "drivers") hydrateDriverReportTools();
     if (tabKey === "hrms") hydrateHrmsReportTools();
-    if (tabKey === "maintenance") hydrateMaintenanceReportTools();
+    if (tabKey === "maintenance") { hydrateMaintenanceReportTools(); hydrateMaintenanceBulkUpload(); }
   }
 
   buttons.forEach((button) => button.addEventListener("click", () => render(button.dataset.dashboardTab)));
