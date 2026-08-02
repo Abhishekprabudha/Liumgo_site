@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (DRIVER_API_ENDPOINT) {
         // Apps Script accepts URL-encoded JSON reliably without a CORS preflight.
         const payload = await serializeForm(formData, files);
-        const response = await fetch(DRIVER_API_ENDPOINT, {
+        const response = await fetch(https://script.google.com/macros/s/AKfycbweZ7bZP9FmlLtiGJMuPGLkKDAgtqFhOJsTLSswcWvM9xc0cRLjSl2MVw5TjRvzpUf1Dw/exec, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
