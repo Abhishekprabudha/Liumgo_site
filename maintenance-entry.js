@@ -1,4 +1,4 @@
-const MAINTENANCE_API_ENDPOINT = "";
+const MAINTENANCE_API_ENDPOINT = "https://script.google.com/macros/s/AKfycbz5FqngMF4rO_9EQeOnpx7PFEGoBLfty3535T41-X-HSYi8d2uSCO6DF8FlwwEJ0e01/exec";
 const MAINTENANCE_STORAGE_KEY = "liumgoMaintenanceRecords";
 const MAINTENANCE_FILE_FIELDS = ["rcFile", "insuranceFile", "fitnessFile", "serviceFile"];
 
