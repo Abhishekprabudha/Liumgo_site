@@ -2341,7 +2341,18 @@ a:hover {
 .entry-help-card ul { padding-left: 20px; }
 .entry-help-card li + li { margin-top: 8px; }
 .entry-actions { display: flex; justify-content: flex-end; gap: 12px; }
-.entry-card__actions { display: flex; justify-content: flex-end; padding-top: 20px; margin-top: 20px; border-top: 1px solid #eeeaf2; }
+.entry-card__actions { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 20px; margin-top: 20px; border-top: 1px solid #eeeaf2; }
+.entry-save-status { color: var(--color-muted); font-size: .78rem; font-weight: 700; }
+.entry-save-status.is-saved { color: #26724b; }
+.hrms-section-actions { display: grid; grid-template-columns: minmax(190px, 1fr) repeat(3, minmax(135px, .72fr)); gap: 10px; padding: 16px; border: 1px solid #d8c7e7; border-radius: 16px; background: #fff; }
+.hrms-section-actions > div { display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 0 6px; }
+.hrms-section-actions > div strong { color: #35283d; font-size: .9rem; }
+.hrms-section-actions > div span { color: var(--color-muted); font-size: .72rem; }
+.hrms-section-actions button { display: flex; flex-direction: column; gap: 3px; padding: 11px 12px; border: 1px solid #d8c7e7; border-radius: 11px; color: #442b58; background: #faf6ff; font: inherit; font-size: .78rem; font-weight: 700; text-align: left; cursor: pointer; }
+.hrms-section-actions button:hover:not(:disabled) { border-color: #7b4a9c; background: #f5ecfb; }
+.hrms-section-actions button:disabled { cursor: not-allowed; opacity: .48; }
+.hrms-section-actions small { color: var(--color-muted); font-size: .66rem; font-weight: 600; }
+.hrms-section-actions small.is-saved { color: #26724b; }
 .entry-message { display: none; padding: 13px 15px; border-radius: 11px; font-size: .88rem; font-weight: 700; }
 .entry-message--working, .entry-message--success, .entry-message--error { display: block; }
 .entry-message--working { color: #4d148c; background: #f3e8ff; }
@@ -2349,6 +2360,7 @@ a:hover {
 .entry-message--error { color: #9b1c1c; background: #feecec; }
 @media (max-width: 850px) { .driver-entry-layout { grid-template-columns: 1fr; } .entry-sidebar { position: static; } }
 @media (max-width: 600px) { .entry-record-picker { align-items: stretch; flex-direction: column; } .entry-record-picker label { flex-basis: auto; } .entry-fields, .document-grid { grid-template-columns: 1fr; } .entry-field--wide { grid-column: auto; } .entry-card { padding: 19px; } .entry-card--locked::after { position: static; display: block; max-width: none; margin: -6px 0 16px; } .entry-actions, .entry-card__actions { flex-direction: column-reverse; } }
+@media (max-width: 800px) { .hrms-section-actions { grid-template-columns: 1fr; } }
 
 /* HRMS payroll workspace */
 .hrms-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:20px; }
