@@ -2349,3 +2349,21 @@ a:hover {
 .entry-message--error { color: #9b1c1c; background: #feecec; }
 @media (max-width: 850px) { .driver-entry-layout { grid-template-columns: 1fr; } .entry-sidebar { position: static; } }
 @media (max-width: 600px) { .entry-record-picker { align-items: stretch; flex-direction: column; } .entry-record-picker label { flex-basis: auto; } .entry-fields, .document-grid { grid-template-columns: 1fr; } .entry-field--wide { grid-column: auto; } .entry-card { padding: 19px; } .entry-card--locked::after { position: static; display: block; max-width: none; margin: -6px 0 16px; } .entry-actions, .entry-card__actions { flex-direction: column-reverse; } }
+
+/* HRMS payroll workspace */
+.hrms-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:20px; }
+.hrms-kpis article { padding:18px; border:1px solid #eee8f3; border-radius:18px; background:#fff; box-shadow:var(--shadow-soft); }
+.hrms-kpis span { color:#6b7280; font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.hrms-kpis strong { display:block; margin:7px 0 3px; color:var(--color-primary); font-size:1.35rem; }
+.hrms-kpis p { margin:0; color:#6b7280; font-size:.78rem; }
+.hrms-formula { margin-bottom:20px; }
+.hrms-formula h3 { margin-top:0; }
+.hrms-formula code { display:block; padding:16px; border-radius:12px; background:#241134; color:#f5eefe; line-height:1.8; white-space:normal; }
+.hrms-formula p { margin-bottom:0; color:#6b7280; font-size:.84rem; }
+.hrms-layout { display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:20px; align-items:start; }
+.hrms-table-wrap { overflow-x:auto; padding:0; }
+.hrms-table { min-width:920px; }
+.hrms-table td small { display:block; margin-top:3px; color:#6b7280; white-space:nowrap; }
+#hrms-entry-form .entry-card--locked::after { content:"Save or select employee details to unlock"; }
+@media (max-width:960px) { .hrms-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); } .hrms-layout { grid-template-columns:1fr; } }
+@media (max-width:560px) { .hrms-kpis { grid-template-columns:1fr; } }

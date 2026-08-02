@@ -76,6 +76,12 @@ const dashboardData = {
       { key: "DL1L-EV-4490", title: "DL1L-EV-4490 · 4W · Tata Ace EV", category: "4W", downtimeDays: 0.5, nextPm: "12 Jul 2026", meta: "Category: 4W · Downtime: 0.5 days · Next PM: 12 Jul 2026", detail: "Open checks: telematics SIM, brake-fluid level and DC charging cycle review. Last route: Dwarka B2B parcels.", insight: "Healthy asset; keep for west Delhi consolidated drops." }
     ]
   },
+  hrms: {
+    title: "HRMS payroll & driver payments",
+    subtitle: "Synthetic July 2026 payroll mapped to drivers, appointments and supporting records.",
+    agentLabel: "Select driver payroll",
+    options: []
+  },
   drivers: {
     title: "Driver productivity command centre",
     subtitle: "Synthetic driver identities, compliance IDs and delivery productivity views for Delhi EV operations.",
@@ -395,6 +401,45 @@ dashboardData.vehicle.options = buildVehicleCatalogue();
 dashboardData.charging.options = buildDelhiEnergyStations();
 dashboardData.parking.options = buildDelhiParkingHubs();
 
+
+const hrmsPayrollSeed = [
+  ["DRV-1001", "Aarav Sharma", "South Delhi", "Monthly", 24000, 0, 0, 184, 1260, 3200, 900, 1250],
+  ["DRV-1002", "Meera Khan", "Okhla", "Hourly", 0, 165, 0, 172, 1480, 2850, 650, 890],
+  ["DRV-1003", "Rohan Verma", "Dwarka", "Monthly + km", 26500, 0, 4.5, 192, 1740, 4100, 1200, 1540],
+  ["DRV-1004", "Nisha Yadav", "Rohini", "Hourly + km", 0, 158, 3.5, 168, 1195, 2460, 500, 720],
+  ["DRV-1005", "Kabir Singh", "Mayur Vihar", "Monthly", 23000, 0, 0, 176, 1325, 2950, 700, 1080],
+  ["DRV-1006", "Priya Das", "Saket", "Monthly + km", 25000, 0, 4, 188, 1530, 3600, 850, 1320],
+  ["DRV-1007", "Vikram Joshi", "Karol Bagh", "Hourly", 0, 172, 0, 181, 1390, 3180, 1050, 960],
+  ["DRV-1008", "Sana Ali", "Lajpat Nagar", "Hourly + km", 0, 160, 3.75, 174, 1445, 3320, 780, 1010]
+];
+
+function buildHrmsPayroll() {
+  return hrmsPayrollSeed.map(([driverId, name, hub, paymentType, monthlySalary, hourlyRate, kmRate, approvedHours, approvedKm, incentives, reimbursements, deductions]) => {
+    const basePay = monthlySalary || approvedHours * hourlyRate;
+    const kmPayment = approvedKm * kmRate;
+    const grossPay = basePay + kmPayment + incentives + reimbursements;
+    const netPay = grossPay - deductions;
+    return { key: driverId, driverId, title: name, hub, paymentType, monthlySalary, hourlyRate, kmRate, approvedHours, approvedKm, basePay, kmPayment, incentives, reimbursements, deductions, grossPay, netPay,
+      meta: `${driverId} · ${hub} · ${paymentType}`,
+      detail: `Base ₹${basePay.toLocaleString("en-IN")} + km ₹${kmPayment.toLocaleString("en-IN")} + incentives ₹${incentives.toLocaleString("en-IN")} + reimbursements ₹${reimbursements.toLocaleString("en-IN")} − deductions ₹${deductions.toLocaleString("en-IN")} = net ₹${netPay.toLocaleString("en-IN")}.`,
+      insight: `Approved inputs: ${approvedHours} hours and ${approvedKm.toLocaleString("en-IN")} km. Review attendance, trip logs and appointment status before payroll approval.` };
+  });
+}
+
+dashboardData.hrms.options = buildHrmsPayroll();
+
+function renderHrmsDashboard() {
+  const payroll = dashboardData.hrms.options;
+  const total = (field) => payroll.reduce((sum, row) => sum + row[field], 0);
+  const money = (value) => `₹${Math.round(value).toLocaleString("en-IN")}`;
+  const rows = payroll.map((row) => `<tr><td><strong>${row.title}</strong><small>${row.driverId} · ${row.hub}</small></td><td>${row.paymentType}</td><td>${row.approvedHours}h</td><td>${row.approvedKm.toLocaleString("en-IN")} km</td><td>${money(row.basePay)}</td><td>${money(row.kmPayment)}</td><td>${money(row.incentives + row.reimbursements)}</td><td>${money(row.deductions)}</td><td><strong>${money(row.netPay)}</strong></td></tr>`).join("");
+  const options = payroll.map((row) => `<option value="${row.key}">${row.title} · ${row.driverId}</option>`).join("");
+  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">People operations · July 2026</p><h2>${dashboardData.hrms.title}</h2><p>${dashboardData.hrms.subtitle}</p><a class="btn btn-primary driver-entry-link" href="hrms-entry.html">+ Add HRMS & payroll record</a></div><div class="genbi-kpi"><strong>${payroll.length}</strong><span>drivers mapped</span></div></div>
+    <section class="hrms-kpis"><article><span>Gross payroll</span><strong>${money(total("grossPay"))}</strong><p>Before deductions</p></article><article><span>KM payments</span><strong>${money(total("kmPayment"))}</strong><p>${total("approvedKm").toLocaleString("en-IN")} approved km</p></article><article><span>Incentives</span><strong>${money(total("incentives"))}</strong><p>Performance additions</p></article><article><span>Net payable</span><strong>${money(total("netPay"))}</strong><p>After ${money(total("deductions"))} deductions</p></article></section>
+    <article class="page-highlight-card hrms-formula"><h3>Synthetic payroll algorithm</h3><code>Base pay = monthly salary OR approved hours × hourly rate<br>KM payment = approved kilometres × kilometre rate<br>Gross = base + KM payment + incentives + reimbursements<br>Net payable = gross − deductions</code><p>Prototype calculations are deterministic and illustrative. Production payroll must apply contracts, attendance approvals, tax, PF/ESI and applicable labour rules through an authorised payroll review.</p></article>
+    <div class="hrms-layout"><section class="page-highlight-card hrms-table-wrap"><table class="dashboard-table hrms-table"><thead><tr><th>Driver</th><th>Plan</th><th>Hours</th><th>Distance</th><th>Base</th><th>KM pay</th><th>Additions</th><th>Deductions</th><th>Net</th></tr></thead><tbody>${rows}</tbody></table></section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">Payroll detail</div><h3>Driver pay breakdown</h3><label for="genbi-select">${dashboardData.hrms.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+}
+
 function renderDashboardOverview() {
   return `
     <h2>Delhi network view</h2>
@@ -647,7 +692,7 @@ function bootDashboardTabs() {
 
   function render(tabKey) {
     buttons.forEach((button) => button.classList.toggle("dashboard-menu__item--active", button.dataset.dashboardTab === tabKey));
-    content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : tabKey === "maintenance" ? renderMaintenanceDashboard() : tabKey === "drivers" ? renderDriversDashboard() : renderIntelligencePanel(tabKey);
+    content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : tabKey === "maintenance" ? renderMaintenanceDashboard() : tabKey === "drivers" ? renderDriversDashboard() : tabKey === "hrms" ? renderHrmsDashboard() : renderIntelligencePanel(tabKey);
     hydrateAgent(tabKey);
     if (tabKey === "drivers") hydrateDriverReportTools();
   }
