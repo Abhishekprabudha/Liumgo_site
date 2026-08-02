@@ -24,6 +24,7 @@ const SPREADSHEET_ID = "REPLACE_WITH_SPREADSHEET_ID";
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
+    if (payload.action === "bulkDrivers") return importDriverBatch(payload);
     const f = payload.fields || {};
     const recordId = `DRV-${Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyyMMdd-HHmmss")}`;
     const parent = DriveApp.getFolderById(DRIVE_FOLDER_ID);
@@ -44,6 +45,34 @@ function doPost(e) {
   } catch (error) {
     return output({ ok: false, error: error.message });
   }
+}
+
+function importDriverBatch(payload) {
+  const drivers = payload.drivers || [];
+  const documents = payload.documents || [];
+  if (!drivers.length || drivers.length > 100) throw new Error("Upload between 1 and 100 drivers per batch");
+  const required = ["recordId", "fullName", "mobile"];
+  const ids = drivers.map(driver => String(driver.recordId || "").trim());
+  if (new Set(ids).size !== ids.length) throw new Error("Duplicate recordId in batch");
+  drivers.forEach(driver => required.forEach(field => { if (!String(driver[field] || "").trim()) throw new Error(`${field} is required`); }));
+
+  const parent = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+  const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("Drivers");
+  const rows = drivers.map(driver => {
+    const folder = parent.createFolder(`${safeName(driver.recordId)} - ${safeName(driver.fullName)}`);
+    documents.filter(doc => doc.recordId === driver.recordId).forEach(doc => {
+      const allowed = ["application/pdf", "image/jpeg", "image/png"];
+      if (!allowed.includes(doc.type)) throw new Error(`Unsupported document type for ${doc.name}`);
+      folder.createFile(Utilities.newBlob(Utilities.base64Decode(doc.data), doc.type, safeName(doc.name)));
+    });
+    return [driver.recordId, new Date(), driver.fullName, driver.mobile, driver.email, driver.dateOfBirth,
+      driver.emergencyContact, driver.hub, driver.address, driver.aadhaarNumber, driver.licenceNumber,
+      driver.licenceExpiry, driver.policeVerification, driver.attendanceDate, driver.attendanceStatus,
+      driver.shift, driver.checkIn, driver.vehicleRegistration, driver.vehicleCategory, driver.client,
+      driver.mappingStart, driver.remarks, folder.getUrl()];
+  });
+  sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
+  return output({ ok: true, imported: rows.length, documentCount: documents.length });
 }
 
 function doGet(e) {
@@ -88,6 +117,15 @@ function output(value) {
 3. Authorise Drive and Sheets access, deploy, and copy the URL ending in `/exec` (not the `/dev` test URL).
 4. In `driver-entry.js`, set `DRIVER_API_ENDPOINT` to that URL.
 5. Submit a test driver, verify a new Sheet row and Drive subfolder, and test with an account that has the same access as real users.
+
+## 4. Use bulk driver onboarding
+
+1. Open **Dashboard → Drivers**, then select **Download CSV template** in the Bulk onboarding panel.
+2. Keep the template headers unchanged. `recordId`, `fullName`, and `mobile` are required, and every `recordId` must be unique in the batch.
+3. Name each document with its driver's record ID, two underscores, and a useful document name—for example `DRV-001__aadhaar.pdf` or `DRV-001__photo.jpg`. PDF, JPEG, and PNG files are accepted.
+4. Select the completed CSV and all driver documents together, review the validated count, and select **Upload to backend**. A row is added directly to the `Drivers` sheet and a separate subfolder is created under the configured Drive folder for every driver.
+
+The sample endpoint limits each request to 100 drivers. Google Apps Script request-size and execution-time quotas still apply, so use smaller batches when uploading many large scans.
 
 ## Production security checklist
 
