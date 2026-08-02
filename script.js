@@ -249,12 +249,8 @@ function buildVehicleCatalogue() {
     key: `${category} · ${title}`,
     title,
     category,
-    type,
     image: vehicleImage(category, index, title, powertrain),
     powertrain,
-    payload,
-    energy,
-    useCase,
     meta: `Category: ${category} ${type} · ${powertrain}`,
     detail: `Payload fit: ${payload}. Fuel / energy access: ${energy}. Typical Delhi use: ${useCase}.`,
     insight
@@ -414,27 +410,7 @@ function renderIntelligencePanel(tabKey) {
   const isVehicle = tabKey === "vehicle";
   const isParking = tabKey === "parking";
   const visibleOptions = isCharging ? tab.options.slice(0, 36) : isParking ? tab.options.slice(0, 48) : tab.options;
-  const renderCard = (item, index) => {
-    if (item.image) {
-      return `<article class="genbi-card genbi-card--vehicle">
-        <div class="vehicle-card__visual">
-          <img class="genbi-card__image" src="${item.image}" alt="${item.title} ${item.powertrain || item.category || "vehicle"} illustration" loading="lazy">
-          <span class="vehicle-card__index">${String(index + 1).padStart(2, "0")}</span>
-        </div>
-        <div class="vehicle-card__heading">
-          <div><p class="vehicle-card__type">${item.category} · ${item.type}</p><h3>${item.title}</h3></div>
-          <span class="vehicle-card__powertrain">${item.powertrain}</span>
-        </div>
-        <dl class="vehicle-card__specs">
-          <div><dt>Payload fit</dt><dd>${item.payload}</dd></div>
-          <div><dt>Energy access</dt><dd>${item.energy}</dd></div>
-          <div><dt>Best for</dt><dd>${item.useCase}</dd></div>
-        </dl>
-        <div class="vehicle-card__insight"><strong>Deployment guidance</strong><p>${item.insight}</p></div>
-      </article>`;
-    }
-    return `<article class="genbi-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`;
-  };
+  const renderCard = (item, index) => `<article class="genbi-card${item.image ? " genbi-card--vehicle" : ""}">${item.image ? `<img class="genbi-card__image" src="${item.image}" alt="${item.title} ${item.powertrain || item.category || "vehicle"} illustration" loading="lazy">` : ""}<div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`;
   const cards = isVehicle
     ? ["2W", "3W", "4W"].map((category) => {
         const categoryItems = visibleOptions.filter((item) => item.category === category);

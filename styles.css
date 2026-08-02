@@ -1545,11 +1545,7 @@ a:hover {
 
 /* GenBI dashboard tab workspaces */
 .dashboard-tab-content {
-  width: 100%;
-  min-width: 0;
   min-height: 520px;
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
 }
 
 .genbi-hero {
@@ -1621,37 +1617,6 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
-  max-height: min(980px, calc(100vh - 120px));
-  min-width: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  scrollbar-color: var(--color-primary) #eef2f7;
-  scrollbar-width: thin;
-  scrollbar-gutter: stable;
-  padding-right: 6px;
-}
-
-.genbi-grid::-webkit-scrollbar,
-.vehicle-catalog::-webkit-scrollbar,
-.dashboard-tab-content::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-.genbi-grid::-webkit-scrollbar-track,
-.vehicle-catalog::-webkit-scrollbar-track,
-.dashboard-tab-content::-webkit-scrollbar-track {
-  background: #eef2f7;
-  border-radius: 999px;
-}
-
-.genbi-grid::-webkit-scrollbar-thumb,
-.vehicle-catalog::-webkit-scrollbar-thumb,
-.dashboard-tab-content::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--color-primary), var(--color-accent));
-  border: 2px solid #eef2f7;
-  border-radius: 999px;
 }
 
 .genbi-card {
@@ -1703,7 +1668,7 @@ a:hover {
   font-weight: 700;
 }
 
-.genbi-card > span {
+.genbi-card span {
   display: inline-flex;
   padding: 6px 10px;
   border-radius: 999px;
@@ -1915,15 +1880,6 @@ a:hover {
 .vehicle-catalog {
   display: grid;
   gap: 22px;
-  max-height: min(980px, calc(100vh - 120px));
-  min-width: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  scrollbar-color: var(--color-primary) #eef2f7;
-  scrollbar-width: thin;
-  scrollbar-gutter: stable;
-  padding-right: 6px;
 }
 
 .vehicle-category {
@@ -1961,137 +1917,7 @@ a:hover {
 }
 
 .genbi-card--vehicle {
-  padding: 12px;
-  gap: 0;
-  overflow: hidden;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-}
-
-.genbi-card--vehicle:hover {
-  transform: translateY(-3px);
-  border-color: rgba(77, 20, 140, 0.2);
-  box-shadow: 0 18px 36px rgba(32, 20, 51, 0.12);
-}
-
-.vehicle-card__visual {
-  position: relative;
-}
-
-.vehicle-card__index {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: grid;
-  place-items: center;
-  min-width: 34px;
-  height: 34px;
-  padding: 0 8px;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12);
-  color: var(--color-primary);
-  font-size: 0.76rem;
-  font-weight: 900;
-  backdrop-filter: blur(6px);
-}
-
-.vehicle-card__heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 4px 14px;
-}
-
-.vehicle-card__heading h3,
-.vehicle-card__type {
-  margin: 0;
-}
-
-.vehicle-card__type {
-  margin-bottom: 4px;
-  color: #64748b;
-  font-size: 0.73rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.vehicle-card__powertrain {
-  flex: 0 0 auto;
-  max-width: 46%;
-  padding: 6px 9px;
-  border-radius: 999px;
-  background: rgba(77, 20, 140, 0.08);
-  color: var(--color-primary);
-  font-size: 0.7rem;
-  font-weight: 800;
-  line-height: 1.25;
-  text-align: center;
-}
-
-.vehicle-card__specs {
-  display: grid;
-  gap: 0;
-  margin: 0;
-  border: 1px solid #e8edf4;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.vehicle-card__specs div {
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 10px;
-  padding: 10px 12px;
-  background: #fbfcfe;
-}
-
-.vehicle-card__specs div + div {
-  border-top: 1px solid #e8edf4;
-}
-
-.vehicle-card__specs dt,
-.vehicle-card__specs dd {
-  margin: 0;
-}
-
-.vehicle-card__specs dt {
-  color: #64748b;
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.vehicle-card__specs dd {
-  color: #334155;
-  font-size: 0.82rem;
-  line-height: 1.45;
-}
-
-.vehicle-card__insight {
-  margin-top: 12px;
-  padding: 12px 13px;
-  border-left: 3px solid var(--color-accent);
-  border-radius: 4px 12px 12px 4px;
-  background: rgba(255, 102, 0, 0.07);
-}
-
-.vehicle-card__insight strong {
-  display: block;
-  margin-bottom: 3px;
-  color: #9a3d00;
-  font-size: 0.73rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.vehicle-card__insight p {
-  margin: 0;
-  color: #475569;
-  font-size: 0.82rem;
-  line-height: 1.5;
+  padding-top: 12px;
 }
 
 .genbi-card__image,
@@ -2106,7 +1932,7 @@ a:hover {
 
 .genbi-card__image {
   aspect-ratio: 16 / 9;
-  margin-bottom: 0;
+  margin-bottom: 12px;
 }
 
 .genbi-answer__image {
