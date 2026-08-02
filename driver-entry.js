@@ -1,6 +1,4 @@
-// Leave blank for local prototype mode. After following GOOGLE_DRIVE_SETUP.md,
-// paste the deployed Google Apps Script /exec URL here.
-const DRIVER_API_ENDPOINT = "";
+const DRIVER_API_ENDPOINT = "https://script.google.com/macros/s/AKfycbweZ7bZP9FmlLtiGJMuPGLkKDAgtqFhOJsTLSswcWvM9xc0cRLjSl2MVw5TjRvzpUf1Dw/exec";
 const STORAGE_KEY = "liumgoDriverRecords";
 const FILE_FIELDS = ["aadhaarFile", "licenceFile", "photoFile", "policeFile"];
 
