@@ -46,6 +46,32 @@ function doPost(e) {
   }
 }
 
+function doGet(e) {
+  try {
+    const action = String(e.parameter.action || "drivers");
+    if (!["drivers", "documents"].includes(action)) throw new Error("Unsupported action");
+    const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("Drivers");
+    const values = sheet.getDataRange().getDisplayValues();
+    const headers = values.shift() || [];
+    const records = values.filter(row => row[0]).map(row => {
+      const record = {};
+      headers.forEach((header, index) => record[toKey(header)] = row[index]);
+      return record;
+    });
+    if (action === "documents") {
+      return output({ ok: true, documents: records.filter(record => record.documentFolderUrl) });
+    }
+    return output({ ok: true, drivers: records });
+  } catch (error) {
+    return output({ ok: false, error: error.message });
+  }
+}
+
+function toKey(value) {
+  const words = String(value).trim().toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  return words.map((word, index) => index ? word[0].toUpperCase() + word.slice(1) : word).join("");
+}
+
 function safeName(value) {
   return String(value || "document").replace(/[\\/:*?\"<>|]/g, "-").slice(0, 100);
 }

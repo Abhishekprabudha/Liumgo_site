@@ -350,6 +350,8 @@ const driverLastNames = ["Sharma", "Khan", "Verma", "Yadav", "Gupta", "Singh", "
 const driverClients = ["Zomato", "Blinkit", "Tata 1mg", "BigBasket", "Amazon", "Flipkart", "Swiggy", "Zepto"];
 const driverZones = ["Saket", "Connaught Place", "Rohini", "Dwarka", "Okhla", "Lajpat Nagar", "Karol Bagh", "Janakpuri", "Mayur Vihar", "Hauz Khas"];
 const driverVehiclePool = ["DL9S-EV-2146", "DL7S-EV-3308", "DL2S-EV-1180", "DL6S-EV-4077", "DL4S-EV-5631", "DL8S-EV-9024", "DL5S-EV-7318", "DL1S-EV-6842", "DL3S-EV-2765", "DL3C-EV-8021", "DL5L-EV-7712", "DL8L-EV-6504", "DL2L-EV-3349", "DL6L-EV-1186", "DL1L-EV-4490"];
+const DRIVER_STORAGE_ENDPOINT = "https://script.google.com/macros/s/AKfycbweZ7bZP9FmlLtiGJMuPGLkKDAgtqFhOJsTLSswcWvM9xc0cRLjSl2MVw5TjRvzpUf1Dw/exec";
+const DRIVER_RECORDS_STORAGE_KEY = "liumgoDriverRecords";
 
 function buildDriverRecords() {
   return Array.from({ length: 128 }, (_, index) => {
@@ -453,6 +455,12 @@ function renderDriversDashboard() {
   const cards = tab.options.slice(0, 48).map((item, index) => `<article class="genbi-card driver-record-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
   return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Driver intelligence</p><h2>${tab.title}</h2><p>${tab.subtitle} The expanded dataset now tracks 100+ driver records across clients, shift status, hours, productivity and deliveries.</p><a class="btn btn-primary driver-entry-link" href="driver-entry.html">+ Add driver details</a></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>driver records</span></div></div>
+    <section class="driver-report-tools" aria-labelledby="driver-report-heading">
+      <div><p class="genbi-eyebrow">Reports & storage</p><h3 id="driver-report-heading">Pull driver information</h3><p>Download a CSV report of every dashboard and locally entered driver, or retrieve document folders from the connected secure storage.</p></div>
+      <div class="driver-report-tools__actions"><button type="button" class="btn btn-primary" id="download-driver-report">↓ Download all drivers</button><button type="button" class="btn btn-outline" id="pull-driver-documents">↻ Pull stored documents</button></div>
+      <p id="driver-report-status" class="driver-report-status" role="status" aria-live="polite"></p>
+      <div id="driver-document-results" class="driver-document-results" hidden></div>
+    </section>
     <section class="drivers-dashboard">
       <div class="drivers-kpi-grid"><article><span>Working now</span><strong>${totals.working}</strong><p>active drivers across ${driverClients.length} clients</p></article><article><span>Hours worked</span><strong>${totals.hours}</strong><p>cumulative current-shift hours</p></article><article><span>Total deliveries</span><strong>${totals.deliveries}</strong><p>completed client deliveries</p></article><article><span>Productivity</span><strong>${totals.productivity}</strong><p>deliveries per driver hour</p></article></div>
       <div class="driver-analytics-grid">
@@ -465,6 +473,110 @@ function renderDriversDashboard() {
       <p class="genbi-list-note">Showing 48 highlighted driver cards below; all ${tab.options.length} records are available in the GenBI Agent selector.</p>
     </section>
     <div class="genbi-layout"><section class="genbi-grid genbi-grid--drivers">${cards}</section><aside class="page-highlight-card genbi-agent"><div class="genbi-agent__badge">✨ GenBI Agent</div><h3>Ask driver performance</h3><label for="genbi-select">${tab.agentLabel}</label><select id="genbi-select" class="genbi-select">${options}</select><div id="genbi-answer" class="genbi-answer"></div></aside></div>`;
+}
+
+function hydrateDriverReportTools() {
+  const reportButton = document.getElementById("download-driver-report");
+  const documentsButton = document.getElementById("pull-driver-documents");
+  const status = document.getElementById("driver-report-status");
+  const results = document.getElementById("driver-document-results");
+  if (!reportButton || !documentsButton || !status || !results) return;
+
+  reportButton.addEventListener("click", async () => {
+    reportButton.disabled = true;
+    status.textContent = "Preparing the complete driver report…";
+    const dashboardRecords = dashboardData.drivers.options.map((driver) => ({
+      recordId: driver.key, fullName: driver.title, client: driver.client, zone: driver.zone,
+      status: driver.status, hoursWorked: driver.hoursWorked, deliveries: driver.deliveries,
+      productivity: driver.productivity, onTime: `${driver.onTime}%`, vehicle: driver.vehicle
+    }));
+    const localRecords = readLocalDriverRecords().map(flattenLocalDriverRecord);
+    let storedRecords = [];
+    try {
+      const response = await fetch(`${DRIVER_STORAGE_ENDPOINT}?action=drivers`, { method: "GET" });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Storage report is unavailable.");
+      storedRecords = Array.isArray(payload.drivers) ? payload.drivers : [];
+    } catch (error) {
+      status.textContent = `Storage could not be reached (${error.message}); downloaded dashboard and local records only.`;
+    }
+    const allRecords = [...dashboardRecords, ...localRecords, ...storedRecords];
+    downloadCsv(allRecords, `liumgo-all-drivers-${new Date().toISOString().slice(0, 10)}.csv`);
+    if (storedRecords.length) status.textContent = `Downloaded ${allRecords.length} driver records, including ${storedRecords.length} pulled from secure storage.`;
+    else if (!status.textContent.includes("Storage could not")) status.textContent = `Downloaded ${allRecords.length} dashboard and locally entered driver records.`;
+    reportButton.disabled = false;
+  });
+
+  documentsButton.addEventListener("click", async () => {
+    documentsButton.disabled = true;
+    status.textContent = "Pulling document folders from secure storage…";
+    results.hidden = true;
+    try {
+      const response = await fetch(`${DRIVER_STORAGE_ENDPOINT}?action=documents`, { method: "GET" });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Storage did not return document records.");
+      const documents = Array.isArray(payload.documents) ? payload.documents : [];
+      renderDriverDocuments(documents, results);
+      status.textContent = documents.length ? `Pulled ${documents.length} driver document folders.` : "No driver document folders are available yet.";
+      results.hidden = false;
+    } catch (error) {
+      const localDocuments = readLocalDriverRecords().map(flattenLocalDriverRecord).filter((record) => record.documents);
+      renderDriverDocuments(localDocuments, results, true);
+      status.textContent = localDocuments.length
+        ? `Secure storage is unavailable (${error.message}). Showing ${localDocuments.length} locally saved document references instead.`
+        : `Could not pull documents: ${error.message}`;
+      results.hidden = localDocuments.length === 0;
+    } finally {
+      documentsButton.disabled = false;
+    }
+  });
+}
+
+function readLocalDriverRecords() {
+  try { return JSON.parse(localStorage.getItem(DRIVER_RECORDS_STORAGE_KEY) || "[]"); }
+  catch { return []; }
+}
+
+function flattenLocalDriverRecord(record) {
+  const sections = record.sections || {};
+  const merged = Object.assign({}, sections.personal, sections.documents, sections.attendance, sections.vehicle);
+  return {
+    recordId: record.id, fullName: merged.fullName || "Unnamed driver", mobile: merged.mobile || "",
+    hub: merged.hub || "", client: merged.client || "", status: merged.attendanceStatus || "",
+    vehicle: merged.vehicleRegistration || "", licenceNumber: merged.licenceNumber || "",
+    licenceExpiry: merged.licenceExpiry || "", documents: (sections.documents?.documents || []).join("; "),
+    updatedAt: record.updatedAt || "", folderUrl: merged.folderUrl || ""
+  };
+}
+
+function downloadCsv(records, filename) {
+  const headers = [...new Set(records.flatMap((record) => Object.keys(record)))];
+  const escapeCell = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+  const csv = [headers.map(escapeCell).join(","), ...records.map((record) => headers.map((header) => escapeCell(record[header])).join(","))].join("\r\n");
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(new Blob([`\ufeff${csv}`], { type: "text/csv;charset=utf-8" }));
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  URL.revokeObjectURL(link.href);
+  link.remove();
+}
+
+function renderDriverDocuments(documents, container, localOnly = false) {
+  container.innerHTML = documents.map((record) => {
+    const name = record.fullName || record.name || "Unnamed driver";
+    const id = record.recordId || record.id || "No record ID";
+    const files = Array.isArray(record.files) ? record.files.join(", ") : record.documents || "Documents on file";
+    const folderUrl = record.folderUrl || record.documentFolderUrl;
+    const safeFolderUrl = /^https:\/\/drive\.google\.com\//.test(folderUrl || "") ? folderUrl : "";
+    return `<article><div><strong>${escapeHtml(name)}</strong><span>${escapeHtml(id)} · ${escapeHtml(files)}</span></div>${safeFolderUrl && !localOnly ? `<a class="btn btn-outline" href="${escapeHtml(safeFolderUrl)}" target="_blank" rel="noopener noreferrer">Open folder ↗</a>` : `<span class="driver-document-results__local">${localOnly ? "Local reference" : "Folder unavailable"}</span>`}</article>`;
+  }).join("");
+}
+
+function escapeHtml(value) {
+  const element = document.createElement("span");
+  element.textContent = String(value ?? "");
+  return element.innerHTML;
 }
 
 function renderMaintenanceDashboard() {
@@ -537,6 +649,7 @@ function bootDashboardTabs() {
     buttons.forEach((button) => button.classList.toggle("dashboard-menu__item--active", button.dataset.dashboardTab === tabKey));
     content.innerHTML = tabKey === "dashboard" ? renderDashboardOverview() : tabKey === "maintenance" ? renderMaintenanceDashboard() : tabKey === "drivers" ? renderDriversDashboard() : renderIntelligencePanel(tabKey);
     hydrateAgent(tabKey);
+    if (tabKey === "drivers") hydrateDriverReportTools();
   }
 
   buttons.forEach((button) => button.addEventListener("click", () => render(button.dataset.dashboardTab)));

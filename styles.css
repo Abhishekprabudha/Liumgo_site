@@ -2099,6 +2099,28 @@ a:hover {
   margin-bottom: 20px;
 }
 
+.driver-report-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px 24px;
+  align-items: center;
+  margin: 20px 0;
+  padding: 22px;
+  border: 1px solid #e6d9f2;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #fff 55%, #f6effc);
+  box-shadow: 0 12px 28px rgba(77, 20, 140, 0.08);
+}
+.driver-report-tools h3, .driver-report-tools p { margin: 0; }
+.driver-report-tools__actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.driver-report-status { grid-column: 1 / -1; color: #4b5563; font-size: .88rem; }
+.driver-document-results { grid-column: 1 / -1; display: grid; gap: 10px; }
+.driver-document-results[hidden] { display: none; }
+.driver-document-results article { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 13px 15px; border: 1px solid #e5e7eb; border-radius: 14px; background: #fff; }
+.driver-document-results article div { display: grid; gap: 3px; }
+.driver-document-results article span { color: #6b7280; font-size: .82rem; }
+.driver-document-results__local { font-weight: 700; white-space: nowrap; }
+
 .drivers-kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2258,6 +2280,11 @@ a:hover {
   .driver-histogram__row {
     grid-template-columns: 74px minmax(0, 1fr) 56px;
   }
+
+  .driver-report-tools { grid-template-columns: 1fr; }
+  .driver-report-tools__actions { justify-content: stretch; }
+  .driver-report-tools__actions .btn { width: 100%; }
+  .driver-document-results article { align-items: flex-start; flex-direction: column; }
 }
 
 .parking-map-panel__map::after {
