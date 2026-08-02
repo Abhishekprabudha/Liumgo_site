@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Vehicle Maintenance Entry – Lium Go</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="container header__content"><div class="logo"><a href="dashboard.html"><img src="images/liumgo-logo.png" alt="Lium Go logo"></a></div><a class="btn btn-outline" href="dashboard.html">← Control tower</a></div></header>
+  <main>
+    <section class="driver-entry-hero"><div class="container"><p class="eyebrow">Maintenance · Data entry</p><h1>Vehicle records, documents & driver mapping</h1><p>Create one operational record with vehicle identity, maintenance status, compliance documents and the assigned driver.</p><div class="entry-progress"><span>01 Vehicle</span><span>02 Maintenance</span><span>03 Documents</span><span>04 Driver mapping</span></div></div></section>
+    <section class="page-section page-section--alt"><div class="container driver-entry-layout">
+      <form id="maintenance-entry-form" class="driver-entry-form">
+        <section class="entry-card" aria-labelledby="vehicle-heading"><div class="entry-card__heading"><span>01</span><div><h2 id="vehicle-heading">Vehicle details</h2><p>Identify the asset and its operating profile.</p></div></div><div class="entry-fields">
+          <label>Registration number *<input name="registrationNumber" required placeholder="e.g. DL3C-EV-8021"></label>
+          <label>Fleet / asset ID *<input name="assetId" required placeholder="e.g. VEH-0042"></label>
+          <label>Category *<select name="category" required><option value="">Select category</option><option>2W</option><option>3W</option><option>4W</option><option>Commercial vehicle</option></select></label>
+          <label>Powertrain *<select name="powertrain" required><option value="">Select powertrain</option><option>Electric</option><option>Petrol</option><option>Diesel</option><option>CNG</option><option>Alternative fuel</option></select></label>
+          <label>Make *<input name="make" required placeholder="e.g. Euler"></label><label>Model *<input name="model" required placeholder="e.g. HiLoad EV"></label>
+          <label>Model year<input name="modelYear" type="number" min="1990" max="2100"></label><label>Current odometer (km) *<input name="odometerKm" type="number" min="0" required></label>
+          <label>Home hub *<input name="homeHub" required placeholder="e.g. Okhla hub"></label><label>Operational status *<select name="operationalStatus" required><option>Active</option><option>Under maintenance</option><option>Out of service</option><option>Awaiting parts</option></select></label>
+        </div></section>
+        <section class="entry-card" aria-labelledby="maintenance-heading"><div class="entry-card__heading"><span>02</span><div><h2 id="maintenance-heading">Maintenance details</h2><p>Record service dates, issue and workshop ownership.</p></div></div><div class="entry-fields">
+          <label>Service type *<select name="serviceType" required><option>Preventive maintenance</option><option>Corrective repair</option><option>Breakdown</option><option>Inspection</option><option>Battery service</option><option>Tyre service</option></select></label>
+          <label>Priority *<select name="priority" required><option>Routine</option><option>Medium</option><option>High</option><option>Vehicle off road</option></select></label>
+          <label>Last service date<input name="lastServiceDate" type="date"></label><label>Next service due *<input name="nextServiceDate" type="date" required></label>
+          <label>Workshop / vendor<input name="workshop" placeholder="Workshop or service partner"></label><label>Estimated cost (₹)<input name="estimatedCost" type="number" min="0" step="0.01"></label>
+          <label class="entry-field--wide">Issue / work performed *<textarea name="maintenanceNotes" rows="4" required placeholder="Fault symptoms, diagnosis, parts replaced and action required"></textarea></label>
+        </div></section>
+        <section class="entry-card" aria-labelledby="documents-heading"><div class="entry-card__heading"><span>03</span><div><h2 id="documents-heading">Vehicle documents</h2><p>Upload PDF, JPG or PNG files, up to 10 MB each.</p></div></div><div class="entry-fields">
+          <label>Insurance expiry<input name="insuranceExpiry" type="date"></label><label>Fitness certificate expiry<input name="fitnessExpiry" type="date"></label><label>Permit expiry<input name="permitExpiry" type="date"></label><label>Pollution certificate expiry<input name="pucExpiry" type="date"></label>
+        </div><div class="document-grid">
+          <label class="document-upload"><strong>Registration certificate *</strong><span>RC copy</span><input name="rcFile" type="file" accept=".pdf,.jpg,.jpeg,.png" required></label>
+          <label class="document-upload"><strong>Insurance</strong><span>Current policy</span><input name="insuranceFile" type="file" accept=".pdf,.jpg,.jpeg,.png"></label>
+          <label class="document-upload"><strong>Fitness / permit</strong><span>Certificate copy</span><input name="fitnessFile" type="file" accept=".pdf,.jpg,.jpeg,.png"></label>
+          <label class="document-upload"><strong>Service invoice</strong><span>Invoice or job card</span><input name="serviceFile" type="file" accept=".pdf,.jpg,.jpeg,.png"></label>
+        </div></section>
+        <section class="entry-card" aria-labelledby="mapping-heading"><div class="entry-card__heading"><span>04</span><div><h2 id="mapping-heading">Driver mapping</h2><p>Assign the current custodian and mapping period.</p></div></div><div class="entry-fields">
+          <label>Driver name *<input name="driverName" required></label><label>Driver ID *<input name="driverId" required placeholder="e.g. DRV-1024"></label>
+          <label>Driver mobile *<input name="driverMobile" type="tel" required pattern="[0-9+ -]{10,16}"></label><label>Mapping start *<input name="mappingStart" type="date" required></label>
+          <label>Mapping end<input name="mappingEnd" type="date"></label><label>Shift<select name="shift"><option>Morning</option><option>Evening</option><option>Night</option><option>Flexible</option></select></label>
+          <label class="entry-field--wide">Mapping notes<textarea name="mappingNotes" rows="3" placeholder="Route, client, handover or custody notes"></textarea></label>
+        </div></section>
+        <div id="maintenance-message" class="entry-message" role="status" aria-live="polite"></div><div class="entry-actions"><button type="reset" class="btn btn-outline">Clear form</button><button id="maintenance-submit" class="btn btn-primary" type="submit">Save complete record</button></div>
+      </form>
+      <aside class="entry-sidebar"><div class="entry-help-card"><span class="entry-help-card__icon">✓</span><h2>Before saving</h2><ul><li>Verify registration and asset IDs.</li><li>Use current odometer and expiry dates.</li><li>Confirm the driver accepted custody.</li><li>Upload only authorised business records.</li></ul></div><div class="entry-help-card"><h2>Google Drive storage</h2><p>Connect this page through Apps Script; never add Drive credentials to browser code.</p><a href="MAINTENANCE_GOOGLE_DRIVE_SETUP.md">Read setup instructions →</a></div></aside>
+    </div></section>
+  </main>
+  <footer class="site-footer"><div class="container footer__content"><p><strong>Lium Go</strong> – Secure fleet operations.</p><a href="dashboard.html">Control tower</a></div></footer>
+  <script src="maintenance-entry.js"></script>
+</body>
+</html>
