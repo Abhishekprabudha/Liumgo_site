@@ -606,7 +606,7 @@ function renderMaintenanceDashboard() {
   const maxPm = 8;
   const cards = tab.options.map((item, index) => `<article class="genbi-card maintenance-record-card"><div class="genbi-card__number">${String(index + 1).padStart(2, "0")}</div><h3>${item.title}</h3><p class="genbi-card__meta">${item.meta}</p><p>${item.detail}</p><span>${item.insight}</span></article>`).join("");
   const options = tab.options.map((item) => `<option value="${item.key}">${item.key}</option>`).join("");
-  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Maintenance intelligence</p><h2>${tab.title}</h2><p>${tab.subtitle}</p></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>maintenance records</span></div></div>
+  return `<div class="genbi-hero"><div><p class="genbi-eyebrow">GenBI workspace · Maintenance intelligence</p><h2>${tab.title}</h2><p>${tab.subtitle}</p><a class="btn btn-primary driver-entry-link" href="maintenance-entry.html">+ Add vehicle & maintenance details</a></div><div class="genbi-kpi"><strong>${tab.options.length}</strong><span>maintenance records</span></div></div>
     <section class="maintenance-dashboard">
       <div class="maintenance-summary-grid">${summary.map((item) => `<article class="maintenance-summary-card"><span>${item.category}</span><strong>${item.count}</strong><p>${item.downtime} total downtime days · ${item.avgDowntime} avg days · ${item.pmDue} PM due by 10 Jul</p></article>`).join("")}</div>
       <div class="maintenance-analytics-grid">
