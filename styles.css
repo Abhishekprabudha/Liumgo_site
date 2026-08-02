@@ -2320,6 +2320,7 @@ a:hover {
 .entry-card { transition: opacity .2s ease, border-color .2s ease; }
 .entry-card--locked { position: relative; opacity: .58; border-style: dashed; box-shadow: none; }
 .entry-card--locked::after { content: "Save or select personal details to unlock"; position: absolute; top: 24px; right: 24px; max-width: 180px; padding: 6px 9px; border-radius: 999px; color: #5c426f; background: #f1e9f7; font-size: .68rem; font-weight: 700; text-align: center; }
+#maintenance-entry-form .entry-card--locked::after { content: "Save or select vehicle details to unlock"; }
 .entry-card__heading { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; margin-bottom: 20px; border-bottom: 1px solid #eeeaf2; }
 .entry-card__heading > span, .entry-help-card__icon { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; border-radius: 11px; color: #fff; background: var(--color-primary); font-weight: 800; }
 .entry-card h2, .entry-help-card h2 { margin: 0; font-size: 1.15rem; }

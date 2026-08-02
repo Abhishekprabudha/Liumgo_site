@@ -18,40 +18,77 @@ Open [Google Apps Script](https://script.google.com), create a project, and repl
 ```javascript
 const DRIVE_FOLDER_ID = "REPLACE_WITH_FOLDER_ID";
 const SPREADSHEET_ID = "REPLACE_WITH_SPREADSHEET_ID";
+const FIELD_COLUMNS = {
+  registrationNumber: 3, assetId: 4, category: 5, powertrain: 6, make: 7,
+  model: 8, modelYear: 9, odometerKm: 10, homeHub: 11, operationalStatus: 12,
+  serviceType: 13, priority: 14, lastServiceDate: 15, nextServiceDate: 16,
+  workshop: 17, estimatedCost: 18, maintenanceNotes: 19, insuranceExpiry: 20,
+  fitnessExpiry: 21, permitExpiry: 22, pucExpiry: 23, driverName: 24,
+  driverId: 25, driverMobile: 26, mappingStart: 27, mappingEnd: 28,
+  shift: 29, mappingNotes: 30
+};
 
 function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
   try {
     const payload = JSON.parse(e.postData.contents);
-    const f = payload.fields || {};
+    const fields = payload.fields || {};
     const recordId = String(payload.recordId || `VEH-${Date.now()}`).slice(0, 50);
-    const parent = DriveApp.getFolderById(DRIVE_FOLDER_ID);
-    const folder = parent.createFolder(`${safeName(recordId)} - ${safeName(f.registrationNumber)}`);
-
-    (payload.documents || []).forEach(doc => {
-      if (!doc.data || !doc.name) return;
-      const allowed = ["application/pdf", "image/jpeg", "image/png"];
-      if (!allowed.includes(doc.type)) throw new Error(`Unsupported file type: ${doc.type}`);
-      const bytes = Utilities.base64Decode(doc.data);
-      if (bytes.length > 10 * 1024 * 1024) throw new Error(`${doc.name} exceeds 10 MB`);
-      folder.createFile(Utilities.newBlob(bytes, doc.type, safeName(doc.name)));
-    });
-
     const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName("Vehicles");
-    sheet.appendRow([recordId, new Date(), f.registrationNumber, f.assetId, f.category,
-      f.powertrain, f.make, f.model, f.modelYear, f.odometerKm, f.homeHub,
-      f.operationalStatus, f.serviceType, f.priority, f.lastServiceDate,
-      f.nextServiceDate, f.workshop, f.estimatedCost, f.maintenanceNotes,
-      f.insuranceExpiry, f.fitnessExpiry, f.permitExpiry, f.pucExpiry,
-      f.driverName, f.driverId, f.driverMobile, f.mappingStart, f.mappingEnd,
-      f.shift, f.mappingNotes, folder.getUrl()]);
-    return json({ ok: true, recordId: recordId, folderUrl: folder.getUrl() });
+    const row = findOrCreateRow(sheet, recordId);
+    let folder = findVehicleFolder(recordId);
+
+    if (!folder && (payload.documents || []).length) {
+      folder = DriveApp.getFolderById(DRIVE_FOLDER_ID)
+        .createFolder(`${safeName(recordId)} - ${safeName(fields.registrationNumber)}`);
+    }
+    (payload.documents || []).forEach(doc => saveDocument(folder, doc));
+    Object.keys(fields).forEach(name => {
+      if (FIELD_COLUMNS[name]) sheet.getRange(row, FIELD_COLUMNS[name]).setValue(fields[name]);
+    });
+    sheet.getRange(row, 2).setValue(new Date());
+    if (folder) sheet.getRange(row, 31).setValue(folder.getUrl());
+    return json({ ok: true, recordId: recordId, section: payload.section || "complete" });
   } catch (error) {
     return json({ ok: false, error: error.message });
+  } finally {
+    lock.releaseLock();
   }
 }
 
+function findOrCreateRow(sheet, recordId) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    const match = sheet.getRange(2, 1, lastRow - 1, 1).createTextFinder(recordId)
+      .matchEntireCell(true).findNext();
+    if (match) return match.getRow();
+  }
+  const row = lastRow + 1;
+  sheet.getRange(row, 1).setValue(recordId);
+  return row;
+}
+
+function findVehicleFolder(recordId) {
+  const folders = DriveApp.getFolderById(DRIVE_FOLDER_ID).getFolders();
+  while (folders.hasNext()) {
+    const folder = folders.next();
+    if (folder.getName().startsWith(`${safeName(recordId)} -`)) return folder;
+  }
+  return null;
+}
+
+function saveDocument(folder, doc) {
+  if (!folder || !doc.data || !doc.name) return;
+  const allowed = ["application/pdf", "image/jpeg", "image/png"];
+  if (!allowed.includes(doc.type)) throw new Error(`Unsupported file type: ${doc.type}`);
+  const bytes = Utilities.base64Decode(doc.data);
+  if (bytes.length > 10 * 1024 * 1024) throw new Error(`${doc.name} exceeds 10 MB`);
+  folder.createFile(Utilities.newBlob(bytes, doc.type, safeName(doc.name)));
+}
+
 function safeName(value) {
-  return String(value || "record").replace(/[\\/:*?\"<>|]/g, "-").slice(0, 100);
+  return String(value || "record").replace(/[\\/:*?"<>|]/g, "-").slice(0, 100);
 }
 
 function json(value) {
