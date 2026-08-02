@@ -2274,3 +2274,44 @@ a:hover {
 .parking-pin.charging-pin--busy {
   background: var(--color-accent);
 }
+
+/* Driver onboarding sub-page */
+.driver-entry-link { margin-top: 14px; }
+.driver-entry-hero { padding: 48px 0 34px; color: #fff; background: linear-gradient(125deg, #31105c, #4d148c 58%, #7a2b85); }
+.driver-entry-hero h1 { margin: 0 0 10px; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.12; }
+.driver-entry-hero p:not(.eyebrow) { max-width: 720px; margin: 0; color: #eee8f7; }
+.entry-progress { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.entry-progress span { padding: 7px 13px; border: 1px solid rgba(255,255,255,.24); border-radius: 999px; background: rgba(255,255,255,.1); font-size: .78rem; font-weight: 700; }
+.driver-entry-layout { display: grid; grid-template-columns: minmax(0, 1fr) 285px; gap: 24px; align-items: start; }
+.driver-entry-form { display: grid; gap: 20px; }
+.entry-card, .entry-help-card { padding: 26px; border: 1px solid #e9e5ee; border-radius: 22px; background: #fff; box-shadow: var(--shadow-soft); }
+.entry-card__heading { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; margin-bottom: 20px; border-bottom: 1px solid #eeeaf2; }
+.entry-card__heading > span, .entry-help-card__icon { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; border-radius: 11px; color: #fff; background: var(--color-primary); font-weight: 800; }
+.entry-card h2, .entry-help-card h2 { margin: 0; font-size: 1.15rem; }
+.entry-card__heading p { margin: 3px 0 0; color: var(--color-muted); font-size: .87rem; }
+.entry-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; }
+.entry-fields label { display: grid; gap: 7px; color: #283142; font-size: .83rem; font-weight: 700; }
+.entry-field--wide { grid-column: 1 / -1; }
+.entry-fields input, .entry-fields select, .entry-fields textarea { width: 100%; padding: 11px 12px; border: 1px solid #d9dce3; border-radius: 10px; color: #111827; background: #fff; font: inherit; font-weight: 400; }
+.entry-fields input:focus, .entry-fields select:focus, .entry-fields textarea:focus { outline: 3px solid rgba(77,20,140,.12); border-color: var(--color-primary); }
+.document-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 13px; margin-top: 20px; }
+.document-upload { display: grid; gap: 4px; padding: 15px; border: 1px dashed #b9a9c9; border-radius: 13px; background: #fcfaff; font-size: .83rem; }
+.document-upload span { color: var(--color-muted); font-size: .76rem; }
+.document-upload input { margin-top: 8px; max-width: 100%; font-size: .76rem; }
+.entry-sidebar { position: sticky; top: 82px; display: grid; gap: 17px; }
+.entry-help-card { padding: 21px; }
+.entry-help-card__icon { margin-bottom: 14px; background: #16845b; }
+.entry-help-card p, .entry-help-card li { color: #566071; font-size: .84rem; }
+.entry-help-card ul, .entry-help-card ol { padding-left: 20px; }
+.entry-help-card li + li { margin-top: 8px; }
+.entry-help-card--drive { background: #faf6ff; border-color: #decbed; }
+.entry-help-card--drive .entry-help-card__icon { background: var(--color-primary); }
+.entry-help-card a { color: var(--color-primary); font-size: .85rem; font-weight: 800; }
+.entry-actions { display: flex; justify-content: flex-end; gap: 12px; }
+.entry-message { display: none; padding: 13px 15px; border-radius: 11px; font-size: .88rem; font-weight: 700; }
+.entry-message--working, .entry-message--success, .entry-message--error { display: block; }
+.entry-message--working { color: #4d148c; background: #f3e8ff; }
+.entry-message--success { color: #11633f; background: #e7f8ef; }
+.entry-message--error { color: #9b1c1c; background: #feecec; }
+@media (max-width: 850px) { .driver-entry-layout { grid-template-columns: 1fr; } .entry-sidebar { position: static; } }
+@media (max-width: 600px) { .entry-fields, .document-grid { grid-template-columns: 1fr; } .entry-field--wide { grid-column: auto; } .entry-card { padding: 19px; } .entry-actions { flex-direction: column-reverse; } }
